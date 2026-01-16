@@ -1,0 +1,34 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Onyx_Powder.name"
+  },
+  "Categories": [
+    "ArchStar.Ingredients",
+    "Items.Ingredients"
+  ],
+  "Model": "Resources/Ingredients/Spore_Bag.blockymodel",
+  "Texture": "Items/Ingredients/Powders/Onyx_Bag.png",
+  "PlayerAnimationsId": "Item",
+  "IconProperties": {
+    "Scale": 0.7,
+    "Translation": [
+      0.6,
+      -9.6
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  },
+  "Icon": "Icons/ItemsGenerated/Powders/Onyx_Powder_Icon.png",
+  "Tags": {
+    "Type": [
+      "Ingredient"
+    ]
+  },
+  "ItemEntity": {
+    "ParticleSystemId": null
+  },
+  "DropOnDeath": true
+}

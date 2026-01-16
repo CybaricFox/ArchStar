@@ -1,0 +1,60 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Industrial_Frame.name",
+    "Description": "ArchStar.Industrial_Frame.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Industrial_Frame_Icon.png",
+  "Categories": [
+    "ArchStar.Ingredients",
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "BlockParticleSetId": "Metal",
+    "Textures": [
+      {
+        "All": "Blocks/Ingredients/base_industrial_texture.png",
+        "Weight": 1
+      }
+    ],
+    "ParticleColor": "#8f8f8f",
+    "BlockSoundSetId": "Metal",
+    "Tags": {
+      "Type": [
+        "Ingredient"
+      ]
+    }
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Steel",
+        "Quantity": 8
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "Industrial_Frame"
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Industrial"
+        ],
+        "Id": "Invention"
+      }
+    ],
+    "TimeSeconds": 4.0
+  }
+}

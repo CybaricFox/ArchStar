@@ -1,0 +1,18 @@
+{
+  "Input": [
+    {
+      "ItemId": "Ingredient_Bar_Copper"
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Copper_Powder",
+    "Quantity": 1
+  },
+  "BenchRequirement": [
+    {
+      "Type": "Processing",
+      "Id": "Grinder"
+    }
+  ],
+  "TimeSeconds": 14.0
+}

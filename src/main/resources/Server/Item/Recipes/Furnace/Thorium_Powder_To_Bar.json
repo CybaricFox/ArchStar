@@ -1,0 +1,18 @@
+{
+  "Input": [
+    {
+      "ItemId": "Thorium_Powder"
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Ingredient_Bar_Thorium",
+    "Quantity": 1
+  },
+  "BenchRequirement": [
+    {
+      "Type": "Processing",
+      "Id": "Furnace"
+    }
+  ],
+  "TimeSeconds": 14.0
+}

@@ -1,0 +1,21 @@
+{
+  "Group": "CybaricFox",
+  "Name": "ArchStar",
+  "Version": "0.0.1",
+  "Description": "A test mod for now.",
+  "Authors": [
+    {
+      "Name": "CybaricFox"
+    }
+  ],
+  "ServerVersion": "*",
+  "Dependencies": {
+    
+  },
+  "OptionalDependencies": {
+
+  },
+  "DisabledByDefault": false,
+  "Main": "mainTest",
+  "IncludesAssetPack": true
+}

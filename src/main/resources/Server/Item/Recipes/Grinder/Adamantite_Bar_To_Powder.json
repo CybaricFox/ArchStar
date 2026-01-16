@@ -1,0 +1,18 @@
+{
+  "Input": [
+    {
+      "ItemId": "Ingredient_Bar_Adamantite"
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Adamantite_Powder",
+    "Quantity": 1
+  },
+  "BenchRequirement": [
+    {
+      "Type": "Processing",
+      "Id": "Grinder"
+    }
+  ],
+  "TimeSeconds": 14.0
+}

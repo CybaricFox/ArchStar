@@ -1,0 +1,116 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Inventors_Bench.name",
+    "Description": "ArchStar.Inventors_Bench.description"
+  },
+  "Recipe": {
+    "Input": [
+      {
+        "Quantity": 4,
+        "ResourceTypeId": "Wood_Trunk"
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "Inventors_Bench"
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Workbench_Crafting"
+        ],
+        "Id": "Workbench"
+      }
+    ],
+    "TimeSeconds": 2.0
+  },
+  "Icon": "Icons/ItemsGenerated/Inventors_Bench_Icon.png",
+  "Categories": [
+    "Furniture.Benches"
+  ],
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Benches/Inventors_Bench.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Benches/Inventors_Bench.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Bench_Workbench",
+    "VariantRotation": "NESW",
+    "Bench": {
+      "Type": "Crafting",
+      "Id": "Invention",
+      "Categories": [
+        {
+          "Id": "Industrial",
+          "Icon": "Icons/CraftingCategories/Industrial_Icon.png",
+          "Name": "ArchStar.Industrial_Icon.name"
+        }
+      ],
+      "LocalOpenSoundEventId": "SFX_Workbench_Open",
+      "LocalCloseSoundEventId": "SFX_Workbench_Close",
+      "CompletedSoundEventId": "SFX_Workbench_Craft",
+      "FailedSoundEventId": "SFX_Generic_Crafting_Failed",
+      "BenchUpgradeSoundEventId": "SFX_Workbench_Upgrade_Start_Default",
+      "BenchUpgradeCompletedSoundEventId": "SFX_Workbench_Upgrade_Complete_Default",
+      "TierLevels": [
+        {
+          "CraftingTimeReductionModifier": 0.0
+        }
+      ]
+    },
+    "State": {
+      "Id": "crafting",
+      "Definitions": {
+        "CraftCompleted": {
+          "CustomModelAnimation": "Blocks/Benches/Inventors_Bench_Crafting.blockyanim",
+          "Looping": true
+        },
+        "CraftCompletedInstant": {
+          "CustomModelAnimation": "Blocks/Benches/Inventors_Bench_Crafting.blockyanim"
+        }
+      }
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "BlockParticleSetId": "Metal",
+    "ParticleColor": "#8f8f8f",
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "BlockSoundSetId": "Metal"
+  },
+  "PlayerAnimationsId": "Block",
+  "IconProperties": {
+    "Scale": 0.42,
+    "Rotation": [
+      22.5,
+      45.0,
+      22.5
+    ],
+    "Translation": [
+      12.9,
+      -11.7
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Bench"
+    ]
+  },
+  "MaxStack": 1,
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

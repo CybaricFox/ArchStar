@@ -1,0 +1,18 @@
+{
+  "Input": [
+    {
+      "ItemId": "Ingredient_Bar_Thorium"
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Thorium_Powder",
+    "Quantity": 1
+  },
+  "BenchRequirement": [
+    {
+      "Type": "Processing",
+      "Id": "Grinder"
+    }
+  ],
+  "TimeSeconds": 14.0
+}

@@ -1,0 +1,18 @@
+{
+  "Input": [
+    {
+      "ItemId": "Ingredient_Bar_Mithril"
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Mythril_Powder",
+    "Quantity": 1
+  },
+  "BenchRequirement": [
+    {
+      "Type": "Processing",
+      "Id": "Grinder"
+    }
+  ],
+  "TimeSeconds": 14.0
+}

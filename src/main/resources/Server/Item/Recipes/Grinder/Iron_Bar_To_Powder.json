@@ -1,0 +1,18 @@
+{
+  "Input": [
+    {
+      "ItemId": "Ingredient_Bar_Iron"
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Iron_Powder",
+    "Quantity": 1
+  },
+  "BenchRequirement": [
+    {
+      "Type": "Processing",
+      "Id": "Grinder"
+    }
+  ],
+  "TimeSeconds": 14.0
+}

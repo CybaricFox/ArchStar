@@ -1,0 +1,18 @@
+{
+  "Input": [
+    {
+      "ItemId": "Ore_Thorium"
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Thorium_Powder",
+    "Quantity": 2
+  },
+  "BenchRequirement": [
+    {
+      "Type": "Processing",
+      "Id": "Grinder"
+    }
+  ],
+  "TimeSeconds": 14.0
+}

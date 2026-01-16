@@ -1,0 +1,18 @@
+{
+  "Input": [
+    {
+      "ItemId": "Onyx_Powder"
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Ingredient_Bar_Onyxium",
+    "Quantity": 1
+  },
+  "BenchRequirement": [
+    {
+      "Type": "Processing",
+      "Id": "Furnace"
+    }
+  ],
+  "TimeSeconds": 14.0
+}
