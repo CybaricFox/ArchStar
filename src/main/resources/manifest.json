@@ -1,7 +1,7 @@
 {
   "Group": "CybaricFox",
   "Name": "ArchStar",
-  "Version": "0.0.1",
+  "Version": "0.0.2",
   "Description": "A test mod for now.",
   "Authors": [
     {
@@ -16,6 +16,6 @@
 
   },
   "DisabledByDefault": false,
-  "Main": "mainTest",
+  "Main": "com.CybaricFox.ArchStar",
   "IncludesAssetPack": true
 }

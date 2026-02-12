@@ -8,7 +8,6 @@
     "ArchStar.Machines",
     "Furniture.Benches"
   ],
-  "Quality": "Uncommon",
   "BlockType": {
     "CustomModel": "Blocks/Machines/Industrial_Furnace.blockymodel",
     "CustomModelTexture": [
@@ -32,34 +31,33 @@
     "BlockSoundSetId": "Metal",
     "ParticleColor": "#8f8f8f",
     "Interactions": {
-      "Use": "Open_Processing_Bench"
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "Open_Powered_Processor"
+          }
+        ]
+      }
     },
-    "Bench": {
-      "Type": "Processing",
-      "AllowNoInputProcessing": true,
-      "Input": [
-        {
-          "FilterValidIngredients": true
+    "BlockEntity":{
+      "Components":{
+        "EnergyBlock": {
+          "MaxEnergy": 832,
+          "InputRate": 44,
+          "ProductionRate": 4,
+          "Type": "CONSUMER"
         },
-        {
-          "FilterValidIngredients": true
+        "InputBlock": {
+          "MaxSize": 3,
+          "Size": 3,
+          "ID": "Furnace",
+          "ProgressMultiplier": 0.875
         },
-        {
-          "FilterValidIngredients": true
+        "OutputBlock": {
+          "MaxSize": 4,
+          "Size": 4
         }
-      ],
-      "LocalOpenSoundEventId": "SFX_Furnace_Bench_Open",
-      "LocalCloseSoundEventId": "SFX_Furnace_Bench_Close",
-      "CompletedSoundEventId": "SFX_Furnace_Bench_Processing_Complete",
-      "EndSoundEventId": "SFX_Furnace_Bench_Processing_End",
-      "FailedSoundEventId": "SFX_Furnace_Bench_Processing_Failed",
-      "OutputSlotsCount": 4,
-      "Id": "Furnace",
-      "TierLevels": [
-        {
-          "CraftingTimeReductionModifier": 0.25
-        }
-      ]
+      }
     },
     "State": {
       "Id": "processingBench",

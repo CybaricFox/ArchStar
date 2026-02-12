@@ -8,7 +8,6 @@
     "ArchStar.Machines",
     "Furniture.Benches"
   ],
-  "Quality": "Common",
   "BlockType": {
     "CustomModel": "Blocks/Machines/Iron_Furnace.blockymodel",
     "CustomModelTexture": [
@@ -96,7 +95,7 @@
           },
           "CustomModelTexture": [
             {
-              "Texture": "Blocks/Machines/Iron_Furnace.png",
+              "Texture": "Blocks/Machines/Iron_Furnace_On.png",
               "Weight": 1
             }
           ],
@@ -120,7 +119,7 @@
           },
           "CustomModelTexture": [
             {
-              "Texture": "Blocks/Machines/Iron_Furnace.png",
+              "Texture": "Blocks/Machines/Iron_Furnace_On.png",
               "Weight": 1
             }
           ],

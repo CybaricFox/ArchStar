@@ -1,7 +1,7 @@
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
-!**/src/mainTest/**/build/
+!**/src/com.CybaricFox.ArchStar/**/build/
 !**/src/test/**/build/
 
 ### IntelliJ IDEA ###
@@ -13,7 +13,7 @@ build/
 *.iml
 *.ipr
 out/
-!**/src/mainTest/**/out/
+!**/src/com.CybaricFox.ArchStar/**/out/
 !**/src/test/**/out/
 
 ### Eclipse ###
@@ -25,7 +25,7 @@ out/
 .springBeans
 .sts4-cache
 bin/
-!**/src/mainTest/**/bin/
+!**/src/com.CybaricFox.ArchStar/**/bin/
 !**/src/test/**/bin/
 
 ### NetBeans ###

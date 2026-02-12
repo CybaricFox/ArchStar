@@ -8,7 +8,6 @@
     "ArchStar.Machines",
     "Furniture.Benches"
   ],
-  "Quality": "Common",
   "BlockType": {
     "CustomModel": "Blocks/Machines/Industrial_Grinder.blockymodel",
     "CustomModelTexture": [
@@ -32,34 +31,33 @@
     "BlockSoundSetId": "Metal",
     "ParticleColor": "#8f8f8f",
     "Interactions": {
-      "Use": "Open_Processing_Bench"
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "Open_Powered_Processor"
+          }
+        ]
+      }
     },
-    "Bench": {
-      "Type": "Processing",
-      "Id": "Grinder",
-      "AllowNoInputProcessing": true,
-      "Input": [
-        {
-          "FilterValidIngredients": true
+    "BlockEntity":{
+      "Components":{
+        "EnergyBlock": {
+          "MaxEnergy": 1600,
+          "InputRate": 44,
+          "ProductionRate": 4,
+          "Type": "CONSUMER"
         },
-        {
-          "FilterValidIngredients": true
+        "InputBlock": {
+          "MaxSize": 3,
+          "Size": 3,
+          "ID": "Grinder",
+          "ProgressMultiplier": 1.0
         },
-        {
-          "FilterValidIngredients": true
+        "OutputBlock": {
+          "MaxSize": 4,
+          "Size": 4
         }
-      ],
-      "LocalOpenSoundEventId": "SFX_Furnace_Bench_Open",
-      "LocalCloseSoundEventId": "SFX_Furnace_Bench_Close",
-      "CompletedSoundEventId": "SFX_Furnace_Bench_Processing_Complete",
-      "EndSoundEventId": "SFX_Furnace_Bench_Processing_End",
-      "FailedSoundEventId": "SFX_Furnace_Bench_Processing_Failed",
-      "OutputSlotsCount": 4,
-      "TierLevels": [
-        {
-          "CraftingTimeReductionModifier": 0.0
-        }
-      ]
+      }
     },
     "State": {
       "Id": "processingBench",
@@ -112,15 +110,11 @@
         "Quantity": 1
       },
       {
-        "ItemId": "Rubble_Volcanic",
-        "Quantity": 3
-      },
-      {
-        "ItemId": "Ingredient_Crystal_Green",
-        "Quantity": 2
-      },
-      {
         "ItemId": "Ingredient_Bar_Steel",
+        "Quantity": 10
+      },
+      {
+        "ItemId": "Ingredient_Bar_Copper",
         "Quantity": 10
       }
     ],

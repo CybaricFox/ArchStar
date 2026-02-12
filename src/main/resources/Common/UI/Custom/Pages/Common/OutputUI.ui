@@ -1,0 +1,20 @@
+@SlotSize = 80;
+@Padding = 5;
+
+Group #OutputPanel{
+    LayoutMode: MiddleCenter;
+    FlexWeight: 1.0;
+
+    ItemGrid #OutputItemGrid {
+        RenderItemQualityBackground: true;
+        AreItemsDraggable: true;
+        SlotsPerRow: 1;
+        InventorySectionId: 4;
+        Style: (
+            SlotSize: @SlotSize,
+            SlotIconSize: @SlotSize,
+            SlotSpacing: @Padding,
+            SlotBackground: "InputBox2x.png"
+        );
+    }
+}

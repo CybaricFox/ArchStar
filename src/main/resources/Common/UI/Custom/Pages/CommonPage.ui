@@ -1,0 +1,153 @@
+$C = "../Common.ui";
+
+@SlotsPerRow = 9;
+@InventoryWidth = 800;
+@SlotSize = 80;
+@Padding = 5;
+
+Group #PagePanel{
+    LayoutMode: Left;
+    Background: #000000(0.25);
+    Anchor: (Full: 1);
+
+     Group #Column1 {
+        LayoutMode: Top;
+        Background: #000000(0.0);
+        Anchor: (Full: 1);
+        FlexWeight: 0.5;
+
+        Group #PlayerPanel {
+          LayoutMode: Top;
+          Background: #1a1a2e(0.0);
+          Anchor: (Left: 100, Top: 100, Bottom: 100);
+          FlexWeight: 1.0;
+
+          $C.@DecoratedContainer #PlayerContainer {
+                  ScrollbarStyle: $C.@DefaultScrollbarStyle;
+                  LayoutMode: Top;
+                  Background: #1a1a2e;
+
+                  #Title {
+                    Group #TitleContainer3 {
+                      LayoutMode: Top;
+
+                      $C.@Title #TitleText3 {
+                        @Text = "PLAYER";
+                        Style: (TextColor: #ffffff);
+                      }
+                    }
+                  }
+          }
+        }
+     }
+
+    Group #Column2 {
+        LayoutMode: Top;
+        Background: #000000(0.0);
+        Anchor: (Full: 1, MinWidth: 1000);
+        FlexWeight: 1.0;
+
+        Group #ContentPanel {
+          LayoutMode: Top;
+          Background: #1a1a2e(0.0);
+          Anchor: (Top: 100, Bottom: 10, MaxWidth: @InventoryWidth);
+          FlexWeight: 1.0;
+
+          $C.@Container #ContentContainer {
+                  ScrollbarStyle: $C.@DefaultScrollbarStyle;
+                  LayoutMode: Full;
+                  Background: #1a1a2e;
+
+                  #Title {
+                    Group #TitleContainer2 {
+                      LayoutMode: Top;
+
+                      $C.@Title #TitleText2 {
+                        @Text = "My Content Title";
+                        Style: (TextColor: #ffffff);
+                      }
+                    }
+                  }
+
+                  #Content {
+                    Group #ContentContainerGroup {
+                        LayoutMode: Left;
+                    }
+                  }
+          }
+        }
+
+        Group #InventoryPanel {
+          LayoutMode: Top;
+          Background: #1a1a2e(0.0);
+          Anchor: (Bottom: 20, MaxWidth: @InventoryWidth);
+          FlexWeight: 1.0;
+
+          $C.@Container #InventoryContainer {
+                  ScrollbarStyle: $C.@DefaultScrollbarStyle;
+                  LayoutMode: Full;
+                  Background: #1a1a2e;
+
+                  #Title {
+                    Group #TitleContainer {
+                      LayoutMode: Top;
+
+                      $C.@Title #TitleText {
+                        @Text = "INVENTORY";
+                        Style: (TextColor: #ffffff);
+                      }
+                    }
+                  }
+
+                  #Content {
+                        Group #InventoryRow{
+                            ItemGrid #ItemGrid {
+                                FlexWeight: 1.0;
+                                RenderItemQualityBackground: true;
+                                AreItemsDraggable: true;
+                                SlotsPerRow: 9;
+                                InventorySectionId: 1;
+                                Style: (
+                                    SlotSize: @SlotSize,
+                                    SlotIconSize: @SlotSize,
+                                    SlotSpacing: @Padding,
+                                    SlotBackground: "Common/InputBox2x.png"
+                                );
+                            }
+                        }
+                  }
+          }
+        }
+    }
+
+    Group #Column3 {
+        LayoutMode: Top;
+        Background: #000000(0.0);
+        Anchor: (Full: 1);
+        FlexWeight: 0.5;
+
+        Group #TierPanel {
+          LayoutMode: Top;
+          Background: #1a1a2e(0.0);
+          Anchor: (Right: 100, Top: 100, Bottom: 100);
+          FlexWeight: 1.0;
+
+          $C.@DecoratedContainer #TierContainer {
+                  ScrollbarStyle: $C.@DefaultScrollbarStyle;
+                  LayoutMode: Top;
+                  Background: #333333;
+
+                  #Title {
+                    Group #TitleContainer4 {
+                      LayoutMode: Top;
+
+                      $C.@Title #TitleText4 {
+                        @Text = "UPGRADES";
+                        Style: (TextColor: #ffffff);
+                      }
+                    }
+                  }
+          }
+        }
+    }
+}

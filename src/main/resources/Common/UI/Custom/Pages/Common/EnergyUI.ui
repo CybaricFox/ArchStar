@@ -1,0 +1,14 @@
+Group #EnergyPanel{
+    LayoutMode: Middle;
+    FlexWeight: 1.0;
+
+    Label #EnergyAmount {
+        Style: (TextColor: #ffffff, HorizontalAlignment: Center);
+        Anchor: (Width: 192);
+        Text: "0 / 0";
+    }
+
+    AssetImage #EnergyImage {
+        Anchor: (Width: 192, Height: 256);
+    }
+}

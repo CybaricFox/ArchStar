@@ -1,0 +1,152 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Solid_Fuel_Generator.name",
+    "Description": "ArchStar.Solid_Fuel_Generator.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Iron_Furnace_Icon.png",
+  "Categories": [
+    "ArchStar.Machines",
+    "Furniture.Benches"
+  ],
+  "BlockType": {
+    "CustomModel": "Blocks/Machines/Iron_Furnace.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Machines/Iron_Furnace.png",
+        "Weight": 1
+      }
+    ],
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "Flags": {},
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "Group": "Machine",
+    "VariantRotation": "NESW",
+    "BlockParticleSetId": "Metal",
+    "BlockSoundSetId": "Metal",
+    "ParticleColor": "#8f8f8f",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "Open_Power_Generator"
+          }
+        ]
+      }
+    },
+    "BlockEntity":{
+      "Components":{
+        "EnergyBlock": {
+          "MaxEnergy": 8000,
+          "OutputRate": 16,
+          "ProductionRate": 16,
+          "Type": "PRODUCER"
+        },
+        "FuelBlock": {
+          "MaxSize": 1,
+          "Size": 1
+        }
+      }
+    },
+    "State": {
+      "Id": "processingBench",
+      "Definitions": {
+        "Processing": {
+          "Looping": true,
+          "Light": {
+            "Color": "#B72"
+          },
+          "CustomModelTexture": [
+            {
+              "Texture": "Blocks/Machines/Iron_Furnace_On.png",
+              "Weight": 1
+            }
+          ],
+          "Particles": [
+            {
+              "SystemId": "Fire_Furnace_On",
+              "TargetNodeName": "Fire",
+              "Scale": 0.7,
+              "PositionOffset": {
+                "X": 0.3,
+                "Y": 0.1,
+                "Z": 0.35
+              }
+            }
+          ],
+          "AmbientSoundEventId": "SFX_Furnace_Bench_Processing"
+        },
+        "ProcessCompleted": {
+          "Light": {
+            "Color": "#B72"
+          },
+          "CustomModelTexture": [
+            {
+              "Texture": "Blocks/Machines/Iron_Furnace_On.png",
+              "Weight": 1
+            }
+          ],
+          "AmbientSoundEventId": "SFX_Furnace_Bench_Processing",
+          "Looping": true
+        }
+      }
+    }
+  },
+  "IconProperties": {
+    "Scale": 0.55,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -13.5
+    ]
+  },
+  "PlayerAnimationsId": "Block",
+  "Scale": 1,
+  "DropOnDeath": false,
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Iron_Furnace"
+      },
+      {
+        "ItemId": "Ingredient_Bar_Steel",
+        "Quantity": 10
+      },
+      {
+        "ItemId": "Ingredient_Bar_Copper",
+        "Quantity": 10
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "Solid_Fuel_Generator"
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Industrial"
+        ],
+        "Id": "Invention"
+      }
+    ],
+    "TimeSeconds": 8.0
+  },
+  "Tags": {
+    "Type": [
+      "EnergyBlock"
+    ]
+  },
+  "MaxStack": 100
+}
