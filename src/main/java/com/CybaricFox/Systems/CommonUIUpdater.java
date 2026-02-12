@@ -12,7 +12,7 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
-import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
+import com.hypixel.hytale.component.system.tick.DelayedEntitySystem;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -23,9 +23,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /*
-    System for refreshing the Ui on player interaction
+    System for refreshing UI elements every second when needed.
  */
-public class CommonUIReader extends EntityTickingSystem<EntityStore> {
+public class CommonUIUpdater extends DelayedEntitySystem<EntityStore> {
+    public CommonUIUpdater(float intervalSec) {
+        super(intervalSec);
+    }
+
     @Override
     public void tick(float v, int i, @Nonnull ArchetypeChunk<EntityStore> archetypeChunk, @Nonnull Store<EntityStore> store, @Nonnull CommandBuffer<EntityStore> commandBuffer) {
         Ref<EntityStore> ref = archetypeChunk.getReferenceTo(i);
@@ -41,35 +45,21 @@ public class CommonUIReader extends EntityTickingSystem<EntityStore> {
             OutputComponent outputComponent = block.getStore().getComponent(block, ArchStar.get().getOutputComponentType());
 
             UICommandBuilder builder = new UICommandBuilder();
-            boolean sendUpdate = false;
 
             if(energyComponent != null) {
-
+                ((CommonPage) customPage).refreshEnergy(energyComponent, builder);
             }
             if(fuelComponent != null) {
-                if(!fuelComponent.isUIUpdated) {
-                    ((CommonPage) customPage).refreshFuelUI(fuelComponent, builder);
-                    fuelComponent.isUIUpdated = true;
-                    sendUpdate = true;
-                }
+
             }
             if(inputComponent != null) {
-                if(!inputComponent.isUIUpdated) {
-                    ((CommonPage) customPage).refreshInputUI(inputComponent, builder);
-                    ((CommonPage) customPage).refreshProgressBar(inputComponent, builder);
-                    inputComponent.isUIUpdated = true;
-                    sendUpdate = true;
-                }
+                ((CommonPage) customPage).refreshProgressBar(inputComponent, builder);
             }
             if(outputComponent != null) {
-                if(!outputComponent.isUIUpdated) {
-                    ((CommonPage) customPage).refreshOutputUI(outputComponent, builder);
-                    outputComponent.isUIUpdated = true;
-                    sendUpdate = true;
-                }
+
             }
 
-            if(sendUpdate) ((CommonPage) customPage).sendBuilder(builder);
+            ((CommonPage) customPage).sendBuilder(builder);
         }
     }
 

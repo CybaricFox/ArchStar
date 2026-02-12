@@ -10,6 +10,7 @@ import com.CybaricFox.Components.Blocks.OutputComponent;
 import com.CybaricFox.Interactions.OpenGeneratorInteraction;
 import com.CybaricFox.Interactions.OpenPoweredProcessorInteraction;
 import com.CybaricFox.Systems.CommonUIReader;
+import com.CybaricFox.Systems.CommonUIUpdater;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
@@ -54,6 +55,7 @@ public class ArchStar extends JavaPlugin {
         getChunkStoreRegistry().registerSystem(new CustomProcessingSystem());
 
         getEntityStoreRegistry().registerSystem(new CommonUIReader());
+        getEntityStoreRegistry().registerSystem(new CommonUIUpdater(1));
 
         /*
         PacketAdapters.registerInbound((PacketHandler handler, Packet packet) -> {

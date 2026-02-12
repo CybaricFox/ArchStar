@@ -83,6 +83,15 @@ public class InputComponent extends CommonContainerComponent {
         return process;
     }
 
+    public float getProgressAsPercentage() {
+        if(process == null) return 0;
+
+        int progress = process.progress;
+        int threshold = process.progressThreshold;
+
+        return (float) progress / threshold;
+    }
+
     //Returns the recipe id this machine uses
     public String getID() {return id;}
 

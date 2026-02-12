@@ -2,6 +2,7 @@ package com.CybaricFox.UI.Pages;
 
 import com.CybaricFox.API.FoxLibrary;
 import com.CybaricFox.ArchStar;
+import com.CybaricFox.Components.Blocks.EnergyComponent;
 import com.CybaricFox.Components.Blocks.FuelComponent;
 import com.CybaricFox.Components.Blocks.InputComponent;
 import com.CybaricFox.Components.Blocks.OutputComponent;
@@ -55,7 +56,6 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
     protected Vector3i pos = null;
 
     protected boolean isDismissed = false;
-    private boolean hasInitialUpdate = false;
 
     private final int inventoryID = 1;
     private final int fuelID = 2;
@@ -144,11 +144,12 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         }
         if(sourceID == fuelID) {
             FuelComponent fuel = block.getStore().getComponent(block, ArchStar.get().getFuelComponentType());
+            fuel.isUIUpdated = false;
             from = fuel.getContainer();
         }
         if(sourceID == inputID) {
             InputComponent input = block.getStore().getComponent(block, ArchStar.get().getInputComponentType());
-
+            input.isUIUpdated = false;
             //If we move an item out of input, check that the current recipe is not negated
             if(receiverID != inputID) {
                 checkForRecipeCancel(input, firstSlot, quantity);
@@ -158,6 +159,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         }
         if(sourceID == outputID) {
             OutputComponent output = block.getStore().getComponent(block, ArchStar.get().getOutputComponentType());
+            output.isUIUpdated = false;
             from = output.getContainer();
         }
 
@@ -171,10 +173,12 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         }
         if(receiverID == fuelID) {
             FuelComponent fuel = block.getStore().getComponent(block, ArchStar.get().getFuelComponentType());
+            fuel.isUIUpdated = false;
             to = fuel.getContainer();
         }
         if(receiverID == inputID) {
             InputComponent input = block.getStore().getComponent(block, ArchStar.get().getInputComponentType());
+            input.isUIUpdated = false;
             to = input.getContainer();
         }
         //OUTPUT CANNOT BE INSERTED INTO!!!
@@ -244,9 +248,6 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         UICommandBuilder builder = new UICommandBuilder();
 
         setSlots(ref, builder);
-        refreshFuelUI(ref, builder);
-        refreshInputUI(ref, builder);
-        refreshOutputUI(ref, builder);
 
         sendUpdate(builder, null, false);
     }
@@ -264,7 +265,12 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
     protected void addEnergyUI(Ref<EntityStore> ref, UICommandBuilder builder) {
         builder.append("#ContentContainerGroup", "Pages/Common/EnergyUI.ui");
 
-        setEnergyImage(builder, "UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Empty.png");
+        Player player = ref.getStore().getComponent(ref, Player.getComponentType());
+        Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
+
+        EnergyComponent energy = block.getStore().getComponent(block, ArchStar.get().getEnergyComponentType());
+
+        refreshEnergy(energy, builder);
     }
 
     protected void addFuelUI(Ref<EntityStore> ref, UICommandBuilder builder, UIEventBuilder event) {
@@ -276,35 +282,20 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
         FuelComponent fuel = block.getStore().getComponent(block, ArchStar.get().getFuelComponentType());
 
-        fuelSlots = new ItemGridSlot[fuel.getCapacity()];
-
-        for(short i = 0; i < fuel.getCapacity(); i++) {
-            fuelSlots[i] = new ItemGridSlot();
-            fuelSlots[i].setActivatable(true);
-            fuelSlots[i].setItemStack(fuel.getItemStack(i));
-        }
-
-        builder.set("#FuelItemGrid.Slots", fuelSlots);
+        refreshFuelUI(fuel, builder);
 
         if(fuel.getCapacity() > 1) {
             builder.set("#FuelItemGrid.SlotsPerRow", 2);
         }
     }
 
-    public void refreshFuelUI(Ref<EntityStore> ref, UICommandBuilder builder) {
-        Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
+    public void refreshFuelUI(FuelComponent fuelComponent, UICommandBuilder builder) {
+        fuelSlots = new ItemGridSlot[fuelComponent.getCapacity()];
 
-        FuelComponent fuel = block.getStore().getComponent(block, ArchStar.get().getFuelComponentType());
-
-        if(fuel == null) return;
-
-        fuelSlots = new ItemGridSlot[fuel.getCapacity()];
-
-        for(short i = 0; i < fuel.getCapacity(); i++) {
+        for(short i = 0; i < fuelComponent.getCapacity(); i++) {
             fuelSlots[i] = new ItemGridSlot();
             fuelSlots[i].setActivatable(true);
-            fuelSlots[i].setItemStack(fuel.getItemStack(i));
+            fuelSlots[i].setItemStack(fuelComponent.getItemStack(i));
         }
 
         if(builder != null) {
@@ -325,35 +316,21 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
         InputComponent input = block.getStore().getComponent(block, ArchStar.get().getInputComponentType());
 
-        inputSlots = new ItemGridSlot[input.getCapacity()];
-
-        for(short i = 0; i < input.getCapacity(); i++) {
-            inputSlots[i] = new ItemGridSlot();
-            inputSlots[i].setActivatable(true);
-            inputSlots[i].setItemStack(input.getItemStack(i));
-        }
-
-        builder.set("#InputItemGrid.Slots", inputSlots);
+        refreshInputUI(input, builder);
+        refreshProgressBar(input, builder);
 
         if(input.getCapacity() > 1) {
             builder.set("#InputItemGrid.SlotsPerRow", 2);
         }
     }
 
-    public void refreshInputUI(Ref<EntityStore> ref, UICommandBuilder builder) {
-        Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
+    public void refreshInputUI(InputComponent inputComponent, UICommandBuilder builder) {
+        inputSlots = new ItemGridSlot[inputComponent.getCapacity()];
 
-        InputComponent input = block.getStore().getComponent(block, ArchStar.get().getInputComponentType());
-
-        if(input == null) return;
-
-        inputSlots = new ItemGridSlot[input.getCapacity()];
-
-        for(short i = 0; i < input.getCapacity(); i++) {
+        for(short i = 0; i < inputComponent.getCapacity(); i++) {
             inputSlots[i] = new ItemGridSlot();
             inputSlots[i].setActivatable(true);
-            inputSlots[i].setItemStack(input.getItemStack(i));
+            inputSlots[i].setItemStack(inputComponent.getItemStack(i));
         }
 
         if(builder != null) {
@@ -365,6 +342,14 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         }
     }
 
+    public void refreshProgressBar(InputComponent inputComponent, UICommandBuilder builder) {
+        builder.set("#InputProgress.Value", inputComponent.getProgressAsPercentage());
+    }
+
+    public void sendBuilder(UICommandBuilder builder) {
+        sendUpdate(builder, null, false);
+    }
+
     protected void addOutputUI(Ref<EntityStore> ref, UICommandBuilder builder, UIEventBuilder event) {
         builder.append("#ContentContainerGroup", "Pages/Common/OutputUI.ui");
         event.addEventBinding(CustomUIEventBindingType.Dropped, "#OutputItemGrid", new EventData().append("Type", "Drop").append("Grid", "Output"));
@@ -374,35 +359,20 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
         OutputComponent output = block.getStore().getComponent(block, ArchStar.get().getOutputComponentType());
 
-        outputSlots = new ItemGridSlot[output.getCapacity()];
-
-        for(short i = 0; i < output.getCapacity(); i++) {
-            outputSlots[i] = new ItemGridSlot();
-            outputSlots[i].setActivatable(true);
-            outputSlots[i].setItemStack(output.getItemStack(i));
-        }
-
-        builder.set("#OutputItemGrid.Slots", outputSlots);
+        refreshOutputUI(output, builder);
 
         if(output.getCapacity() > 1) {
             builder.set("#OutputItemGrid.SlotsPerRow", 2);
         }
     }
 
-    public void refreshOutputUI(Ref<EntityStore> ref, UICommandBuilder builder) {
-        Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
+    public void refreshOutputUI(OutputComponent outputComponent, UICommandBuilder builder) {
+        outputSlots = new ItemGridSlot[outputComponent.getCapacity()];
 
-        OutputComponent output = block.getStore().getComponent(block, ArchStar.get().getOutputComponentType());
-
-        if(output == null) return;
-
-        outputSlots = new ItemGridSlot[output.getCapacity()];
-
-        for(short i = 0; i < output.getCapacity(); i++) {
+        for(short i = 0; i < outputComponent.getCapacity(); i++) {
             outputSlots[i] = new ItemGridSlot();
             outputSlots[i].setActivatable(true);
-            outputSlots[i].setItemStack(output.getItemStack(i));
+            outputSlots[i].setItemStack(outputComponent.getItemStack(i));
         }
 
         if(builder != null) {
@@ -423,18 +393,9 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         }
     }
 
-    private int energyTimer = 30; //So update every second
-    public void refreshEnergy(int current, int max) {
-        if(hasInitialUpdate) {
-            if(energyTimer != 0) {
-                energyTimer--;
-                return;
-            }
-        }
-
-        hasInitialUpdate = true;
-
-        UICommandBuilder builder = new UICommandBuilder();
+    public void refreshEnergy(EnergyComponent energyComponent, UICommandBuilder builder) {
+        int current = energyComponent.getCurrentEnergy();
+        int max = energyComponent.getMaxEnergy();
 
         builder.set("#EnergyAmount.Text", current + " / " + max);
 
@@ -455,9 +416,6 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         } else if (current == max) {
             setEnergyState(EnergyImageState.FULL, builder);
         }
-
-        energyTimer = 30;
-        sendUpdate(builder, null, false);
     }
 
     private void setEnergyState(EnergyImageState state, UICommandBuilder builder) {

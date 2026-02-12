@@ -5,6 +5,12 @@ Group #OutputPanel{
     LayoutMode: MiddleCenter;
     FlexWeight: 1.0;
 
+    Label {
+         Style: (TextColor: #ffffff, HorizontalAlignment: Center, RenderBold: true);
+         Anchor: (Width: 192);
+         Text: "Output";
+    }
+
     ItemGrid #OutputItemGrid {
         RenderItemQualityBackground: true;
         AreItemsDraggable: true;
@@ -14,7 +20,7 @@ Group #OutputPanel{
             SlotSize: @SlotSize,
             SlotIconSize: @SlotSize,
             SlotSpacing: @Padding,
-            SlotBackground: "InputBox2x.png"
+            SlotBackground: "SlotDefault2x.png"
         );
     }
 }

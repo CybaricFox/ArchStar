@@ -5,6 +5,12 @@ Group #InputPanel{
     LayoutMode: MiddleCenter;
     FlexWeight: 1.0;
 
+    Label {
+         Style: (TextColor: #ffffff, HorizontalAlignment: Center, RenderBold: true);
+         Anchor: (Width: 192);
+         Text: "Input";
+    }
+
     ItemGrid #InputItemGrid {
         RenderItemQualityBackground: true;
         AreItemsDraggable: true;
@@ -14,7 +20,21 @@ Group #InputPanel{
             SlotSize: @SlotSize,
             SlotIconSize: @SlotSize,
             SlotSpacing: @Padding,
-            SlotBackground: "InputBox2x.png"
+            SlotBackground: "SlotDefault2x.png"
+        );
+    }
+
+    ProgressBar #InputProgress {
+        Visible: true;
+        Anchor: (Width: 192, Height: 20, Top: 10);
+        EffectWidth: 192;
+        EffectHeight: 20;
+        Value: 0.0;
+        BarTexturePath: "ProgressBarFill2x.png";
+        EffectTexturePath: "ProgressBarEffect2x.png";
+        Background: (
+            TexturePath: "ProgressBar2x.png",
+            Border: 1
         );
     }
 }

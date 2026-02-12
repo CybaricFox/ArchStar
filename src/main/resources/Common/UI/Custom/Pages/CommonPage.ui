@@ -29,11 +29,11 @@ Group #PagePanel{
 
                   #Title {
                     Group #TitleContainer3 {
-                      LayoutMode: Top;
+                      LayoutMode: Middle;
 
                       $C.@Title #TitleText3 {
                         @Text = "PLAYER";
-                        Style: (TextColor: #ffffff);
+                        Style: (TextColor: #ffffff, RenderBold: true);
                       }
                     }
                   }
@@ -60,11 +60,11 @@ Group #PagePanel{
 
                   #Title {
                     Group #TitleContainer2 {
-                      LayoutMode: Top;
+                      LayoutMode: Middle;
 
                       $C.@Title #TitleText2 {
                         @Text = "My Content Title";
-                        Style: (TextColor: #ffffff);
+                        Style: (TextColor: #ffffff, RenderBold: true);
                       }
                     }
                   }
@@ -90,11 +90,11 @@ Group #PagePanel{
 
                   #Title {
                     Group #TitleContainer {
-                      LayoutMode: Top;
+                      LayoutMode: Middle;
 
                       $C.@Title #TitleText {
                         @Text = "INVENTORY";
-                        Style: (TextColor: #ffffff);
+                        Style: (TextColor: #ffffff, RenderBold: true);
                       }
                     }
                   }
@@ -111,7 +111,7 @@ Group #PagePanel{
                                     SlotSize: @SlotSize,
                                     SlotIconSize: @SlotSize,
                                     SlotSpacing: @Padding,
-                                    SlotBackground: "Common/InputBox2x.png"
+                                    SlotBackground: "Common/SlotDefault2x.png"
                                 );
                             }
                         }
@@ -139,11 +139,11 @@ Group #PagePanel{
 
                   #Title {
                     Group #TitleContainer4 {
-                      LayoutMode: Top;
+                      LayoutMode: Middle;
 
                       $C.@Title #TitleText4 {
                         @Text = "UPGRADES";
-                        Style: (TextColor: #ffffff);
+                        Style: (TextColor: #ffffff, RenderBold: true);
                       }
                     }
                   }

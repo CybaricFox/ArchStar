@@ -14,7 +14,7 @@ Group #FuelPanel{
             SlotSize: @SlotSize,
             SlotIconSize: @SlotSize,
             SlotSpacing: @Padding,
-            SlotBackground: "InputBox2x.png"
+            SlotBackground: "SlotDefault2x.png"
         );
     }
 }
