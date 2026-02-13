@@ -1,8 +1,6 @@
 package com.CybaricFox;
 
-import com.CybaricFox.ComponentSystems.CustomProcessingSystem;
-import com.CybaricFox.ComponentSystems.EnergyNetworkSystem;
-import com.CybaricFox.ComponentSystems.EnergySystem;
+import com.CybaricFox.ComponentSystems.*;
 import com.CybaricFox.Components.Blocks.EnergyComponent;
 import com.CybaricFox.Components.Blocks.FuelComponent;
 import com.CybaricFox.Components.Blocks.InputComponent;
@@ -44,7 +42,6 @@ public class ArchStar extends JavaPlugin {
 
     @Override
     protected void setup() {
-        //Components
         energyComponent = getChunkStoreRegistry().registerComponent(EnergyComponent.class, "EnergyBlock", EnergyComponent.CODEC);
         fuelComponent = getChunkStoreRegistry().registerComponent(FuelComponent.class, "FuelBlock", FuelComponent.CODEC);
         inputComponent = getChunkStoreRegistry().registerComponent(InputComponent.class, "InputBlock", InputComponent.CODEC);
@@ -53,6 +50,7 @@ public class ArchStar extends JavaPlugin {
         getChunkStoreRegistry().registerSystem(energyNetworkSystem);
         getChunkStoreRegistry().registerSystem(new EnergySystem());
         getChunkStoreRegistry().registerSystem(new CustomProcessingSystem());
+        getChunkStoreRegistry().registerSystem(new CustomProcessSystem());
 
         getEntityStoreRegistry().registerSystem(new CommonUIReader());
         getEntityStoreRegistry().registerSystem(new CommonUIUpdater(1));

@@ -115,12 +115,7 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
             return;
         }
 
-        //* 32 converts from local chunk coords to global coords
-        int x = ChunkUtil.xFromBlockInColumn(info.getIndex()) + (worldChunk.getX() * 32);
-        int y = ChunkUtil.yFromBlockInColumn(info.getIndex());
-        int z = ChunkUtil.zFromBlockInColumn(info.getIndex()) + (worldChunk.getZ() * 32);
-
-        Vector3i location = new Vector3i(x, y, z);
+        Vector3i location = FoxLibrary.getGlobalCoordsFromChunk(info, worldChunk);
 
         ArrayList<Vector3i> neighbors = getValidNeighbors(world, location, commandBuffer);
 
@@ -295,12 +290,7 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
             return;
         }
 
-        //* 32 converts from local chunk coords to global coords
-        int x = ChunkUtil.xFromBlockInColumn(info.getIndex()) + (worldChunk.getX() * 32);
-        int y = ChunkUtil.yFromBlockInColumn(info.getIndex());
-        int z = ChunkUtil.zFromBlockInColumn(info.getIndex()) + (worldChunk.getZ() * 32);
-
-        Vector3i location = new Vector3i(x, y, z);
+        Vector3i location = FoxLibrary.getGlobalCoordsFromChunk(info, worldChunk);
 
         //Check if neighbors are in the lookup table.
         ArrayList<Vector3i> neighbors = getValidNeighbors(world, location, commandBuffer);

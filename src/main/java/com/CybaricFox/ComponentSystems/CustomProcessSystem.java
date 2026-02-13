@@ -1,0 +1,93 @@
+package com.CybaricFox.ComponentSystems;
+
+import com.CybaricFox.API.FoxLibrary;
+import com.CybaricFox.ArchStar;
+import com.CybaricFox.Components.Blocks.FuelComponent;
+import com.CybaricFox.Components.Blocks.InputComponent;
+import com.CybaricFox.Components.Blocks.OutputComponent;
+import com.CybaricFox.Components.Helpers.CommonContainerComponent;
+import com.hypixel.hytale.component.*;
+import com.hypixel.hytale.component.query.Query;
+import com.hypixel.hytale.component.system.RefSystem;
+import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.modules.block.BlockModule;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.logging.Level;
+
+/*
+    This system handles powered processing blocks being destroyed.
+ */
+public class CustomProcessSystem extends RefSystem<ChunkStore> {
+    @Override
+    public void onEntityAdded(@Nonnull Ref<ChunkStore> ref, @Nonnull AddReason addReason, @Nonnull Store<ChunkStore> store, @Nonnull CommandBuffer<ChunkStore> commandBuffer) {
+
+    }
+
+    @Override
+    public void onEntityRemove(@Nonnull Ref<ChunkStore> ref, @Nonnull RemoveReason removeReason, @Nonnull Store<ChunkStore> store, @Nonnull CommandBuffer<ChunkStore> commandBuffer) {
+        //Only call when the block is destroyed, not unloaded
+        if(removeReason == RemoveReason.REMOVE) {
+            World world = commandBuffer.getExternalData().getWorld();
+
+            BlockModule.BlockStateInfo info = commandBuffer.getComponent(ref, BlockModule.BlockStateInfo.getComponentType());
+
+            if(info == null) {
+                ArchStar.LOGGER.at(Level.SEVERE).log("CustomProcessSystem: Failed to remove entity! BlockState was null!");
+                return;
+            }
+
+            WorldChunk worldChunk = commandBuffer.getComponent(info.getChunkRef(), WorldChunk.getComponentType());
+
+            if(worldChunk == null) {
+                ArchStar.LOGGER.at(Level.SEVERE).log("CustomProcessSystem: Failed to remove entity! World was null!");
+                return;
+            }
+
+            //Batch items so only one call to the world thread is needed
+            ArrayList<ItemStack> items = new ArrayList<>();
+            Vector3i pos = FoxLibrary.getGlobalCoordsFromChunk(info, worldChunk);
+
+            FuelComponent fuel = commandBuffer.getComponent(ref, ArchStar.get().getFuelComponentType());
+            InputComponent input = commandBuffer.getComponent(ref, ArchStar.get().getInputComponentType());
+            OutputComponent output = commandBuffer.getComponent(ref, ArchStar.get().getOutputComponentType());
+
+            items = dropItems(fuel, items);
+            items = dropItems(input, items);
+            items = dropItems(output, items);
+
+            FoxLibrary.spawnItems(world, pos, items);
+        }
+    }
+
+    //Adds the items from the components container to the array of items that will be dropped.
+    private ArrayList<ItemStack> dropItems(CommonContainerComponent component, ArrayList<ItemStack> items) {
+        if(component == null) return items;
+
+        for(short i = 0; i < component.getCapacity(); i++) {
+            ItemStack item = component.getItemStack(i);
+
+            if(item == null) continue;
+
+            items.add(item);
+        }
+
+        return items;
+    }
+
+    @Nullable
+    @Override
+    public Query<ChunkStore> getQuery() {
+        return Query.and(BlockModule.BlockStateInfo.getComponentType(),
+                Query.or(
+                        ArchStar.get().getInputComponentType(),
+                        ArchStar.get().getOutputComponentType(),
+                        ArchStar.get().getFuelComponentType()));
+    }
+}
