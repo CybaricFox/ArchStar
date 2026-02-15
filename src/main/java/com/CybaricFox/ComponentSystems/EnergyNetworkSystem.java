@@ -1,10 +1,10 @@
 package com.CybaricFox.ComponentSystems;
 
 import com.CybaricFox.API.FoxLibrary;
-import com.CybaricFox.ComponentSystems.HelperClasses.EnergyBlockContext;
-import com.CybaricFox.ComponentSystems.HelperClasses.EnergyNetwork;
+import com.CybaricFox.ComponentSystems.Helpers.EnergyBlockContext;
+import com.CybaricFox.ComponentSystems.Helpers.EnergyNetwork;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.Components.Blocks.EnergyBlockType;
+import com.CybaricFox.Components.Helpers.EnergyBlockType;
 import com.CybaricFox.Components.Blocks.EnergyComponent;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;

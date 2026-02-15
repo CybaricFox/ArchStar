@@ -1,8 +1,9 @@
 package com.CybaricFox.ComponentSystems;
 
+import com.CybaricFox.API.FoxLibrary;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.ComponentSystems.HelperClasses.EnergyNetwork;
-import com.CybaricFox.Components.Blocks.EnergyBlockType;
+import com.CybaricFox.ComponentSystems.Helpers.EnergyNetwork;
+import com.CybaricFox.Components.Helpers.EnergyBlockType;
 import com.CybaricFox.Components.Blocks.EnergyComponent;
 import com.CybaricFox.Components.Blocks.FuelComponent;
 import com.hypixel.hytale.component.ArchetypeChunk;
@@ -57,7 +58,11 @@ public class EnergySystem extends EntityTickingSystem<ChunkStore> {
                     if (energyBlock != null) {
                         //Run different functions depending on the type of energy block
                         if(energyBlock.getType() == EnergyBlockType.PRODUCER) {
-                            runProducer(energyBlock, fuelComponent);
+                            if(runProducer(energyBlock, fuelComponent)) {
+                                FoxLibrary.changeBlockState(blockRef, commandBuffer1, "Processing");
+                            } else {
+                                FoxLibrary.changeBlockState(blockRef, commandBuffer1, "default");
+                            }
                         } else if(energyBlock.getType() == EnergyBlockType.CONSUMER) {
                             runConsumer(energyBlock);
                         }
@@ -71,7 +76,7 @@ public class EnergySystem extends EntityTickingSystem<ChunkStore> {
         }
     }
 
-    private void runProducer(EnergyComponent energyComponent, FuelComponent fuelComponent) {
+    private boolean runProducer(EnergyComponent energyComponent, FuelComponent fuelComponent) {
         if(fuelComponent != null) {
             //Is the block maxed on energy?
             if(energyComponent.getCurrentEnergy() != energyComponent.getMaxEnergy()) {
@@ -79,13 +84,19 @@ public class EnergySystem extends EntityTickingSystem<ChunkStore> {
                 if(fuelComponent.isCooking) {
                     energyComponent.produceEnergy();
                     fuelComponent.decrementCookTime();
+                    return true;
                 } else { //Consume fuel to start cooking
-                    fuelComponent.consumeFuel();
+                    return  fuelComponent.consumeFuel();
                 }
+            } else {
+                fuelComponent.decrementCookTime();
             }
+
+            return fuelComponent.isCooking;
         } else {
             //If there is no fuel component, just generate energy.
             energyComponent.produceEnergy();
+            return true;
         }
     }
 

@@ -32,8 +32,8 @@ public class CommonUIReader extends EntityTickingSystem<EntityStore> {
         Player player = commandBuffer.getComponent(ref, Player.getComponentType());
         CustomUIPage customPage = player.getPageManager().getCustomPage();
 
-        if(customPage instanceof CommonPage) {
-            Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), ((CommonPage) customPage).getPos());
+        if(customPage instanceof CommonPage commonPage) {
+            Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), commonPage.getPos());
 
             EnergyComponent energyComponent = block.getStore().getComponent(block, ArchStar.get().getEnergyComponentType());
             FuelComponent fuelComponent = block.getStore().getComponent(block, ArchStar.get().getFuelComponentType());
@@ -48,28 +48,29 @@ public class CommonUIReader extends EntityTickingSystem<EntityStore> {
             }
             if(fuelComponent != null) {
                 if(!fuelComponent.isUIUpdated) {
-                    ((CommonPage) customPage).refreshFuelUI(fuelComponent, builder);
+                    commonPage.refreshFuelUI(fuelComponent, builder);
+                    commonPage.refreshProgressBar(fuelComponent, builder);
                     fuelComponent.isUIUpdated = true;
                     sendUpdate = true;
                 }
             }
             if(inputComponent != null) {
                 if(!inputComponent.isUIUpdated) {
-                    ((CommonPage) customPage).refreshInputUI(inputComponent, builder);
-                    ((CommonPage) customPage).refreshProgressBar(inputComponent, builder);
+                    commonPage.refreshInputUI(inputComponent, builder);
+                    commonPage.refreshProgressBar(inputComponent, builder);
                     inputComponent.isUIUpdated = true;
                     sendUpdate = true;
                 }
             }
             if(outputComponent != null) {
                 if(!outputComponent.isUIUpdated) {
-                    ((CommonPage) customPage).refreshOutputUI(outputComponent, builder);
+                    commonPage.refreshOutputUI(outputComponent, builder);
                     outputComponent.isUIUpdated = true;
                     sendUpdate = true;
                 }
             }
 
-            if(sendUpdate) ((CommonPage) customPage).sendBuilder(builder);
+            if(sendUpdate) commonPage.sendBuilder(builder);
         }
     }
 

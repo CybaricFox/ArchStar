@@ -63,30 +63,24 @@
       "Id": "processingBench",
       "Definitions": {
         "Processing": {
-          "Light": {
-            "Color": "#B72"
-          },
           "CustomModelTexture": [
             {
               "Texture": "Blocks/Machines/Industrial_Furnace.png",
               "Weight": 1
             }
           ],
-          "AmbientSoundEventId": "SFX_Furnace_Bench_Processing",
+          "AmbientSoundEventId": "SFX_Industrial_Furnace_Processing",
           "CustomModelAnimation": "Blocks/Machines/Industrial_Furnace_On.blockyanim",
           "Looping": true
         },
         "ProcessCompleted": {
-          "Light": {
-            "Color": "#B72"
-          },
           "CustomModelTexture": [
             {
               "Texture": "Blocks/Machines/Industrial_Furnace.png",
               "Weight": 1
             }
           ],
-          "AmbientSoundEventId": "SFX_Furnace_Bench_Processing",
+          "AmbientSoundEventId": "SFX_Industrial_Furnace_Processing",
           "CustomModelAnimation": "Blocks/Machines/Industrial_Furnace_On.blockyanim",
           "Looping": true
         }

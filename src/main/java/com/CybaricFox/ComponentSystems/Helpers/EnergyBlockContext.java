@@ -1,4 +1,4 @@
-package com.CybaricFox.ComponentSystems.HelperClasses;
+package com.CybaricFox.ComponentSystems.Helpers;
 
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;

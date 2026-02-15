@@ -5,6 +5,11 @@ Group #FuelPanel{
     LayoutMode: MiddleCenter;
     FlexWeight: 1.0;
 
+    AssetImage {
+        Anchor: (Width: 64, Height: 64);
+        AssetPath: "UI/Custom/Pages/Common/Fuel.png";
+    }
+
     ItemGrid #FuelItemGrid {
         RenderItemQualityBackground: true;
         AreItemsDraggable: true;
@@ -17,4 +22,18 @@ Group #FuelPanel{
             SlotBackground: "SlotDefault2x.png"
         );
     }
+
+    ProgressBar #FuelProgress {
+            Visible: true;
+            Anchor: (Width: 192, Height: 20, Top: 10);
+            EffectWidth: 192;
+            EffectHeight: 20;
+            Value: 0.0;
+            BarTexturePath: "ProgressBarFill2x.png";
+            EffectTexturePath: "ProgressBarEffect2x.png";
+            Background: (
+                TexturePath: "ProgressBar2x.png",
+                Border: 1
+            );
+        }
 }

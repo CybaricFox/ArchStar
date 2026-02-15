@@ -1,4 +1,4 @@
-package com.CybaricFox.Components.Blocks;
+package com.CybaricFox.Components.Helpers;
 
 //What type of energy block is this?
 public enum EnergyBlockType {

@@ -15,10 +15,14 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
+import com.hypixel.hytale.server.core.asset.type.itemsound.config.ItemSoundSet;
+import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
@@ -28,6 +32,7 @@ import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
@@ -85,10 +90,13 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
         BlockType type = chunk.getBlockType(localCoords);
 
+        uiCommandBuilder.append("#InventoryRow", "Pages/Common/InventoryUI.ui");
+
         setSlots(ref, uiCommandBuilder);
         translateBlockName(type, uiCommandBuilder);
 
-        uiEventBuilder.addEventBinding(CustomUIEventBindingType.Dropped, "#ItemGrid", new EventData().append("Type", "Drop").append("Grid", "Inventory"), true);
+        uiEventBuilder.addEventBinding(CustomUIEventBindingType.Dropped, "#ItemGrid", new EventData().append("Type", "Drop").append("Grid", "Inventory"), false);
+        uiEventBuilder.addEventBinding(CustomUIEventBindingType.SlotClickReleaseWhileDragging, "#ItemGrid", new EventData().append("Type", "Release").append("Grid", "Inventory"), false);
     }
 
     public Vector3i getPos() {
@@ -117,6 +125,18 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         }
 
         builder.set("#ItemGrid.Slots", slots);
+    }
+
+    private int getInventoryID(String name) {
+        if(name.equals("Inventory")) {
+            return inventoryID;
+        } else if(name.equals("Fuel")) {
+            return fuelID;
+        } else if(name.equals("Input")) {
+            return inputID;
+        }
+
+        return -1;
     }
 
     private void onDrop(Ref<EntityStore> ref, int firstSlot, int secondSlot, int quantity, int sourceID, int receiverID) {
@@ -185,11 +205,18 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
         if(from == null || to == null) return;
 
+        if(from.getItemStack(realFromIndex) != null) {
+            playSlotClick(ref, from, realFromIndex);
+        }
+
         from.moveItemStackFromSlotToSlot(realFromIndex, quantity, to, realToIndex);
     }
 
     private void checkForRecipeCancel(InputComponent input, int slot, int quantity) {
         ProcessContext context = input.getProcess();
+
+        if(context == null) return;
+
         ItemStack item = input.getItemStack((short) slot);
 
         //Check every input in the recipe to see if the item moving out is part of the recipe
@@ -230,26 +257,23 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
     @Override
     public void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store, CommonData data) {
-        if(data.type.equals("Drop")) {
-            int id = 0;
-            if(data.grid.equals("Inventory")) {
-                id = inventoryID;
-            } else if(data.grid.equals("Fuel")) {
-                id = fuelID;
-            } else if(data.grid.equals("Input")) {
-                id = inputID;
-            }
-
-            if(id != 0) {
-                onDrop(ref, data.fromSlot, data.toSlot, data.quantity, data.fromSection, id);
-            }
-        }
+        super.handleDataEvent(ref, store, data);
 
         UICommandBuilder builder = new UICommandBuilder();
 
-        setSlots(ref, builder);
+        if(data.type.equals("Release")) {
+            onDrop(ref, data.dragFromSlot, data.toSlot, data.dragQuantity, data.dragFromSection, getInventoryID(data.grid));
 
-        sendUpdate(builder, null, false);
+            rebuild();
+            return;
+        }
+        if(data.type.equals("Drop")) {
+            onDrop(ref, data.fromSlot, data.toSlot, data.quantity, data.fromSection, getInventoryID(data.grid));
+
+            setSlots(ref, builder);
+            sendBuilder(builder);
+            return;
+        }
     }
 
     protected void translateBlockName(BlockType type, UICommandBuilder builder) {
@@ -270,12 +294,12 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
         EnergyComponent energy = block.getStore().getComponent(block, ArchStar.get().getEnergyComponentType());
 
-        refreshEnergy(energy, builder);
+        refreshEnergy(energy, builder, true);
     }
 
     protected void addFuelUI(Ref<EntityStore> ref, UICommandBuilder builder, UIEventBuilder event) {
         builder.append("#ContentContainerGroup", "Pages/Common/FuelUI.ui");
-        event.addEventBinding(CustomUIEventBindingType.Dropped, "#FuelItemGrid", new EventData().append("Type", "Drop").append("Grid", "Fuel"));
+        event.addEventBinding(CustomUIEventBindingType.Dropped, "#FuelItemGrid", new EventData().append("Type", "Drop").append("Grid", "Fuel"), true);
 
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
         Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
@@ -309,7 +333,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
     protected void addInputUI(Ref<EntityStore> ref, UICommandBuilder builder, UIEventBuilder event) {
         builder.append("#ContentContainerGroup", "Pages/Common/InputUI.ui");
-        event.addEventBinding(CustomUIEventBindingType.Dropped, "#InputItemGrid", new EventData().append("Type", "Drop").append("Grid", "Input"));
+        event.addEventBinding(CustomUIEventBindingType.Dropped, "#InputItemGrid", new EventData().append("Type", "Drop").append("Grid", "Input"), true);
 
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
         Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
@@ -345,6 +369,9 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
     public void refreshProgressBar(InputComponent inputComponent, UICommandBuilder builder) {
         builder.set("#InputProgress.Value", inputComponent.getProgressAsPercentage());
     }
+    public void refreshProgressBar(FuelComponent fuelComponent, UICommandBuilder builder) {
+        builder.set("#FuelProgress.Value", fuelComponent.getProgressAsPercentage());
+    }
 
     public void sendBuilder(UICommandBuilder builder) {
         sendUpdate(builder, null, false);
@@ -352,7 +379,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
     protected void addOutputUI(Ref<EntityStore> ref, UICommandBuilder builder, UIEventBuilder event) {
         builder.append("#ContentContainerGroup", "Pages/Common/OutputUI.ui");
-        event.addEventBinding(CustomUIEventBindingType.Dropped, "#OutputItemGrid", new EventData().append("Type", "Drop").append("Grid", "Output"));
+        event.addEventBinding(CustomUIEventBindingType.Dropped, "#OutputItemGrid", new EventData().append("Type", "Drop").append("Grid", "Output"), true);
 
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
         Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
@@ -393,7 +420,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         }
     }
 
-    public void refreshEnergy(EnergyComponent energyComponent, UICommandBuilder builder) {
+    public void refreshEnergy(EnergyComponent energyComponent, UICommandBuilder builder, boolean override) {
         int current = energyComponent.getCurrentEnergy();
         int max = energyComponent.getMaxEnergy();
 
@@ -402,24 +429,24 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         int threshold = Math.ceilDiv(max, 5);
 
         if(current == 0) {
-            setEnergyState(EnergyImageState.EMPTY, builder);
+            setEnergyState(EnergyImageState.EMPTY, builder, override);
         } else if(current < threshold) {
-            setEnergyState(EnergyImageState.DEPLETED, builder);
+            setEnergyState(EnergyImageState.DEPLETED, builder, override);
         } else if (current < threshold * 2) {
-            setEnergyState(EnergyImageState.LOW, builder);
+            setEnergyState(EnergyImageState.LOW, builder, override);
         } else if (current < threshold * 3) {
-            setEnergyState(EnergyImageState.UNDER_HALF, builder);
+            setEnergyState(EnergyImageState.UNDER_HALF, builder, override);
         } else if (current < threshold * 4) {
-            setEnergyState(EnergyImageState.ABOVE_HALF, builder);
+            setEnergyState(EnergyImageState.ABOVE_HALF, builder, override);
         } else if (current < max) {
-            setEnergyState(EnergyImageState.HIGH, builder);
+            setEnergyState(EnergyImageState.HIGH, builder, override);
         } else if (current == max) {
-            setEnergyState(EnergyImageState.FULL, builder);
+            setEnergyState(EnergyImageState.FULL, builder, override);
         }
     }
 
-    private void setEnergyState(EnergyImageState state, UICommandBuilder builder) {
-        if(energyState == state) {
+    private void setEnergyState(EnergyImageState state, UICommandBuilder builder, boolean override) {
+        if(!override && energyState == state) {
             return;
         }
 
@@ -443,13 +470,54 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         isDismissed = true;
     }
 
+    private void playSlotClick(Ref<EntityStore> ref, ItemContainer container, short slot) {
+        World world = ref.getStore().getExternalData().getWorld();
+
+        ItemStack stack = container.getItemStack(slot);
+        if(stack == null) return;
+        Item item = stack.getItem();
+
+        int setIndex = item.getItemSoundSetIndex();
+        ItemSoundSet iss = ItemSoundSet.getAssetMap().getAsset(setIndex);
+
+        world.execute(() -> {
+            String dropSound = "NULL";
+
+            if(iss == null) {
+                return;
+            } else {
+                boolean hasSound = false;
+                for(String value : iss.getSoundEventIds().values()) {
+                    if(value.contains("Drop")) {
+                        dropSound = value;
+                        hasSound = true;
+                        break;
+                    }
+                }
+
+                if(!hasSound || dropSound.equals("NULL")) {
+                    return;
+                }
+            }
+
+            SoundUtil.playSoundEvent3dToPlayer(ref, SoundEvent.getAssetMap().getIndex(dropSound), SoundCategory.UI, pos.toVector3d(), ref.getStore());
+        });
+    }
+
     public static class CommonData {
         private int toSlot;
-        private int fromSlot;
-        private int quantity;
+
+        //Custom
         private String type;
         private String grid;
+
+        private int fromSlot;
+        private int quantity;
         private int fromSection;
+
+        private int dragFromSlot;
+        private int dragQuantity;
+        private int dragFromSection;
 
         public static final BuilderCodec<CommonData> CODEC =
                 BuilderCodec.builder(CommonData.class, CommonData::new)
@@ -459,6 +527,9 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
                         .append(new KeyedCodec<Integer>("SourceItemGridIndex", Codec.INTEGER), (entry, s) -> entry.fromSlot = s, (entry) -> entry.fromSlot).add()
                         .append(new KeyedCodec<Integer>("ItemStackQuantity", Codec.INTEGER), (entry, s) -> entry.quantity = s, (entry) -> entry.quantity).add()
                         .append(new KeyedCodec<Integer>("SourceInventorySectionId", Codec.INTEGER), (entry, s) -> entry.fromSection = s, (entry) -> entry.fromSection).add()
+                        .append(new KeyedCodec<Integer>("DragSourceItemGridIndex", Codec.INTEGER), (entry, s) -> entry.dragFromSlot = s, (entry) -> entry.dragFromSlot).add()
+                        .append(new KeyedCodec<Integer>("DragItemStackQuantity", Codec.INTEGER), (entry, s) -> entry.dragQuantity = s, (entry) -> entry.dragQuantity).add()
+                        .append(new KeyedCodec<Integer>("DragSourceInventorySectionId", Codec.INTEGER), (entry, s) -> entry.dragFromSection = s, (entry) -> entry.dragFromSection).add()
                         .build();
     }
 }

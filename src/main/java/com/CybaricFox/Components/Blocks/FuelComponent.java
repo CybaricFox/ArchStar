@@ -21,6 +21,8 @@ public class FuelComponent extends CommonContainerComponent {
     public boolean isActive = true;
     //The time left in ticks before another fuel is consumed.
     private int cookTimeLeft = 0;
+    //The total cook time of the current fuel. Used to calculate the progress bar.
+    private int itemCookTime = 0;
 
     public FuelComponent() {
 
@@ -37,7 +39,7 @@ public class FuelComponent extends CommonContainerComponent {
         return new FuelComponent(actualSize, maxSize, container, cookTimeLeft);
     }
 
-    public void consumeFuel() {
+    public boolean consumeFuel() {
         short targetSlot = -1;
 
         //Get the first container that contains an item
@@ -49,22 +51,26 @@ public class FuelComponent extends CommonContainerComponent {
         }
 
         //no fuel in machine. Do not process.
-        if(targetSlot == -1) return;
+        if(targetSlot == -1) return false;
 
         ItemStack item = container.getItemStack(targetSlot);
 
         //Check if the item is a type of fuel
-        if(item.getItem().getResourceTypes() == null) return;
+        if(item.getItem().getResourceTypes() == null) return false;
         for(ItemResourceType type : item.getItem().getResourceTypes()) {
             if(type.id.equals("Fuel")) {
                 double quality = item.getItem().getFuelQuality();
-                cookTimeLeft = (int) quality * 66;
+                itemCookTime = (int) quality * 66;
+                cookTimeLeft = itemCookTime;
                 isCooking = true;
 
                 container.removeItemStackFromSlot(targetSlot, 1);
                 isUIUpdated = false;
+                return true;
             }
         }
+
+        return false;
     }
 
     public void decrementCookTime() {
@@ -75,6 +81,19 @@ public class FuelComponent extends CommonContainerComponent {
         }
     }
 
+    private void loadCookTime(int time) {
+        cookTimeLeft = time;
+        if(time != 0) {
+            isCooking = true;
+        }
+    }
+
+    public float getProgressAsPercentage() {
+        if(!isCooking || cookTimeLeft == 0) return 0;
+
+        return 1 / ((float) itemCookTime / cookTimeLeft);
+    }
+
     static {
         CODEC = (BuilderCodec.builder(FuelComponent.class, FuelComponent::new))
                 //Common fields
@@ -83,7 +102,7 @@ public class FuelComponent extends CommonContainerComponent {
                 .append(new KeyedCodec<SimpleItemContainer>("Container", SimpleItemContainer.CODEC), (component, s) -> component.container = s, (component) -> component.container).add()
 
                 //Save fields
-                .append(new KeyedCodec<Integer>("CookTimeLeft", Codec.INTEGER), (component, s) -> component.cookTimeLeft = s, (component) -> component.cookTimeLeft).add()
+                .append(new KeyedCodec<Integer>("CookTimeLeft", Codec.INTEGER), FuelComponent::loadCookTime, (component) -> component.cookTimeLeft).add()
 
                 .build();
     }

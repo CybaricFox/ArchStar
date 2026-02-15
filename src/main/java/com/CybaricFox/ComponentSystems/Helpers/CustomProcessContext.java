@@ -1,4 +1,4 @@
-package com.CybaricFox.ComponentSystems.HelperClasses;
+package com.CybaricFox.ComponentSystems.Helpers;
 
 import java.util.ArrayList;
 

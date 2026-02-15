@@ -1,8 +1,8 @@
-package com.CybaricFox.ComponentSystems.HelperClasses;
+package com.CybaricFox.ComponentSystems.Helpers;
 
 import com.CybaricFox.API.FoxLibrary;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.Components.Blocks.EnergyBlockType;
+import com.CybaricFox.Components.Helpers.EnergyBlockType;
 import com.CybaricFox.Components.Blocks.EnergyComponent;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;

@@ -1,5 +1,6 @@
 package com.CybaricFox;
 
+import com.CybaricFox.API.FoxLibrary;
 import com.CybaricFox.ComponentSystems.*;
 import com.CybaricFox.Components.Blocks.EnergyComponent;
 import com.CybaricFox.Components.Blocks.FuelComponent;
@@ -55,12 +56,8 @@ public class ArchStar extends JavaPlugin {
         getEntityStoreRegistry().registerSystem(new CommonUIReader());
         getEntityStoreRegistry().registerSystem(new CommonUIUpdater(1));
 
-        /*
-        PacketAdapters.registerInbound((PacketHandler handler, Packet packet) -> {
-            if(packet instanceof CustomPageEvent) {
-                LOGGER.at(Level.INFO).log("Packet Received: " + ((CustomPageEvent) packet).data);
-            }
-        }); */
+        //Debug helper
+        //FoxLibrary.registerCustomPagePackets(LOGGER);
 
         //Commands
 

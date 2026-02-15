@@ -36,30 +36,30 @@ public class CommonUIUpdater extends DelayedEntitySystem<EntityStore> {
         Player player = commandBuffer.getComponent(ref, Player.getComponentType());
         CustomUIPage customPage = player.getPageManager().getCustomPage();
 
-        if(customPage instanceof CommonPage) {
-            Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), ((CommonPage) customPage).getPos());
+        if(customPage instanceof CommonPage commonPage) {
+            UICommandBuilder builder = new UICommandBuilder();
+
+            Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), commonPage.getPos());
 
             EnergyComponent energyComponent = block.getStore().getComponent(block, ArchStar.get().getEnergyComponentType());
             FuelComponent fuelComponent = block.getStore().getComponent(block, ArchStar.get().getFuelComponentType());
             InputComponent inputComponent = block.getStore().getComponent(block, ArchStar.get().getInputComponentType());
             OutputComponent outputComponent = block.getStore().getComponent(block, ArchStar.get().getOutputComponentType());
 
-            UICommandBuilder builder = new UICommandBuilder();
-
             if(energyComponent != null) {
-                ((CommonPage) customPage).refreshEnergy(energyComponent, builder);
+                commonPage.refreshEnergy(energyComponent, builder, false);
             }
             if(fuelComponent != null) {
-
+                commonPage.refreshProgressBar(fuelComponent, builder);
             }
             if(inputComponent != null) {
-                ((CommonPage) customPage).refreshProgressBar(inputComponent, builder);
+                commonPage.refreshProgressBar(inputComponent, builder);
             }
             if(outputComponent != null) {
 
             }
 
-            ((CommonPage) customPage).sendBuilder(builder);
+            commonPage.sendBuilder(builder);
         }
     }
 

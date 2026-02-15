@@ -8,12 +8,15 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.InteractionType;
+import com.hypixel.hytale.protocol.SoundCategory;
+import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.client.SimpleBlockInteraction;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
@@ -35,6 +38,8 @@ public class OpenPoweredProcessorInteraction extends SimpleBlockInteraction {
         Player playerComponent = commandBuffer.getComponent(ref, Player.getComponentType());
 
         if (playerComponent != null) {
+            int soundIndex = SoundEvent.getAssetMap().getIndex("SFX_Furnace_Bench_Open");
+            SoundUtil.playSoundEvent3dToPlayer(ref, soundIndex, SoundCategory.UI, pos.toVector3d(), store);
             playerComponent.getPageManager().openCustomPage(ref, store, new PoweredProcessingPage(commandBuffer.getComponent(ref, PlayerRef.getComponentType()), CommonPage.CommonData.CODEC, pos));
         }
     }

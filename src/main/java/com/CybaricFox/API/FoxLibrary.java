@@ -1,14 +1,17 @@
 package com.CybaricFox.API;
 
-import com.hypixel.hytale.component.AddReason;
-import com.hypixel.hytale.component.Holder;
-import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.component.*;
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.protocol.Packet;
+import com.hypixel.hytale.protocol.packets.interface_.CustomPageEvent;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.io.PacketHandler;
+import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
 import com.hypixel.hytale.server.core.modules.block.BlockModule;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -19,6 +22,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
 
 //General Library class for common functions
 public class FoxLibrary {
@@ -78,7 +82,39 @@ public class FoxLibrary {
         });
     }
 
+    public static void changeBlockState(Ref<ChunkStore> ref, CommandBuffer<ChunkStore> buffer, String stateName) {
+        //Get the global position
+        BlockModule.BlockStateInfo info = buffer.getComponent(ref, BlockModule.BlockStateInfo.getComponentType());
+        if(info == null) {
+            return;
+        }
+        WorldChunk chunk = buffer.getComponent(info.getChunkRef(), WorldChunk.getComponentType());
+        if(chunk == null) {
+            return;
+        }
+
+        Vector3i pos = FoxLibrary.getGlobalCoordsFromChunk(info, chunk);
+
+        //Get the block state
+        World world = buffer.getExternalData().getWorld();
+        BlockType type = world.getBlockType(pos);
+
+        world.setBlockInteractionState(pos, type, stateName);
+    }
+
+    public static void registerCustomPagePackets(HytaleLogger LOGGER) {
+        PacketAdapters.registerInbound((PacketHandler handler, Packet packet) -> {
+            if(packet instanceof CustomPageEvent) {
+                if(((CustomPageEvent) packet).data != null) {
+                    LOGGER.at(Level.INFO).log("Packet Received: " + ((CustomPageEvent) packet).data);
+                }
+            }
+        });
+    }
+
     private static float getItemDropVelocity(int modifier) {
+        if(modifier == 1) return 0;
+
         int bound = modifier - 1;
 
         return rng.nextFloat(-bound, bound);

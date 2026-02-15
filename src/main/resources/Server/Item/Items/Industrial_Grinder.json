@@ -69,7 +69,7 @@
               "Weight": 1
             }
           ],
-          "AmbientSoundEventId": "SFX_Furnace_Bench_Processing",
+          "AmbientSoundEventId": "SFX_Industrial_Grinder_Processing",
           "CustomModelAnimation": "Blocks/Machines/Industrial_Grinder_On.blockyanim",
           "Looping": true
         },
@@ -80,7 +80,7 @@
               "Weight": 1
             }
           ],
-          "AmbientSoundEventId": "SFX_Furnace_Bench_Processing",
+          "AmbientSoundEventId": "SFX_Industrial_Grinder_Processing",
           "CustomModelAnimation": "Blocks/Machines/Industrial_Grinder_On.blockyanim",
           "Looping": true
         }

@@ -101,19 +101,7 @@ Group #PagePanel{
 
                   #Content {
                         Group #InventoryRow{
-                            ItemGrid #ItemGrid {
-                                FlexWeight: 1.0;
-                                RenderItemQualityBackground: true;
-                                AreItemsDraggable: true;
-                                SlotsPerRow: 9;
-                                InventorySectionId: 1;
-                                Style: (
-                                    SlotSize: @SlotSize,
-                                    SlotIconSize: @SlotSize,
-                                    SlotSpacing: @Padding,
-                                    SlotBackground: "Common/SlotDefault2x.png"
-                                );
-                            }
+
                         }
                   }
           }
