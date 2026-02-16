@@ -300,6 +300,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
     protected void addFuelUI(Ref<EntityStore> ref, UICommandBuilder builder, UIEventBuilder event) {
         builder.append("#ContentContainerGroup", "Pages/Common/FuelUI.ui");
         event.addEventBinding(CustomUIEventBindingType.Dropped, "#FuelItemGrid", new EventData().append("Type", "Drop").append("Grid", "Fuel"), true);
+        event.addEventBinding(CustomUIEventBindingType.SlotClickReleaseWhileDragging, "#FuelItemGrid", new EventData().append("Type", "Release").append("Grid", "Fuel"), false);
 
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
         Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
@@ -307,6 +308,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         FuelComponent fuel = block.getStore().getComponent(block, ArchStar.get().getFuelComponentType());
 
         refreshFuelUI(fuel, builder);
+        refreshProgressBar(fuel, builder);
 
         if(fuel.getCapacity() > 1) {
             builder.set("#FuelItemGrid.SlotsPerRow", 2);
@@ -334,6 +336,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
     protected void addInputUI(Ref<EntityStore> ref, UICommandBuilder builder, UIEventBuilder event) {
         builder.append("#ContentContainerGroup", "Pages/Common/InputUI.ui");
         event.addEventBinding(CustomUIEventBindingType.Dropped, "#InputItemGrid", new EventData().append("Type", "Drop").append("Grid", "Input"), true);
+        event.addEventBinding(CustomUIEventBindingType.SlotClickReleaseWhileDragging, "#InputItemGrid", new EventData().append("Type", "Release").append("Grid", "Input"), false);
 
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
         Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
@@ -380,6 +383,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
     protected void addOutputUI(Ref<EntityStore> ref, UICommandBuilder builder, UIEventBuilder event) {
         builder.append("#ContentContainerGroup", "Pages/Common/OutputUI.ui");
         event.addEventBinding(CustomUIEventBindingType.Dropped, "#OutputItemGrid", new EventData().append("Type", "Drop").append("Grid", "Output"), true);
+        event.addEventBinding(CustomUIEventBindingType.SlotClickReleaseWhileDragging, "#OutputItemGrid", new EventData().append("Type", "Release").append("Grid", "Output"), false);
 
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
         Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);

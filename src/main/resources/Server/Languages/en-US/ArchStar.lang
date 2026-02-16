@@ -1,16 +1,24 @@
+Inventors_Bench.name = Inventor's Bench
+Inventors_Bench.description = An inventor's dream come true! The bench for technology and automation in ArchStar!
+Industrial_Icon.name = Industrial Age
+
 Iron_Furnace.name = Iron Furnace
 Iron_Furnace.description = A more compact, automation compatible furnace. Smelts 12.5% faster than a normal furnace. Produces charcoal more often.
 Industrial_Furnace.name = Industrial Furnace
 Industrial_Furnace.description = A furnace that smelts items with electricity. Smelts 12.5% faster than a normal furnace. Consumes 4v/t.
-Inventors_Bench.name = Inventor's Bench
-Inventors_Bench.description = An inventor's dream come true! The bench for technology and automation in ArchStar!
-Industrial_Icon.name = Industrial Age
 Industrial_Grinder.name = Industrial Grinder
 Industrial_Grinder.description = A grinder that slowly grinds ores into powder at a 1->2 ratio. Consumes 4v/t.
+Solid_Fuel_Generator.name = Solid Fuel Generator
+Solid_Fuel_Generator.description = Burn fuel to generate 16v/t.
+
+Copper_Cable.name = Copper Cable
+Copper_Cable.description = Transfers 172v/t
+
 Steel_Bar.name = Steel Bar
 Steel_Bar.description = Smelt iron bars to obtain.
 Industrial_Frame.name = Industrial Frame
 Industrial_Frame.description = A core component of most machines of the industrial age.
+
 Adamantite_Powder.name = Adamantite Powder
 Cobalt_Powder.name = Cobalt Powder
 Copper_Powder.name = Copper Powder
@@ -20,5 +28,3 @@ Mythril_Powder.name = Mithril Powder
 Onyx_Powder.name = Onyxium Powder
 Silver_Powder.name = Silver Powder
 Thorium_Powder.name = Thorium Powder
-Solid_Fuel_Generator.name = Solid Fuel Generator
-Solid_Fuel_Generator.description = Burn fuel to generate 16v/t.

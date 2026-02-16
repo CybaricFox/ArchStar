@@ -10,6 +10,7 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,6 +36,10 @@ public class EnergyNetwork {
 
     public int getID() {
         return id;
+    }
+
+    public int getSize() {
+        return entities.size();
     }
 
     //Add an energy block to the map

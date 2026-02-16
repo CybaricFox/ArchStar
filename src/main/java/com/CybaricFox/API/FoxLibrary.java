@@ -2,6 +2,7 @@ package com.CybaricFox.API;
 
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.math.block.BlockUtil;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
@@ -9,6 +10,7 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.Packet;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageEvent;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.Rotation;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.io.PacketHandler;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
@@ -53,6 +55,7 @@ public class FoxLibrary {
 
         //Get the worldChunk by indexing the target chunk from the blocks location
         WorldChunk chunk = world.getChunkIfLoaded(ChunkUtil.indexChunkFromBlock(globalPos.x, globalPos.z));
+        if(chunk == null) return null;
 
         Ref<ChunkStore> chunkRef = chunk.getReference();
 

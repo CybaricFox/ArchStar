@@ -1,0 +1,282 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Copper_Cable.name",
+    "Description": "ArchStar.Copper_Cable.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Copper_Cable_Icon.png",
+  "Categories": [
+    "ArchStar.Cables"
+  ],
+  "BlockType": {
+    "CustomModel": "Blocks/Cables/Copper/Copper_Cable.blockymodel",
+    "HitboxType": "Simple_Cable_Hitbox",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Cables/Copper/Copper_Cable.png",
+        "Weight": 1
+      }
+    ],
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "Flags": {},
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "Group": "Cable",
+    "BlockParticleSetId": "Dust",
+    "BlockSoundSetId": "Cloth",
+    "ParticleColor": "#1e1c1c",
+    "BlockEntity":{
+      "Components":{
+        "CableBlock": {
+          "Family": "Copper",
+          "MaxVoltage": 172,
+          "Universal": false
+        }
+      }
+    },
+    "State": {
+      "Id": "cable",
+      "Definitions": {
+        "North": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_North.blockymodel"
+        },
+        "East": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_East.blockymodel"
+        },
+        "South": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_South.blockymodel"
+        },
+        "West": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_West.blockymodel"
+        },
+        "Up": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_Up.blockymodel"
+        },
+        "Down": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_Down.blockymodel"
+        },
+        "NorthSouth": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouth.blockymodel"
+        },
+        "NorthWest": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthWest.blockymodel"
+        },
+        "NorthEast": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthEast.blockymodel"
+        },
+        "NorthUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthUp.blockymodel"
+        },
+        "NorthDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthDown.blockymodel"
+        },
+        "SouthWest": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthWest.blockymodel"
+        },
+        "SouthEast": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthEast.blockymodel"
+        },
+        "SouthUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthUp.blockymodel"
+        },
+        "SouthDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthDown.blockymodel"
+        },
+        "EastWest": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_EastWest.blockymodel"
+        },
+        "WestUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_WestUp.blockymodel"
+        },
+        "WestDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_WestDown.blockymodel"
+        },
+        "EastUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_EastUp.blockymodel"
+        },
+        "EastDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_EastDown.blockymodel"
+        },
+        "UpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_UpDown.blockymodel"
+        },
+        "NorthSouthWest": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthWest.blockymodel"
+        },
+        "NorthSouthEast": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthEast.blockymodel"
+        },
+        "NorthSouthUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthUp.blockymodel"
+        },
+        "NorthSouthDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthDown.blockymodel"
+        },
+        "NorthEastWest": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthEastWest.blockymodel"
+        },
+        "NorthEastUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthEastUp.blockymodel"
+        },
+        "NorthEastDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthEastDown.blockymodel"
+        },
+        "NorthWestUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthWestUp.blockymodel"
+        },
+        "NorthWestDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthWestDown.blockymodel"
+        },
+        "NorthUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthUpDown.blockymodel"
+        },
+        "SouthEastWest": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthEastWest.blockymodel"
+        },
+        "SouthEastUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthEastUp.blockymodel"
+        },
+        "SouthEastDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthEastDown.blockymodel"
+        },
+        "SouthWestUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthWestUp.blockymodel"
+        },
+        "SouthWestDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthWestDown.blockymodel"
+        },
+        "SouthUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthUpDown.blockymodel"
+        },
+        "EastWestUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_EastWestUp.blockymodel"
+        },
+        "EastWestDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_EastWestDown.blockymodel"
+        },
+        "EastUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_EastUpDown.blockymodel"
+        },
+        "WestUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_WestUpDown.blockymodel"
+        },
+        "NorthSouthEastWest": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthEastWest.blockymodel"
+        },
+        "NorthSouthEastUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthEastUp.blockymodel"
+        },
+        "NorthSouthEastDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthEastDown.blockymodel"
+        },
+        "NorthSouthWestUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthWestUp.blockymodel"
+        },
+        "NorthSouthWestDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthWestDown.blockymodel"
+        },
+        "NorthSouthUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthUpDown.blockymodel"
+        },
+        "NorthEastWestUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthEastWestUp.blockymodel"
+        },
+        "NorthEastWestDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthEastWestDown.blockymodel"
+        },
+        "NorthEastUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthEastUpDown.blockymodel"
+        },
+        "NorthWestUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthWestUpDown.blockymodel"
+        },
+        "SouthEastWestUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthEastWestUp.blockymodel"
+        },
+        "SouthEastWestDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthEastWestDown.blockymodel"
+        },
+        "SouthEastUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthEastUpDown.blockymodel"
+        },
+        "SouthWestUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthWestUpDown.blockymodel"
+        },
+        "EastWestUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_EastWestUpDown.blockymodel"
+        },
+        "NorthSouthEastWestUp": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthEastWestUp.blockymodel"
+        },
+        "NorthSouthEastWestDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthEastWestDown.blockymodel"
+        },
+        "NorthSouthEastUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthEastUpDown.blockymodel"
+        },
+        "NorthSouthWestUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthWestUpDown.blockymodel"
+        },
+        "NorthEastWestUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthEastWestUpDown.blockymodel"
+        },
+        "SouthEastWestUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_SouthEastWestUpDown.blockymodel"
+        },
+        "NorthSouthEastWestUpDown": {
+          "CustomModel": "Blocks/Cables/Cable/Cable_NorthSouthEastWestUpDown.blockymodel"
+        }
+      }
+    }
+  },
+  "IconProperties": {
+    "Scale": 0.55,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -13.5
+    ]
+  },
+  "PlayerAnimationsId": "Block",
+  "Scale": 1,
+  "DropOnDeath": false,
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Copper",
+        "Quantity": 10
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "Copper_Cable",
+        "Quantity": 20
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Industrial"
+        ],
+        "Id": "Invention"
+      }
+    ],
+    "TimeSeconds": 8.0
+  },
+  "Tags": {
+    "Type": [
+      "Bench"
+    ]
+  },
+  "MaxStack": 100
+}
