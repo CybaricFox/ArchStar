@@ -1,0 +1,29 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Plant_Leaves_Rubber.name"
+  },
+  "Parent": "Plant_Leaves_Oak",
+  "BlockType": {
+    "CustomModel": "Blocks/Foliage/Leaves/Ball.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Foliage/Leaves/Ball_Textures/Ash.png",
+        "Weight": 1
+      }
+    ],
+    "ParticleColor": "#156e38"
+  },
+  "Icon": "Icons/ItemsGenerated/Plant_Leaves_Rubber_Icon.png",
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -13.5
+    ]
+  }
+}

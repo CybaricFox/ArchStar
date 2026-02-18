@@ -1,12 +1,12 @@
 {
   "TranslationProperties": {
-    "Name": "ArchStar.Silver_Powder.name"
+    "Name": "ArchStar.Tin_Powder.name"
   },
   "Categories": [
     "ArchStar.Resources"
   ],
   "Model": "Resources/Ingredients/Spore_Bag.blockymodel",
-  "Texture": "Items/Ingredients/Powders/Silver_Bag.png",
+  "Texture": "Items/Ingredients/Powders/Tin_Bag.png",
   "PlayerAnimationsId": "Item",
   "IconProperties": {
     "Scale": 0.7,
@@ -20,7 +20,7 @@
       22.5
     ]
   },
-  "Icon": "Icons/ItemsGenerated/Powders/Silver_Powder_Icon.png",
+  "Icon": "Icons/ItemsGenerated/Powders/Tin_Powder_Icon.png",
   "Tags": {
     "Type": [
       "Ingredient"

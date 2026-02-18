@@ -253,13 +253,17 @@
     "Input": [
       {
         "ItemId": "Ingredient_Bar_Copper",
-        "Quantity": 10
+        "Quantity": 3
+      },
+      {
+        "ItemId": "Rubber",
+        "Quantity": 6
       }
     ],
     "Output": [
       {
         "ItemId": "Copper_Cable",
-        "Quantity": 20
+        "Quantity": 6
       }
     ],
     "BenchRequirement": [
@@ -271,7 +275,7 @@
         "Id": "Invention"
       }
     ],
-    "TimeSeconds": 8.0
+    "TimeSeconds": 2.0
   },
   "Tags": {
     "Type": [

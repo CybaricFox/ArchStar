@@ -5,8 +5,7 @@
   },
   "Icon": "Icons/ItemsGenerated/Industrial_Frame_Icon.png",
   "Categories": [
-    "ArchStar.Ingredients",
-    "Items.Ingredients"
+    "ArchStar.Ingredients"
   ],
   "PlayerAnimationsId": "Block",
   "BlockType": {

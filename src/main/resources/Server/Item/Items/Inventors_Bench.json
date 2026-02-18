@@ -28,7 +28,8 @@
   },
   "Icon": "Icons/ItemsGenerated/Inventors_Bench_Icon.png",
   "Categories": [
-    "Furniture.Benches"
+    "Furniture.Benches",
+    "ArchStar.Machines"
   ],
   "BlockType": {
     "Material": "Solid",

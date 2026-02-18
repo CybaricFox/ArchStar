@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OreGenConfig version="1">
+
+    <Ore id="Tin_Ore_emOTLwc7rD" enabled="true">
+        <Spawn name="Tin_Ore_Spawn" chancePerChunk="1" yMin="40" yMax="80" veinsMin="0" veinsMax="26" veinSizeMin="1" veinSizeMax="6">
+            <Zone zone="1" tier="1" mode="include"/>
+            <Zone zone="1" tier="2" mode="include"/>
+            <Zone zone="1" tier="3" mode="include"/>
+            <Zone zone="2" tier="1" mode="include"/>
+            <Zone zone="2" tier="2" mode="include"/>
+            <Zone zone="2" tier="3" mode="include"/>
+            <Zone zone="3" tier="1" mode="include"/>
+            <Zone zone="3" tier="2" mode="include"/>
+            <Zone zone="3" tier="3" mode="include"/>
+            <Zone zone="4" tier="4" mode="include"/>
+            <Zone zone="4" tier="5" mode="include"/>
+            <Variant oreBlock="Tin_Ore_Stone">
+                <Host>Rock_Stone</Host>
+            </Variant>
+        </Spawn>
+
+    </Ore>
+
+</OreGenConfig>

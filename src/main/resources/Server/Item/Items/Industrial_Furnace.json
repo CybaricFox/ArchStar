@@ -5,8 +5,7 @@
   },
   "Icon": "Icons/ItemsGenerated/Industrial_Furnace_Icon.png",
   "Categories": [
-    "ArchStar.Machines",
-    "Furniture.Benches"
+    "ArchStar.Machines"
   ],
   "BlockType": {
     "CustomModel": "Blocks/Machines/Industrial_Furnace.blockymodel",
@@ -109,16 +108,11 @@
         "ItemId": "Iron_Furnace"
       },
       {
-        "ItemId": "Ingredient_Bar_Iron",
-        "Quantity": 10
+        "ItemId": "Basic_Industrial_Circuit"
       },
       {
-        "ItemId": "Ingredient_Bar_Copper",
-        "Quantity": 10
-      },
-      {
-        "ItemId": "Ingredient_Bar_Steel",
-        "Quantity": 10
+        "ItemId": "Ingredient_Bar_Gold",
+        "Quantity": 2
       }
     ],
     "Output": [

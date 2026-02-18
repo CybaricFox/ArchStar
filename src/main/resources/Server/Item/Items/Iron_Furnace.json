@@ -5,8 +5,7 @@
   },
   "Icon": "Icons/ItemsGenerated/Iron_Furnace_Icon.png",
   "Categories": [
-    "ArchStar.Machines",
-    "Furniture.Benches"
+    "ArchStar.Machines"
   ],
   "BlockType": {
     "CustomModel": "Blocks/Machines/Iron_Furnace.blockymodel",

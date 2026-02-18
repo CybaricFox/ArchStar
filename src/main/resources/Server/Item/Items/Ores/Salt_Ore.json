@@ -1,0 +1,34 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Salt_Ore.name",
+    "Description": "ArchStar.Salt_Ore.description"
+  },
+  "Categories": [
+    "Blocks.Ores",
+    "ArchStar.Resources"
+  ],
+  "Icon": "Icons/ItemsGenerated/Salt_Ore_Icon.png",
+  "Model": "Resources/Ores/Ore_Large.blockymodel",
+  "Texture": "Items/Ores/Salt_Ore.png",
+  "PlayerAnimationsId": "Block",
+  "IconProperties": {
+    "Scale": 0.57323,
+    "Translation": [
+      -3.6,
+      -16.200001
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Ore"
+    ]
+  },
+  "MaxStack": 25,
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "DropOnDeath": true
+}

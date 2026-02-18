@@ -16,8 +16,13 @@ Copper_Cable.description = Transfers 172v/t
 
 Steel_Bar.name = Steel Bar
 Steel_Bar.description = Smelt iron bars to obtain.
+Tin_Bar.name = Tin Bar
+
 Industrial_Frame.name = Industrial Frame
 Industrial_Frame.description = A core component of most machines of the industrial age.
+Basic_Industrial_Circuit.name = Basic Industrial Circuit
+Rubber.name = Rubber
+Rubber.description = Obtained by smelting sap. They say rubber doesn't grow on trees. Perhaps in another world, that statement isn't true.
 
 Adamantite_Powder.name = Adamantite Powder
 Cobalt_Powder.name = Cobalt Powder
@@ -28,3 +33,18 @@ Mythril_Powder.name = Mithril Powder
 Onyx_Powder.name = Onyxium Powder
 Silver_Powder.name = Silver Powder
 Thorium_Powder.name = Thorium Powder
+Tin_Powder.name = Tin Powder
+
+Salt_Ore.name = Raw Salt
+Salt_Ore.description = It is said the deserts of Orbis were once oceans teeming with life. These salt crystals are all that remains.
+Tin_Ore.name = Raw Tin
+Tin_Ore_Stone.name = Tin Ore
+
+Rubber_Branch_Long.name = Rubber Trunk
+Plant_Leaves_Rubber.name = Rubber Leaves
+
+ArchStar_Category = ArchStar
+Machines_Category = Machines
+Cables_Category = Cables
+Ingredients_Category = Ingredients
+Resources_Category = Resources

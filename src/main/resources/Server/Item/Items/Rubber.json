@@ -1,0 +1,51 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Rubber.name",
+    "Description": "ArchStar.Rubber.description"
+  },
+  "Categories": [
+    "ArchStar.Ingredients"
+  ],
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Ingredient_Tree_Sap",
+        "Quantity": 1
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Processing",
+        "Id": "Furnace"
+      }
+    ],
+    "OutputQuantity": 1,
+    "TimeSeconds": 14
+  },
+  "Model": "Items/Ingredients/Rubber.blockymodel",
+  "Texture": "Items/Ingredients/Rubber.png",
+  "Icon": "Icons/ItemsGenerated/Rubber_Icon.png",
+  "PlayerAnimationsId": "Item",
+  "IconProperties": {
+    "Scale": 1,
+    "Translation": [
+      0,
+      -3
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Ingredient"
+    ]
+  },
+  "ItemEntity": {
+    "ParticleSystemId": null
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "DropOnDeath": true
+}

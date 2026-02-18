@@ -3,8 +3,7 @@
     "Name": "ArchStar.Copper_Powder.name"
   },
   "Categories": [
-    "ArchStar.Ingredients",
-    "Items.Ingredients"
+    "ArchStar.Resources"
   ],
   "Model": "Resources/Ingredients/Spore_Bag.blockymodel",
   "Texture": "Items/Ingredients/Powders/Copper_Bag.png",

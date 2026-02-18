@@ -5,8 +5,7 @@
   },
   "Icon": "Icons/ItemsGenerated/Iron_Furnace_Icon.png",
   "Categories": [
-    "ArchStar.Machines",
-    "Furniture.Benches"
+    "ArchStar.Machines"
   ],
   "BlockType": {
     "CustomModel": "Blocks/Machines/Iron_Furnace.blockymodel",
@@ -120,11 +119,18 @@
       },
       {
         "ItemId": "Ingredient_Bar_Steel",
-        "Quantity": 10
+        "Quantity": 3
       },
       {
-        "ItemId": "Ingredient_Bar_Copper",
-        "Quantity": 10
+        "ItemId": "Ingredient_Bar_Tin",
+        "Quantity": 4
+      },
+      {
+        "ItemId": "Copper_Cable"
+      },
+      {
+        "ItemId": "Ingredient_Bar_Gold",
+        "Quantity": 2
       }
     ],
     "Output": [

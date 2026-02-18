@@ -1,0 +1,18 @@
+{
+  "Input": [
+    {
+      "ItemId": "Tin_Ore"
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Tin_Powder",
+    "Quantity": 2
+  },
+  "BenchRequirement": [
+    {
+      "Type": "Processing",
+      "Id": "Grinder"
+    }
+  ],
+  "TimeSeconds": 20.0
+}

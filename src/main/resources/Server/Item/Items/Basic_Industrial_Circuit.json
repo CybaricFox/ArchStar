@@ -1,0 +1,64 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Basic_Industrial_Circuit.name"
+  },
+  "Categories": [
+    "ArchStar.Ingredients"
+  ],
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Copper_Cable",
+        "Quantity": 6
+      },
+      {
+        "ItemId": "Ingredient_Bar_Steel"
+      },
+      {
+        "ItemId": "Ingredient_Bar_Gold",
+        "Quantity": 2
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "Basic_Industrial_Circuit"
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Industrial"
+        ],
+        "Id": "Invention"
+      }
+    ],
+    "TimeSeconds": 0.0
+  },
+  "Model": "Items/Ingredients/Basic_Industrial_Circuit.blockymodel",
+  "Texture": "Items/Ingredients/Basic_Industrial_Circuit.png",
+  "Icon": "Icons/ItemsGenerated/Basic_Industrial_Circuit_Icon.png",
+  "PlayerAnimationsId": "Item",
+  "IconProperties": {
+    "Scale": 1,
+    "Translation": [
+      0,
+      -3
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Ingredient"
+    ]
+  },
+  "ItemEntity": {
+    "ParticleSystemId": null
+  },
+  "ItemSoundSetId": "ISS_Items_Ingots",
+  "DropOnDeath": true
+}
