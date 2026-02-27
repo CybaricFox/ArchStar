@@ -1,27 +1,28 @@
 {
   "TranslationProperties": {
-    "Name": "ArchStar.Basic_Industrial_Circuit.name"
+    "Name": "ArchStar.Sodium_Battery.name",
+    "Description": "ArchStar.Sodium_Battery.description"
   },
   "Categories": [
-    "ArchStar.Ingredients"
+    "ArchStar.Equipment"
   ],
   "Recipe": {
     "Input": [
       {
-        "ItemId": "Copper_Cable",
-        "Quantity": 6
+        "ItemId": "Copper_Cable"
       },
       {
-        "ItemId": "Ingredient_Bar_Steel"
+        "ItemId": "Ingredient_Bar_Tin",
+        "Quantity": 4
       },
       {
-        "ItemId": "Ingredient_Bar_Gold",
+        "ItemId": "Sodium",
         "Quantity": 2
       }
     ],
     "Output": [
       {
-        "ItemId": "Basic_Industrial_Circuit"
+        "ItemId": "Sodium_Battery"
       }
     ],
     "BenchRequirement": [
@@ -33,11 +34,11 @@
         "Id": "Invention"
       }
     ],
-    "TimeSeconds": 0.0
+    "TimeSeconds": 8.0
   },
-  "Model": "Items/Ingredients/Basic_Industrial_Circuit.blockymodel",
-  "Texture": "Items/Ingredients/Basic_Industrial_Circuit.png",
-  "Icon": "Icons/ItemsGenerated/Basic_Industrial_Circuit_Icon.png",
+  "Model": "Items/Equipment/Sodium_Battery.blockymodel",
+  "Texture": "Items/Equipment/Sodium_Battery.png",
+  "Icon": "Icons/ItemsGenerated/Sodium_Battery_Icon.png",
   "PlayerAnimationsId": "Item",
   "IconProperties": {
     "Scale": 1,
@@ -53,12 +54,13 @@
   },
   "Tags": {
     "Type": [
-      "Ingredient"
+      "Equipment"
     ]
   },
   "ItemEntity": {
     "ParticleSystemId": null
   },
   "ItemSoundSetId": "ISS_Items_Ingots",
-  "DropOnDeath": true
+  "DropOnDeath": false,
+  "MaxStack": 1
 }

@@ -1,14 +1,14 @@
 {
   "Group": "CybaricFox",
   "Name": "ArchStar",
-  "Version": "0.0.3",
+  "Version": "0.0.4",
   "Description": "A test mod for now.",
   "Authors": [
     {
       "Name": "CybaricFox"
     }
   ],
-  "ServerVersion": "2026.02.17-255364b8e",
+  "ServerVersion": "2026.02.19-1a311a592",
   "Dependencies": {
     
   },

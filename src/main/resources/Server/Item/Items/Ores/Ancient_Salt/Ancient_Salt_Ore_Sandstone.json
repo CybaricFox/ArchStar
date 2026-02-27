@@ -1,0 +1,68 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Salt_Ore_Sandstone.name"
+  },
+  "Icon": "Icons/ItemsGenerated/Salt_Ore_Sandstone_Icon.png",
+  "Categories": [
+    "Blocks.Ores",
+    "ArchStar.Resources"
+  ],
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "CubeWithModel",
+    "CustomModel": "Resources/Ores/Ore_Large.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Items/Ores/Salt_Ore.png",
+        "Weight": 1
+      }
+    ],
+    "Group": "Stone",
+    "Flags": {},
+    "RandomRotation": "YawStep90",
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "OreCopper",
+        "DropList": {
+          "Container": {
+            "Type": "Multiple",
+            "Containers": [
+              {
+                "Type": "Single",
+                "Item": {
+                  "ItemId": "Ancient_Salt_Ore"
+                }
+              },
+              {
+                "Type": "Single",
+                "Item": {
+                  "ItemId": "Rock_Sandstone_Cobble"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "BlockParticleSetId": "Ore",
+    "Textures": [
+      {
+        "Weight": 1,
+        "All": "BlockTextures/Rock_Sandstone_Side.png"
+      }
+    ],
+    "ParticleColor": "#efcf22",
+    "BlockSoundSetId": "Ore"
+  },
+  "PlayerAnimationsId": "Block",
+  "Tags": {
+    "Type": [
+      "Ore"
+    ],
+    "Family": [
+      "Salt"
+    ]
+  },
+  "MaxStack": 25,
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

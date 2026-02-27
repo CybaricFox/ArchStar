@@ -23,6 +23,8 @@ Industrial_Frame.description = A core component of most machines of the industri
 Basic_Industrial_Circuit.name = Basic Industrial Circuit
 Rubber.name = Rubber
 Rubber.description = Obtained by smelting sap. They say rubber doesn't grow on trees. Perhaps in another world, that statement isn't true.
+Sodium.name = Sodium
+Sodium.description = Obtained by grinding Raw Salt. An important material for early energy storage.
 
 Adamantite_Powder.name = Adamantite Powder
 Cobalt_Powder.name = Cobalt Powder
@@ -37,6 +39,7 @@ Tin_Powder.name = Tin Powder
 
 Salt_Ore.name = Raw Salt
 Salt_Ore.description = It is said the deserts of Orbis were once oceans teeming with life. These salt crystals are all that remains.
+Salt_Ore_Sandstone.name = Ancient Salt Ore
 Tin_Ore.name = Raw Tin
 Tin_Ore_Stone.name = Tin Ore
 
@@ -48,3 +51,8 @@ Machines_Category = Machines
 Cables_Category = Cables
 Ingredients_Category = Ingredients
 Resources_Category = Resources
+
+Steel_Drill.name = Steel Drill
+Steel_Drill.description = An electric drill. Equivalent to an iron pickaxe. Hope you brought ear muffs.\n\nPlace in an upgrade station to view stats.
+Sodium_Battery.name = Sodium Battery
+Sodium_Battery.description = Charges items in your inventory. Holds 10kv.

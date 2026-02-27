@@ -103,7 +103,7 @@ public class EnergyComponent implements Component<ChunkStore> {
         if(currentEnergy < outputRate) return 0;
 
         //If transfering energy would cause an overflow using the lesser value, do not transfer.
-        if(remaining < outputRate || remaining < inputOfTarget) {
+        if(remaining < outputRate && remaining < inputOfTarget) {
             return 0;
         }
 

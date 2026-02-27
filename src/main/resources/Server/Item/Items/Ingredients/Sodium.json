@@ -1,7 +1,7 @@
 {
   "TranslationProperties": {
-    "Name": "ArchStar.Rubber.name",
-    "Description": "ArchStar.Rubber.description"
+    "Name": "ArchStar.Sodium.name",
+    "Description": "ArchStar.Sodium.description"
   },
   "Categories": [
     "ArchStar.Ingredients"
@@ -9,22 +9,22 @@
   "Recipe": {
     "Input": [
       {
-        "ItemId": "Ingredient_Tree_Sap",
-        "Quantity": 1
+        "ItemId": "Ancient_Salt_Ore",
+        "Quantity": 10
       }
     ],
     "BenchRequirement": [
       {
         "Type": "Processing",
-        "Id": "Furnace"
+        "Id": "Grinder"
       }
     ],
     "OutputQuantity": 1,
-    "TimeSeconds": 14
+    "TimeSeconds": 20
   },
-  "Model": "Items/Ingredients/Rubber.blockymodel",
-  "Texture": "Items/Ingredients/Rubber.png",
-  "Icon": "Icons/ItemsGenerated/Rubber_Icon.png",
+  "Model": "Items/Ingredients/Sodium.blockymodel",
+  "Texture": "Items/Ingredients/Sodium.png",
+  "Icon": "Icons/ItemsGenerated/Sodium_Icon.png",
   "PlayerAnimationsId": "Item",
   "IconProperties": {
     "Scale": 1,
@@ -47,5 +47,6 @@
     "ParticleSystemId": null
   },
   "ItemSoundSetId": "ISS_Blocks_Stone",
-  "DropOnDeath": true
+  "DropOnDeath": false,
+  "MaxStack": 100
 }

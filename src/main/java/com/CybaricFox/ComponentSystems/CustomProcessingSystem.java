@@ -91,7 +91,7 @@ public class CustomProcessingSystem extends EntityTickingSystem<ChunkStore> {
                     if(process.progress == process.progressThreshold) {
                         //Consume each input item as necessary
                         for(short i = 0; i < process.targetInputIds.size(); i++) {
-                            short slot = inputComponent.getFirstSlotWithItem(process.targetInputIds.get(i));
+                            short slot = inputComponent.getFirstSlotWithItem(process.targetInputIds.get(i), process.targetInputQuantities.get(i));
 
                             if(slot == -1) {
                                 ArchStar.LOGGER.at(Level.SEVERE).log("Attempted to finish processing " + process.targetInputIds.get(i) + " but the item could not be found in input!");
@@ -146,8 +146,8 @@ public class CustomProcessingSystem extends EntityTickingSystem<ChunkStore> {
                                 //If the input is null, check the next recipe
                                 if(material.getItemId() == null) continue;
 
-                                //If the input matches the recipe input, process this recipe
-                                if(material.getItemId().equals(item.getItemId())) {
+                                //If the input matches the recipe input and has the proper quantity, process this recipe
+                                if(material.getItemId().equals(item.getItemId()) && item.getQuantity() >= material.getQuantity()) {
                                     //Create the process context
                                     ArrayList<String> inputIds = new ArrayList<>();
                                     ArrayList<Integer> inputQuantities = new ArrayList<>();

@@ -170,10 +170,8 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         if(sourceID == inputID) {
             InputComponent input = block.getStore().getComponent(block, ArchStar.get().getInputComponentType());
             input.isUIUpdated = false;
-            //If we move an item out of input, check that the current recipe is not negated
-            if(receiverID != inputID) {
-                checkForRecipeCancel(input, firstSlot, quantity);
-            }
+            //If we move an item, check that the current recipe is not negated
+            checkForRecipeCancel(input, firstSlot, quantity);
 
             from = input.getContainer();
         }

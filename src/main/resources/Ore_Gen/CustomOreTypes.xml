@@ -2,7 +2,7 @@
 <OreGenConfig version="1">
 
     <Ore id="Tin_Ore_emOTLwc7rD" enabled="true">
-        <Spawn name="Tin_Ore_Spawn" chancePerChunk="1" yMin="40" yMax="80" veinsMin="0" veinsMax="26" veinSizeMin="1" veinSizeMax="6">
+        <Spawn name="Tin_Ore_Spawn" chancePerChunk="1" yMin="40" yMax="80" veinsMin="0" veinsMax="26" veinSizeMin="1" veinSizeMax="6" crustOnly="false" crustDepth="0" excludeSurface="false">
             <Zone zone="1" tier="1" mode="include"/>
             <Zone zone="1" tier="2" mode="include"/>
             <Zone zone="1" tier="3" mode="include"/>
@@ -16,6 +16,16 @@
             <Zone zone="4" tier="5" mode="include"/>
             <Variant oreBlock="Tin_Ore_Stone">
                 <Host>Rock_Stone</Host>
+            </Variant>
+        </Spawn>
+
+    </Ore>
+
+    <Ore id="Salt_Ore_snaG53hvBi" enabled="true">
+        <Spawn name="Salt_Ore_Spawn" chancePerChunk="1" yMin="40" yMax="80" veinsMin="0" veinsMax="26" veinSizeMin="1" veinSizeMax="6" crustOnly="false" crustDepth="0" excludeSurface="true">
+            <Category include="Howling_Sands"/>
+            <Variant oreBlock="Ancient_Salt_Ore_Sandstone" chance="1.0">
+                <Host>Rock_Sandstone</Host>
             </Variant>
         </Spawn>
 

@@ -122,15 +122,7 @@
         "Quantity": 3
       },
       {
-        "ItemId": "Ingredient_Bar_Tin",
-        "Quantity": 4
-      },
-      {
-        "ItemId": "Copper_Cable"
-      },
-      {
-        "ItemId": "Ingredient_Bar_Gold",
-        "Quantity": 2
+        "ItemId": "Basic_Industrial_Circuit"
       }
     ],
     "Output": [

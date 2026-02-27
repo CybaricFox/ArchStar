@@ -1,16 +1,15 @@
 {
   "TranslationProperties": {
-    "Name": "ArchStar.Steel_Bar.name",
-    "Description": "ArchStar.Steel_Bar.description"
+    "Name": "ArchStar.Rubber.name",
+    "Description": "ArchStar.Rubber.description"
   },
   "Categories": [
-    "ArchStar.Ingredients",
-    "Items.Ingredients"
+    "ArchStar.Ingredients"
   ],
   "Recipe": {
     "Input": [
       {
-        "ItemId": "Ingredient_Bar_Iron",
+        "ItemId": "Ingredient_Tree_Sap",
         "Quantity": 1
       }
     ],
@@ -23,14 +22,9 @@
     "OutputQuantity": 1,
     "TimeSeconds": 14
   },
-  "Model": "Resources/Materials/Ingot.blockymodel",
-  "Texture": "Items/Ingredients/Steel_Bar.png",
-  "Icon": "Icons/ItemsGenerated/Steel_Bar_Icon.png",
-  "ResourceTypes": [
-    {
-      "Id": "Metal_Bars"
-    }
-  ],
+  "Model": "Items/Ingredients/Rubber.blockymodel",
+  "Texture": "Items/Ingredients/Rubber.png",
+  "Icon": "Icons/ItemsGenerated/Rubber_Icon.png",
   "PlayerAnimationsId": "Item",
   "IconProperties": {
     "Scale": 1,
@@ -52,6 +46,7 @@
   "ItemEntity": {
     "ParticleSystemId": null
   },
-  "ItemSoundSetId": "ISS_Items_Ingots",
-  "DropOnDeath": true
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "DropOnDeath": false,
+  "MaxStack": 100
 }

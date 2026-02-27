@@ -60,11 +60,12 @@ public class CommonContainerComponent implements Component<ChunkStore> {
     }
 
     //Returns the first slot that has the item
-    public short getFirstSlotWithItem(String itemId) {
+    public short getFirstSlotWithItem(String itemId, int quantity) {
         for(short i = 0; i < getCapacity(); i++) {
-            if(container.getItemStack(i) == null) continue;
+            ItemStack item = container.getItemStack(i);
+            if(item == null) continue;
 
-            if(container.getItemStack(i).getItemId().equals(itemId)) {
+            if(item.getItemId().equals(itemId) && item.getQuantity() >= quantity) {
                 return i;
             }
         }

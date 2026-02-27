@@ -55,5 +55,7 @@
       }
     ],
     "TimeSeconds": 4.0
-  }
+  },
+  "DropOnDeath": false,
+  "MaxStack": 100
 }
