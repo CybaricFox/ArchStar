@@ -1,26 +1,26 @@
 {
-  "Icon": "Icons/ItemCategories/Nether_Star.png",
+  "Icon": "Icons/ItemCategories/ArchStar_Icon.png",
   "Order": 2,
   "Children": [
     {
       "Id": "Machines",
       "Name": "ArchStar.Machines_Category",
-      "Icon": "Icons/ItemCategories/Industrial_Frame_Icon.png"
+      "Icon": "Icons/ItemCategories/Machines_Icon.png"
     },
     {
       "Id": "Cables",
       "Name": "ArchStar.Cables_Category",
-      "Icon": "Icons/ItemCategories/Copper_Cable_Icon.png"
+      "Icon": "Icons/ItemCategories/Cables_Icon.png"
     },
     {
       "Id": "Resources",
       "Name": "ArchStar.Resources_Category",
-      "Icon": "Icons/ItemCategories/Salt_Ore_Icon.png"
+      "Icon": "Icons/ItemCategories/Powder_Icon.png"
     },
     {
       "Id": "Ingredients",
       "Name": "ArchStar.Ingredients_Category",
-      "Icon": "Icons/ItemCategories/Steel_Bar_Icon.png"
+      "Icon": "Icons/ItemCategories/Circuit_Icon.png"
     }
   ],
   "Name": "ArchStar.ArchStar_Category",

@@ -1,7 +1,7 @@
 {
   "TranslationProperties": {
-    "Name": "ArchStar.Industrial_Furnace.name",
-    "Description": "ArchStar.Industrial_Furnace.description"
+    "Name": "ArchStar.Electric_Furnace.name",
+    "Description": "ArchStar.Electric_Furnace.description"
   },
   "Icon": "Icons/ItemsGenerated/Industrial_Furnace_Icon.png",
   "Categories": [
@@ -108,7 +108,7 @@
         "ItemId": "Iron_Furnace"
       },
       {
-        "ItemId": "Basic_Industrial_Circuit"
+        "ItemId": "Basic_Circuit"
       },
       {
         "ItemId": "Ingredient_Bar_Gold",
@@ -117,7 +117,7 @@
     ],
     "Output": [
       {
-        "ItemId": "Industrial_Furnace"
+        "ItemId": "Electric_Furnace"
       }
     ],
     "BenchRequirement": [

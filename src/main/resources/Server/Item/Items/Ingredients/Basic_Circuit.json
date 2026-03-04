@@ -1,6 +1,6 @@
 {
   "TranslationProperties": {
-    "Name": "ArchStar.Basic_Industrial_Circuit.name"
+    "Name": "ArchStar.Basic_Circuit.name"
   },
   "Categories": [
     "ArchStar.Ingredients"
@@ -21,7 +21,7 @@
     ],
     "Output": [
       {
-        "ItemId": "Basic_Industrial_Circuit"
+        "ItemId": "Basic_Circuit"
       }
     ],
     "BenchRequirement": [

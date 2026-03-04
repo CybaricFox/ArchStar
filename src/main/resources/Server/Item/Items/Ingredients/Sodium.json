@@ -9,7 +9,7 @@
   "Recipe": {
     "Input": [
       {
-        "ItemId": "Ancient_Salt_Ore",
+        "ItemId": "Ore_Ancient_Salt",
         "Quantity": 10
       }
     ],
@@ -20,7 +20,7 @@
       }
     ],
     "OutputQuantity": 1,
-    "TimeSeconds": 20
+    "TimeSeconds": 200
   },
   "Model": "Items/Ingredients/Sodium.blockymodel",
   "Texture": "Items/Ingredients/Sodium.png",

@@ -9,7 +9,7 @@
   "Recipe": {
     "Input": [
       {
-        "ItemId": "Tin_Ore",
+        "ItemId": "Ore_Tin",
         "Quantity": 1
       }
     ],

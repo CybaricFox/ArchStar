@@ -100,11 +100,11 @@
           ],
           "Particles": [
             {
-              "SystemId": "Fire_Furnace_On",
+              "SystemId": "Block_Fire_Furnace_On",
               "TargetNodeName": "Fire",
               "Scale": 0.7,
               "PositionOffset": {
-                "X": 0.3,
+                "X": 0.1,
                 "Y": 0.1,
                 "Z": 0.35
               }

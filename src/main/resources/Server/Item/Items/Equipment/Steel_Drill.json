@@ -10,7 +10,7 @@
   "Recipe": {
     "Input": [
       {
-        "ItemId": "Basic_Industrial_Circuit"
+        "ItemId": "Basic_Circuit"
       },
       {
         "ItemId": "Ingredient_Bar_Steel",
@@ -42,15 +42,15 @@
   "PlayerAnimationsId": "Drill",
   "Scale": 2,
   "IconProperties": {
-    "Scale": 1,
+    "Scale": 0.5,
     "Translation": [
       0,
-      -3
+      0
     ],
     "Rotation": [
-      22.5,
-      45,
-      22.5
+      90,
+      -45,
+      0
     ]
   },
   "Tags": {
@@ -130,7 +130,7 @@
           "Ores",
           "Soil"
         ],
-        "DurabilityLossOnHit": 12.5
+        "DurabilityLossOnHit": 25
       }
     ]
   },
@@ -154,10 +154,10 @@
     "Pickaxe_Mine_Effect": {
       "Interactions": [
         {
-          "Parent": "Pickaxe_Mine_Effect",
+          "Parent": "Drill_Mine_Effect",
           "Effects": {
-            "WorldSoundEventId": "SFX_Tool_T1_Swing",
-            "LocalSoundEventId": "SFX_Pickaxe_T1_Swing_Down_Local"
+            "WorldSoundEventId": "SFX_Drill_T1_Mine",
+            "LocalSoundEventId": "SFX_Drill_T1_Mine"
           }
         }
       ]
@@ -180,5 +180,12 @@
     }
   },
   "Animation": "Items/Equipment/Drill_Mine.blockyanim",
-  "MaxDurability": 30000
+  "Particles": [
+    {
+      "TargetNodeName": "Smoke",
+      "SystemId": "Drill_Smoke",
+      "Scale": 0.25
+    }
+  ],
+  "MaxDurability": 60000
 }

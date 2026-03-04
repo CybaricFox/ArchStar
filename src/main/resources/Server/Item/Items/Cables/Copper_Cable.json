@@ -18,7 +18,7 @@
     ],
     "Gathering": {
       "Breaking": {
-        "GatherType": "Rocks"
+        "GatherType": "SoftBlocks"
       }
     },
     "Flags": {},
@@ -248,7 +248,7 @@
   "PlayerAnimationsId": "Block",
   "Scale": 1,
   "DropOnDeath": false,
-  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "ItemSoundSetId": "ISS_Blocks_Soft",
   "Recipe": {
     "Input": [
       {
@@ -279,7 +279,7 @@
   },
   "Tags": {
     "Type": [
-      "Bench"
+      "Cable"
     ]
   },
   "MaxStack": 100

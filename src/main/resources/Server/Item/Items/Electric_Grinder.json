@@ -1,7 +1,7 @@
 {
   "TranslationProperties": {
-    "Name": "ArchStar.Industrial_Grinder.name",
-    "Description": "ArchStar.Industrial_Grinder.description"
+    "Name": "ArchStar.Electric_Grinder.name",
+    "Description": "ArchStar.Electric_Grinder.description"
   },
   "Icon": "Icons/ItemsGenerated/Industrial_Grinder_Icon.png",
   "Categories": [
@@ -70,7 +70,19 @@
           ],
           "AmbientSoundEventId": "SFX_Industrial_Grinder_Processing",
           "CustomModelAnimation": "Blocks/Machines/Industrial_Grinder_On.blockyanim",
-          "Looping": true
+          "Looping": true,
+          "Particles": [
+            {
+              "SystemId": "Grinder_On",
+              "TargetNodeName": "Sparks",
+              "Scale": 0.7,
+              "PositionOffset": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+              }
+            }
+          ]
         },
         "ProcessCompleted": {
           "CustomModelTexture": [
@@ -112,12 +124,12 @@
         "Quantity": 5
       },
       {
-        "ItemId": "Basic_Industrial_Circuit"
+        "ItemId": "Basic_Circuit"
       }
     ],
     "Output": [
       {
-        "ItemId": "Industrial_Grinder"
+        "ItemId": "Electric_Grinder"
       }
     ],
     "BenchRequirement": [

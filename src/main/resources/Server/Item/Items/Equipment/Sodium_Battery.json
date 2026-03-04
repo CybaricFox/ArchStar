@@ -41,7 +41,7 @@
   "Icon": "Icons/ItemsGenerated/Sodium_Battery_Icon.png",
   "PlayerAnimationsId": "Item",
   "IconProperties": {
-    "Scale": 1,
+    "Scale": 0.5,
     "Translation": [
       0,
       -3
@@ -62,5 +62,6 @@
   },
   "ItemSoundSetId": "ISS_Items_Ingots",
   "DropOnDeath": false,
-  "MaxStack": 1
+  "MaxStack": 1,
+  "Quality": "Common"
 }
