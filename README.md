@@ -3,23 +3,23 @@ ArchStar is a small tech mod that adds power generation, machines, and tools. Th
 Inspired by IndustrialCraft
 
 Currently includes:
-A workbench for making items from the mod.
-2 Furnaces.
-A Grinder to double ores.
-A Generator for producing power.
-Cables for power transport.
-2 ores.
-Rubber Trees (When V2 is released)
-A steel drill.
+- A workbench for making items from the mod.
+- 2 Furnaces.
+- A Grinder to double ores.
+- A Generator for producing power.
+- Cables for power transport.
+- 2 ores.
+- Rubber Trees (When V2 is released)
+- A steel drill.
 
 <img width="1649" height="851" alt="Screenshot 2026-02-15 184056" src="https://github.com/user-attachments/assets/62c19e3f-6c61-409b-b661-d92d9e525f9b" />
 
 Latest Beta Build:
 03/04/26 - beta 0.1.0
 
-Updated many Icons to use the asset editor's generation method.
-Updated Creative Tab icons
-Renamed ore IDs to be more inline with Hytale naming conventions
+- Updated many Icons to use the asset editor's generation method.
+- Updated Creative Tab icons
+- Renamed ore IDs to be more inline with Hytale naming conventions
 
 Inventor's Bench
 - Fixed blueprint texture collision with the top of the bench
