@@ -1,0 +1,83 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Stone_Conveyor.name",
+    "Description": "ArchStar.Stone_Conveyor.description"
+  },
+  "Recipe": {
+    "Input": [
+      {
+        "Quantity": 2,
+        "ResourceTypeId": "Rock"
+      },
+      {
+        "ItemId": "Ingredient_Bar_Steel"
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "Stone_Conveyor",
+        "Quantity": 8
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Industrial"
+        ],
+        "Id": "Invention"
+      }
+    ],
+    "TimeSeconds": 2.0
+  },
+  "Icon": "Icons/ItemsGenerated/Stone_Conveyor_Icon.png",
+  "Categories": [
+    "ArchStar.Cables"
+  ],
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Conveyor.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Conveyor.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Block_Flat",
+    "VariantRotation": "NESW",
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "SoftBlocks"
+      }
+    },
+    "BlockParticleSetId": "Metal",
+    "ParticleColor": "#8f8f8f",
+    "BlockSoundSetId": "Metal",
+    "State": {
+      "Id": "conveyor",
+      "Definitions": {
+        "Move": {
+          "CustomModelAnimation": "Blocks/Conveyor_Move.blockyanim",
+          "Looping": true
+        }
+      }
+    }
+  },
+  "PlayerAnimationsId": "Block",
+  "IconProperties": {
+    "Scale": 0.42,
+    "Rotation": [
+      22.5,
+      45.0,
+      22.5
+    ],
+    "Translation": [
+      12.9,
+      -11.7
+    ]
+  },
+  "MaxStack": 100,
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

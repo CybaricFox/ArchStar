@@ -11,6 +11,10 @@ Electric_Grinder.description = A grinder that slowly grinds ores into powder at 
 Solid_Fuel_Generator.name = Solid Fuel Generator
 Solid_Fuel_Generator.description = Burn fuel to generate 16v/t.
 
+Stone_Conveyor.name = Stone Conveyor
+Stone_Conveyor.description = Speed Tier I.
+Conveyor_Importer.name = Conveyor Importer
+Conveyor_Exporter.name = Conveyor Exporter
 Copper_Cable.name = Copper Cable
 Copper_Cable.description = Transfers 172v/t
 
