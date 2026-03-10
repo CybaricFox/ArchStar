@@ -1,5 +1,6 @@
 package com.CybaricFox.API;
 
+import com.CybaricFox.ArchStar;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.block.BlockUtil;
@@ -10,7 +11,6 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.Packet;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageEvent;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.Rotation;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.io.PacketHandler;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
@@ -19,10 +19,13 @@ import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.BlockComponentChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
+import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.FillerBlockUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -57,16 +60,17 @@ public class FoxLibrary {
         WorldChunk chunk = world.getChunkIfLoaded(ChunkUtil.indexChunkFromBlock(globalPos.x, globalPos.z));
         if(chunk == null) return null;
 
-        Ref<ChunkStore> chunkRef = chunk.getReference();
+        Vector3i realLocation = localCoords;
 
-        BlockComponentChunk blockComponentChunk = chunkRef.getStore().getComponent(chunkRef, BlockComponentChunk.getComponentType());
+        @SuppressWarnings("removal") int filler = chunk.getFiller(realLocation.x, realLocation.y, realLocation.z);
+        if (filler != 0) {
+            realLocation = new Vector3i(realLocation.x - FillerBlockUtil.unpackX(filler), realLocation.y - FillerBlockUtil.unpackY(filler), realLocation.z - FillerBlockUtil.unpackZ(filler));
+        }
 
-        chunk.getBlockType(localCoords);
-
-        //Get the index of the block in the chunk
-        int index = ChunkUtil.indexBlockInColumn(localCoords.x, localCoords.y, localCoords.z);
-
-        return blockComponentChunk.getEntityReference(index);
+        return chunk.getBlockComponentEntity(realLocation.x, realLocation.y, realLocation.z);
+    }
+    public static Ref<ChunkStore> getBlockEntity(BlockComponentChunk chunk, Vector3i localCoords) {
+        return chunk.getEntityReference(ChunkUtil.indexBlockInColumn(localCoords.x, localCoords.y, localCoords.z));
     }
 
     public static void spawnItems(World world, Vector3i pos, ArrayList<ItemStack> items) {
@@ -121,5 +125,60 @@ public class FoxLibrary {
         int bound = modifier - 1;
 
         return rng.nextFloat(-bound, bound);
+    }
+
+    //Returns the forward direction of a block from its rotation index
+    public static Direction getForwardDirection(int rotationIndex, boolean reverse) {
+
+        Direction direction = Direction.Not_Set;
+        switch(rotationIndex) {
+            case 0 -> direction = Direction.North;
+            case 1 -> direction = Direction.West;
+            case 2 -> direction = Direction.South;
+            case 3 -> direction = Direction.East;
+        }
+
+        if(reverse) {
+            switch(direction) {
+                case North -> direction = Direction.South;
+                case East -> direction = Direction.West;
+                case South -> direction = Direction.North;
+                case West -> direction = Direction.East;
+            }
+        }
+
+        if(direction == Direction.Not_Set) {
+            ArchStar.LOGGER.at(Level.WARNING).log("INVALID FORWARD DIRECTION! Expected 0-3, got " + rotationIndex + " instead.");
+        }
+
+        return direction;
+    }
+
+    public static Vector3i getCoordsFromDirection(Direction direction, Vector3i pos) {
+        Vector3i targetVector = pos;
+
+        switch(direction) {
+            case North -> targetVector = new Vector3i(pos.x, pos.y, pos.z - 1);
+            case South -> targetVector = new Vector3i(pos.x, pos.y, pos.z + 1);
+            case West -> targetVector = new Vector3i(pos.x - 1, pos.y, pos.z);
+            case East -> targetVector = new Vector3i(pos.x + 1, pos.y, pos.z);
+            case Up -> targetVector = new Vector3i(pos.x, pos.y + 1, pos.z);
+            case Down -> targetVector = new Vector3i(pos.x, pos.y - 1, pos.z);
+        }
+
+        return targetVector;
+    }
+
+    public static ArrayList<Vector3i> getNeighborVectors(Vector3i location) {
+        ArrayList<Vector3i> neighbors = new ArrayList<>();
+
+        //Global coords
+        neighbors.add(new Vector3i(location.x, location.y + 1, location.z));
+        neighbors.add(new Vector3i(location.x, location.y - 1, location.z));
+        neighbors.add(new Vector3i(location.x + 1, location.y, location.z));
+        neighbors.add(new Vector3i(location.x - 1, location.y, location.z));
+        neighbors.add(new Vector3i(location.x, location.y, location.z + 1));
+        neighbors.add(new Vector3i(location.x, location.y, location.z - 1));
+        return neighbors;
     }
 }

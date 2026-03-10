@@ -44,7 +44,7 @@ public class EnergySystem extends EntityTickingSystem<ChunkStore> {
 
             blocks.forEachTicking(blockComponentChunk, commandBuffer, section.getY(), (blockComponentChunk1, commandBuffer1, localX, localY, localZ, blockId) ->
             {
-                Ref<ChunkStore> blockRef = blockComponentChunk1.getEntityReference(ChunkUtil.indexBlockInColumn(localX, localY, localZ));
+                Ref<ChunkStore> blockRef = FoxLibrary.getBlockEntity(blockComponentChunk1, new Vector3i(localX, localY, localZ));
 
                 if (blockRef == null) {
                     return BlockTickStrategy.IGNORED;

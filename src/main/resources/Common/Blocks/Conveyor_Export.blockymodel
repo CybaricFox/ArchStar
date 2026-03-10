@@ -631,11 +631,11 @@
     {
       "id": "13",
       "name": "Wall",
-      "position": {"x": 15, "y": 0, "z": 0},
-      "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+      "position": {"x": 0, "y": 0, "z": 0},
+      "orientation": {"x": 0, "y": 1, "z": 0, "w": 0},
       "shape": {
         "type": "box",
-        "offset": {"x": 0.5, "y": 2, "z": 0},
+        "offset": {"x": 15.5, "y": 2, "z": 0},
         "stretch": {"x": 1, "y": 1, "z": 1},
         "settings": {
           "isPiece": false,
@@ -683,11 +683,11 @@
     {
       "id": "14",
       "name": "Wall",
-      "position": {"x": -16, "y": 0, "z": 0},
-      "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+      "position": {"x": 0, "y": 0, "z": 0},
+      "orientation": {"x": 0, "y": 1, "z": 0, "w": 0},
       "shape": {
         "type": "box",
-        "offset": {"x": 0.5, "y": 2, "z": 0},
+        "offset": {"x": -15.5, "y": 2, "z": 0},
         "stretch": {"x": 1, "y": 1, "z": 1},
         "settings": {
           "isPiece": false,
@@ -735,11 +735,11 @@
     {
       "id": "15",
       "name": "Interface",
-      "position": {"x": 0, "y": 0, "z": -15},
+      "position": {"x": 0, "y": 0, "z": 0},
       "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
       "shape": {
         "type": "box",
-        "offset": {"x": 0, "y": 16, "z": 2},
+        "offset": {"x": 0, "y": 16, "z": -13},
         "stretch": {"x": 1, "y": 1, "z": 1},
         "settings": {
           "isPiece": false,
@@ -862,11 +862,11 @@
     {
       "id": "18",
       "name": "Wall",
-      "position": {"x": 15, "y": 4, "z": 0},
+      "position": {"x": 0, "y": 0, "z": 0},
       "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
       "shape": {
         "type": "box",
-        "offset": {"x": 0.5, "y": 2, "z": -10},
+        "offset": {"x": 15.5, "y": 6, "z": -10},
         "stretch": {"x": 1, "y": 1, "z": 1},
         "settings": {
           "isPiece": false,
@@ -1227,11 +1227,11 @@
     {
       "id": "25",
       "name": "Wall2",
-      "position": {"x": -16, "y": 4, "z": 0},
+      "position": {"x": 0, "y": 0, "z": 0},
       "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
       "shape": {
         "type": "box",
-        "offset": {"x": 0.5, "y": 2, "z": -10},
+        "offset": {"x": -15.5, "y": 6, "z": -10},
         "stretch": {"x": 1, "y": 1, "z": 1},
         "settings": {
           "isPiece": false,
@@ -1592,11 +1592,11 @@
     {
       "id": "32",
       "name": "Wall",
-      "position": {"x": 14, "y": 0, "z": 0},
-      "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+      "position": {"x": 0, "y": 0, "z": -19},
+      "orientation": {"x": 0, "y": 1, "z": 0, "w": 0},
       "shape": {
         "type": "box",
-        "offset": {"x": -14, "y": 0.5, "z": -9.5},
+        "offset": {"x": 0, "y": 0.5, "z": -9.5},
         "stretch": {"x": 1, "y": 1, "z": 1},
         "settings": {
           "isPiece": false,
@@ -1644,11 +1644,11 @@
     {
       "id": "33",
       "name": "Wall",
-      "position": {"x": 14, "y": 31, "z": 0},
-      "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+      "position": {"x": 0, "y": 0, "z": -21},
+      "orientation": {"x": 0, "y": 1, "z": 0, "w": 0},
       "shape": {
         "type": "box",
-        "offset": {"x": -14, "y": 0.5, "z": -10.5},
+        "offset": {"x": 0, "y": 31.5, "z": -10.5},
         "stretch": {"x": 1, "y": 1, "z": 1},
         "settings": {
           "isPiece": false,

@@ -33,8 +33,10 @@ public class ArchStar extends JavaPlugin {
     private ComponentType<ChunkStore, InputComponent> inputComponent;
     private ComponentType<ChunkStore, OutputComponent> outputComponent;
     private ComponentType<ChunkStore, EnergyCableComponent> energyCableComponent;
+    private ComponentType<ChunkStore, ConveyorComponent> conveyorComponent;
 
     private final EnergyNetworkSystem energyNetworkSystem = new EnergyNetworkSystem();
+    private final ConveyorPlaceSystem conveyorPlaceSystem = new ConveyorPlaceSystem();
 
     public ArchStar(@Nonnull JavaPluginInit init) {
         super(init);
@@ -44,6 +46,7 @@ public class ArchStar extends JavaPlugin {
     public EnergyNetworkSystem getEnergyNetworkSystem() {
         return energyNetworkSystem;
     }
+    public ConveyorPlaceSystem getConveyorPlaceSystem() {return conveyorPlaceSystem;}
 
     @Override
     protected void setup() {
@@ -54,11 +57,14 @@ public class ArchStar extends JavaPlugin {
         inputComponent = getChunkStoreRegistry().registerComponent(InputComponent.class, "InputBlock", InputComponent.CODEC);
         outputComponent = getChunkStoreRegistry().registerComponent(OutputComponent.class, "OutputBlock", OutputComponent.CODEC);
         energyCableComponent = getChunkStoreRegistry().registerComponent(EnergyCableComponent.class, "CableBlock", EnergyCableComponent.CODEC);
+        conveyorComponent = getChunkStoreRegistry().registerComponent(ConveyorComponent.class, "Conveyor", ConveyorComponent.CODEC);
 
         getChunkStoreRegistry().registerSystem(energyNetworkSystem);
         getChunkStoreRegistry().registerSystem(new EnergySystem());
         getChunkStoreRegistry().registerSystem(new CustomProcessingSystem());
         getChunkStoreRegistry().registerSystem(new CustomProcessSystem());
+        getChunkStoreRegistry().registerSystem(conveyorPlaceSystem);
+        getChunkStoreRegistry().registerSystem(new ConveyorSystem());
 
         getEntityStoreRegistry().registerSystem(new CommonUIReader());
         getEntityStoreRegistry().registerSystem(new CommonUIUpdater(1));
@@ -91,6 +97,7 @@ public class ArchStar extends JavaPlugin {
     public ComponentType<ChunkStore, InputComponent> getInputComponentType() {return inputComponent;}
     public ComponentType<ChunkStore, OutputComponent> getOutputComponentType() {return outputComponent;}
     public ComponentType<ChunkStore, EnergyCableComponent> getEnergyCableComponentType() {return energyCableComponent;}
+    public ComponentType<ChunkStore, ConveyorComponent> getConveyorComponentType() {return conveyorComponent;}
 
     public static ArchStar get() {return instance;}
 

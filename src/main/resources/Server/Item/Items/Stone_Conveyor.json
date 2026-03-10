@@ -63,6 +63,14 @@
           "Looping": true
         }
       }
+    },
+    "BlockEntity":{
+      "Components":{
+        "Conveyor": {
+          "SpeedMultiplier": 1.0,
+          "Type": "CONVEYOR"
+        }
+      }
     }
   },
   "PlayerAnimationsId": "Block",

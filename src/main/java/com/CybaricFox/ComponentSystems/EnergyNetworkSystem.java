@@ -1,5 +1,6 @@
 package com.CybaricFox.ComponentSystems;
 
+import com.CybaricFox.API.EssentialsContext;
 import com.CybaricFox.API.FoxLibrary;
 import com.CybaricFox.ComponentSystems.Helpers.EnergyNetwork;
 import com.CybaricFox.ArchStar;
@@ -78,31 +79,18 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
 
     @Override
     public void onEntityAdded(@Nonnull Ref<ChunkStore> ref, @Nonnull AddReason reason, @Nonnull Store<ChunkStore> store, @Nonnull CommandBuffer<ChunkStore> commandBuffer) {
-        World world = commandBuffer.getStore().getExternalData().getWorld();
-
-        BlockModule.BlockStateInfo info = commandBuffer.getComponent(ref, BlockModule.BlockStateInfo.getComponentType());
-        if(info == null) {
-            ArchStar.LOGGER.at(Level.SEVERE).log("EnergyNetworkSystem: Failed to process queue! BlockState was null!");
-            return;
-        }
-
-        WorldChunk worldChunk = commandBuffer.getComponent(info.getChunkRef(), WorldChunk.getComponentType());
-        if(worldChunk == null) {
-            ArchStar.LOGGER.at(Level.SEVERE).log("EnergyNetworkSystem: Failed to process queue! World was null!");
-            return;
-        }
-
-        Vector3i location = FoxLibrary.getGlobalCoordsFromChunk(info, worldChunk);
+        EssentialsContext context = new EssentialsContext(ref, commandBuffer);
+        if(!context.isValid) return;
 
         EnergyComponent energy = commandBuffer.getComponent(ref, ArchStar.get().getEnergyComponentType());
         EnergyCableComponent cable = commandBuffer.getComponent(ref, ArchStar.get().getEnergyCableComponentType());
 
         if(energy != null) {
-            handleEnergyBlock(ref, commandBuffer, location, worldChunk, world);
-            changeCableState(ref, commandBuffer, location, true);
+            handleEnergyBlock(ref, commandBuffer, context.pos, context.chunk, context.world);
+            changeCableState(ref, commandBuffer, context.pos, true);
         } else if(cable != null) {
-            handleCableBlock(ref, commandBuffer, location, worldChunk, world, cable);
-            changeCableState(ref, commandBuffer, location, true);
+            handleCableBlock(ref, commandBuffer, context.pos, context.chunk, context.world, cable);
+            changeCableState(ref, commandBuffer, context.pos, true);
         }
     }
 

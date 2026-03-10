@@ -1,5 +1,6 @@
 package com.CybaricFox.ComponentSystems;
 
+import com.CybaricFox.API.EssentialsContext;
 import com.CybaricFox.API.FoxLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Blocks.FuelComponent;
@@ -34,25 +35,10 @@ public class CustomProcessSystem extends RefSystem<ChunkStore> {
     public void onEntityRemove(@Nonnull Ref<ChunkStore> ref, @Nonnull RemoveReason removeReason, @Nonnull Store<ChunkStore> store, @Nonnull CommandBuffer<ChunkStore> commandBuffer) {
         //Only call when the block is destroyed, not unloaded
         if(removeReason == RemoveReason.REMOVE) {
-            World world = commandBuffer.getExternalData().getWorld();
-
-            BlockModule.BlockStateInfo info = commandBuffer.getComponent(ref, BlockModule.BlockStateInfo.getComponentType());
-
-            if(info == null) {
-                ArchStar.LOGGER.at(Level.SEVERE).log("CustomProcessSystem: Failed to remove entity! BlockState was null!");
-                return;
-            }
-
-            WorldChunk worldChunk = commandBuffer.getComponent(info.getChunkRef(), WorldChunk.getComponentType());
-
-            if(worldChunk == null) {
-                ArchStar.LOGGER.at(Level.SEVERE).log("CustomProcessSystem: Failed to remove entity! World was null!");
-                return;
-            }
+            EssentialsContext context = new EssentialsContext(ref, commandBuffer);
 
             //Batch items so only one call to the world thread is needed
             ArrayList<ItemStack> items = new ArrayList<>();
-            Vector3i pos = FoxLibrary.getGlobalCoordsFromChunk(info, worldChunk);
 
             FuelComponent fuel = commandBuffer.getComponent(ref, ArchStar.get().getFuelComponentType());
             InputComponent input = commandBuffer.getComponent(ref, ArchStar.get().getInputComponentType());
@@ -62,7 +48,7 @@ public class CustomProcessSystem extends RefSystem<ChunkStore> {
             items = dropItems(input, items);
             items = dropItems(output, items);
 
-            FoxLibrary.spawnItems(world, pos, items);
+            FoxLibrary.spawnItems(context.world, context.pos, items);
         }
     }
 

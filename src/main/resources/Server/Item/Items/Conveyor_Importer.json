@@ -35,7 +35,7 @@
     "Material": "Solid",
     "DrawType": "Model",
     "Opacity": "Transparent",
-    "CustomModel": "Blocks/Conveyor_IO.blockymodel",
+    "CustomModel": "Blocks/Conveyor_Import.blockymodel",
     "CustomModelTexture": [
       {
         "Texture": "Blocks/ConveyorIO.png",
@@ -57,6 +57,14 @@
         "Move": {
           "CustomModelAnimation": "Blocks/Conveyor_Move.blockyanim",
           "Looping": true
+        }
+      }
+    },
+    "BlockEntity":{
+      "Components":{
+        "Conveyor": {
+          "SpeedMultiplier": 1.0,
+          "Type": "IMPORT"
         }
       }
     }
