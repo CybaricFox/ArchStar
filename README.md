@@ -8,71 +8,44 @@ Currently includes:
 - A Grinder to double ores.
 - A Generator for producing power.
 - Cables for power transport.
+- Conveyors for item transport
 - 2 ores.
 - Rubber Trees (When V2 is released)
-- A steel drill.
+- A steel drill (Functionality coming in the next beta).
 
 <img width="1649" height="851" alt="Screenshot 2026-02-15 184056" src="https://github.com/user-attachments/assets/62c19e3f-6c61-409b-b661-d92d9e525f9b" />
 
 Latest Beta Build:
-03/04/26 - beta 0.1.0
+03/11/26 - beta 0.2.0
 
-- Updated many Icons to use the asset editor's generation method.
-- Updated Creative Tab icons
-- Renamed ore IDs to be more inline with Hytale naming conventions
+CONVEYOR UPDATE
+- Conveyors allow transporting items from machines to storage to machines and so on. Conveyors support ArchStar machines, Vanilla processing benches, and chests.
+- Stone conveyors are the earliest obtainable conveyor. Items take 5 seconds to pass through.
+- Gold conveyors are more difficult to craft, but take only 2 seconds to pass through.
+- Routers allow items to transfer in vertical directions and allow for multiple outputs.
+- Conveyor importers are needed to extract items while exporters are needed to insert items.
 
-Inventor's Bench
-- Fixed blueprint texture collision with the top of the bench
-- Retextured blueprint in order to reduce eye strain
+Changes:
 
-Copper Cable
-- Removed unused assets
-- Changed gathering type to softblocks
-- Changed soundset ID to soft
+CONVEYORS
+- Added Gold Conveyors and Routers
+- Retextured Export Conveyor
+- Moved Conveyor files to their own folders
+- Conveyor blocks now drop items when destroyed.
+- Conveyor importers now generate items. Items will follow the conveyor belt. They cannot be picked up.
+- Conveyors will now activate the conveyor they target for better animation.
+- Changed Importer recipe to be less evil.
 
-Electric Furnace
-- Renamed and ReIDed
-- Changed sound effect that plays during processing
+BACKEND
+- Renamed FoxLibrary to ArchLibrary
+- Added DirectionLibrary
 
-Electric Grinder
-- Renamed and ReIDed
-- Polished grinding animation
-- Fixed texture conflicts with the gears
-- Sped up the grinding animation
-- Changed sound effect that plays during processing
-- Added Particles for processing
-- Increased processing time for sodium from 20s to 3m20s
+FIXES
+- Fixed particle color of Tin and Ancient Salt
+- Added Energy Component to debugger tool
 
-Iron Furnace:
-- Added new particles
-- Changed description
-
-Steel Drill:
-- Polished Animations
-- Increased Durability from 30000 to 60000
-- Increased mining hit damage from 12.5 to 25
-- Added Smoke Particles
-- Changed Sound Effect On Mine
-- Fixed workbench icon
-
-Sodium Battery:
-- Fixed workbench icon
-- Retextured
-
-Basic Circuit:
-- Renamed and ReIDed
-- Retextured
-
-Sodium:
-- Retextured
-- Changed description to be more clear on how to obtain.
-
-Solid Fuel Generator:
-- Added new particles
-
-Known Issues / TO DO:
-- Solid Fuel Generator changes state when fuel is finished while the next fuel is being consumed.
-- Cables sometimes won't connect machines when the machine is placed first.
-- Machines need unique open sounds
-- Equipment tab is missing
-- Ancient Salt Ore spawn conditions need changing
+Plans for beta 3:
+Energy Update
+- Add power storage
+- Add functionality for restoring durability with power. (Adding a tag to items and then having the storage check for the tag is probably the best way to go.)
+- Potentially refactor the whole energy system
