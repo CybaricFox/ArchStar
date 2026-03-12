@@ -16,10 +16,16 @@ import com.hypixel.hytale.builtin.crafting.state.ProcessingBenchState;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
+import com.hypixel.hytale.math.vector.Vector3d;
+import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.asset.type.blocktick.BlockTickStrategy;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
+import com.hypixel.hytale.server.core.modules.entity.item.PreventItemMerging;
+import com.hypixel.hytale.server.core.modules.physics.component.Velocity;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.BlockComponentChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
@@ -27,10 +33,12 @@ import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.ChunkSection;
 import com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerState;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
@@ -75,6 +83,14 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
 
                 if(!conveyorComponent.isEmpty() && conveyorComponent.getType() != ConveyorType.ROUTER) {
                     ArchLibrary.changeBlockState(blockRef, commandBuffer1, "Move");
+
+                    Ref<ChunkStore> targetConveyor = ArchLibrary.getBlockEntity(context.world, conveyorComponent.getTargetBlock());
+                    if(targetConveyor != null) {
+                        ConveyorComponent conveyer = commandBuffer1.getComponent(targetConveyor, ArchStar.get().getConveyorComponentType());
+                        if(conveyer != null && conveyer.getType() != ConveyorType.ROUTER) {
+                            ArchLibrary.changeBlockState(targetConveyor, commandBuffer1, "Move");
+                        }
+                    }
                 }
 
                 BlockTickStrategy strategy = BlockTickStrategy.IGNORED;
@@ -184,6 +200,7 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
 
         //Handle output to target
         ArrayList<ConveyorInstance> readyItems = conveyorComponent.decrementTimers();
+        conveyorComponent.updateEntityLocations(pos, conveyorComponent.getTargetBlock(), world);
 
         if(readyItems.isEmpty()) return BlockTickStrategy.CONTINUE;
 
@@ -279,12 +296,14 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
             //NOTE: Importer can never result in a situation where the queue is already full. We do not need to check earlier for sudden changes in size.
             if(item != null) {
                 ConveyorInstance instance = new ConveyorInstance(item, direction);
+                spawnConveyorItem(instance, world, importer.getMachinesPos());
                 conveyorComponent.addItem(instance);
             }
         }
 
         //Handle output to target
         ArrayList<ConveyorInstance> readyItems = conveyorComponent.decrementTimers();
+        conveyorComponent.updateEntityLocations(globalCoords, conveyorComponent.getTargetBlock(), world);
 
         if(readyItems.isEmpty()) return BlockTickStrategy.CONTINUE;
 
@@ -292,6 +311,7 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
         Ref<ChunkStore> targetConveyor = ArchLibrary.getBlockEntity(world, conveyorComponent.getTargetBlock());
         if(targetConveyor == null) {
             ejectItems(readyItems, conveyorComponent.getTargetBlock(), world);
+
         } else {
             ConveyorComponent targetConveyorComponent = buffer.getComponent(targetConveyor, ArchStar.get().getConveyorComponentType());
             if(targetConveyorComponent == null) {
@@ -327,6 +347,7 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
                     structureFailure(targetConveyorComponent, conveyorComponent.getTargetBlock(), world, chunk);
                 }
             }
+
         }
 
         conveyorComponent.removeReadyItems();
@@ -341,6 +362,7 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
     private BlockTickStrategy handleExport(ConveyorComponent conveyorComponent, World world, Vector3i globalCoords, CommandBuffer<ChunkStore> buffer) {
         //Handle output to target
         ArrayList<ConveyorInstance> readyItems = conveyorComponent.decrementTimers();
+        conveyorComponent.updateEntityLocations(globalCoords, conveyorComponent.getTargetBlock(), world);
 
         if(readyItems.isEmpty()) return BlockTickStrategy.CONTINUE;
 
@@ -392,6 +414,8 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
 
             if(!exported) {
                 failedToExport.add(instance);
+            } else {
+                instance.deleteItemEntity(world);
             }
         }
 
@@ -411,6 +435,7 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
 
         for(ConveyorInstance instance : instances) {
             items.add(instance.getItem());
+            instance.deleteItemEntity(world);
         }
 
         ArchLibrary.spawnItems(world, pos, items);
@@ -422,6 +447,31 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
 
         world.execute(() -> {
             chunk.setBlock(pos.x, pos.y, pos.z, BlockType.EMPTY);
+        });
+    }
+
+    private void spawnConveyorItem(ConveyorInstance instance, World world, Vector3i pos) {
+        CompletableFuture<UUID> uuid = new CompletableFuture<>();
+
+        world.execute(() -> {
+            Store<EntityStore> store = world.getEntityStore().getStore();
+            Vector3d centerPos = new Vector3d(pos.x + 0.5, pos.y + 0.3, pos.z + 0.5);
+
+            Holder<EntityStore> holder = ItemComponent.generateItemDrop(store, instance.item, centerPos, new Vector3f(), 0, 0, 0);
+            holder.ensureComponent(PreventItemMerging.getComponentType());
+
+            holder.removeComponent(ItemComponent.getComponentType());
+            ItemComponent itemComponent = new ItemComponent(instance.item);
+            itemComponent.setPickupDelay(999);
+            holder.addComponent(ItemComponent.getComponentType(), itemComponent);
+            holder.removeComponent(Velocity.getComponentType());
+
+            Ref<EntityStore> entity = store.addEntity(holder, AddReason.SPAWN);
+
+            UUIDComponent uuidComponent = entity.getStore().getComponent(entity, UUIDComponent.getComponentType());
+
+            uuid.complete(uuidComponent.getUuid());
+            uuid.thenAccept(instance::setUUID);
         });
     }
 

@@ -82,7 +82,7 @@ public class EnergySystem extends EntityTickingSystem<ChunkStore> {
                     fuelComponent.decrementCookTime();
                     return true;
                 } else { //Consume fuel to start cooking
-                    return  fuelComponent.consumeFuel();
+                    return fuelComponent.consumeFuel();
                 }
             } else {
                 fuelComponent.decrementCookTime();

@@ -3,6 +3,7 @@ package com.CybaricFox.Interactions;
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Blocks.ConveyorComponent;
+import com.CybaricFox.Components.Blocks.EnergyComponent;
 import com.CybaricFox.Components.Helpers.Conveyors.ConveyorImporter;
 import com.CybaricFox.Components.Helpers.Conveyors.ConveyorInstance;
 import com.CybaricFox.Components.Helpers.Conveyors.ConveyorType;
@@ -41,8 +42,23 @@ public class DebuggerInteraction  extends SimpleBlockInteraction {
         if(blockRef == null) return;
 
         ConveyorComponent conveyorComponent = blockRef.getStore().getComponent(blockRef, ArchStar.get().getConveyorComponentType());
-        if(conveyorComponent == null) return;
+        if(conveyorComponent != null) {
+            conveyorInteraction(playerComponent, conveyorComponent);
+        }
 
+        EnergyComponent energyComponent = blockRef.getStore().getComponent(blockRef, ArchStar.get().getEnergyComponentType());
+        if(energyComponent != null) {
+            energyInteraction(playerComponent, energyComponent);
+        }
+    }
+
+    private void energyInteraction(Player playerComponent, EnergyComponent energyComponent) {
+        playerComponent.sendMessage(Message.raw("================"));
+        playerComponent.sendMessage(Message.raw("Type: " + energyComponent.getType().toString()));
+        playerComponent.sendMessage(Message.raw("Network ID: " + energyComponent.getNetworkID()));
+    }
+
+    private void conveyorInteraction(Player playerComponent, ConveyorComponent conveyorComponent) {
         ArrayList<ConveyorInstance> instances = conveyorComponent.getAllInstances();
         Vector3i targetBlock = conveyorComponent.getTargetBlock();
 

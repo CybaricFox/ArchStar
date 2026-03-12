@@ -51,7 +51,7 @@
         "All": "BlockTextures/Rock_Stone.png"
       }
     ],
-    "ParticleColor": "#efcf22",
+    "ParticleColor": "#dfe2e8",
     "BlockSoundSetId": "Ore"
   },
   "PlayerAnimationsId": "Block",

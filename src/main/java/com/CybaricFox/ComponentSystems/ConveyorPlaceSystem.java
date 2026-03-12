@@ -4,15 +4,18 @@ import com.CybaricFox.API.EssentialsContext;
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Blocks.ConveyorComponent;
+import com.CybaricFox.Components.Helpers.Conveyors.ConveyorInstance;
 import com.CybaricFox.Components.Helpers.Conveyors.ConveyorType;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefSystem;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 public class ConveyorPlaceSystem extends RefSystem<ChunkStore> {
     @Override
@@ -34,7 +37,23 @@ public class ConveyorPlaceSystem extends RefSystem<ChunkStore> {
 
     @Override
     public void onEntityRemove(@Nonnull Ref<ChunkStore> ref, @Nonnull RemoveReason removeReason, @Nonnull Store<ChunkStore> store, @Nonnull CommandBuffer<ChunkStore> commandBuffer) {
+        if(removeReason == RemoveReason.REMOVE) {
+            EssentialsContext context = new EssentialsContext(ref, commandBuffer);
 
+            ConveyorComponent conveyorComponent = commandBuffer.getComponent(ref, ArchStar.get().getConveyorComponentType());
+            if(conveyorComponent == null) return;
+
+            ArrayList<ItemStack> items = new ArrayList<>();
+
+            for(ConveyorInstance instance : conveyorComponent.getAllInstances()) {
+                items.add(instance.getItem());
+                instance.deleteItemEntity(context.world);
+            }
+
+            if(items.isEmpty()) return;
+
+            ArchLibrary.spawnItems(commandBuffer.getExternalData().getWorld(), context.pos, items);
+        }
     }
 
     @Nullable

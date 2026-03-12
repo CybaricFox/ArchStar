@@ -5,7 +5,7 @@ plugins {
 var hytaleHome = ("D:/Hytale/HytaleGame")
 
 group = "com.cybaricfox"
-version = "alpha0.1.3"
+version = "beta0.2.0"
 
 repositories {
     mavenCentral()

@@ -51,7 +51,7 @@
         "All": "BlockTextures/Rock_Sandstone_Side.png"
       }
     ],
-    "ParticleColor": "#efcf22",
+    "ParticleColor": "#a2dae0",
     "BlockSoundSetId": "Ore"
   },
   "PlayerAnimationsId": "Block",

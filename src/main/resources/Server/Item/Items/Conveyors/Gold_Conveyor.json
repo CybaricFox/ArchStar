@@ -1,16 +1,25 @@
 {
   "TranslationProperties": {
-    "Name": "ArchStar.Conveyor_Exporter.name"
+    "Name": "ArchStar.Gold_Conveyor.name",
+    "Description": "ArchStar.Gold_Conveyor.description"
   },
   "Recipe": {
     "Input": [
       {
-        "ItemId": "Stone_Conveyor"
+        "Quantity": 2,
+        "ItemId": "Ingredient_Bar_Gold"
+      },
+      {
+        "ItemId": "Ingredient_Bar_Steel"
+      },
+      {
+        "ItemId": "Basic_Circuit"
       }
     ],
     "Output": [
       {
-        "ItemId": "Conveyor_Exporter"
+        "ItemId": "Gold_Conveyor",
+        "Quantity": 8
       }
     ],
     "BenchRequirement": [
@@ -22,9 +31,9 @@
         "Id": "Invention"
       }
     ],
-    "TimeSeconds": 0.0
+    "TimeSeconds": 2.0
   },
-  "Icon": "Icons/ItemsGenerated/Conveyor_IO_Icon.png",
+  "Icon": "Icons/ItemsGenerated/Gold_Conveyor_Icon.png",
   "Categories": [
     "ArchStar.Cables"
   ],
@@ -32,13 +41,14 @@
     "Material": "Solid",
     "DrawType": "Model",
     "Opacity": "Transparent",
-    "CustomModel": "Blocks/Conveyor_Export.blockymodel",
+    "CustomModel": "Blocks/Conveyor/Conveyor.blockymodel",
     "CustomModelTexture": [
       {
-        "Texture": "Blocks/ConveyorIO.png",
+        "Texture": "Blocks/Conveyor/Gold_Conveyor.png",
         "Weight": 1
       }
     ],
+    "HitboxType": "Block_Flat",
     "VariantRotation": "NESW",
     "Gathering": {
       "Breaking": {
@@ -46,13 +56,13 @@
       }
     },
     "BlockParticleSetId": "Metal",
-    "ParticleColor": "#8f8f8f",
+    "ParticleColor": "#efcf22",
     "BlockSoundSetId": "Metal",
     "State": {
       "Id": "conveyor",
       "Definitions": {
         "Move": {
-          "CustomModelAnimation": "Blocks/Conveyor_Move.blockyanim",
+          "CustomModelAnimation": "Blocks/Conveyor/Conveyor_Move.blockyanim",
           "Looping": true
         }
       }
@@ -60,8 +70,8 @@
     "BlockEntity":{
       "Components":{
         "Conveyor": {
-          "SpeedMultiplier": 1.0,
-          "Type": "EXPORT"
+          "SpeedMultiplier": 0.4,
+          "Type": "CONVEYOR"
         }
       }
     }

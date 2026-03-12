@@ -1,17 +1,22 @@
 {
   "TranslationProperties": {
-    "Name": "ArchStar.Stone_Router.name",
-    "Description": "ArchStar.Stone_Router.description"
+    "Name": "ArchStar.Stone_Conveyor.name",
+    "Description": "ArchStar.Stone_Conveyor.description"
   },
   "Recipe": {
     "Input": [
       {
-        "ItemId": "Stone_Conveyor"
+        "Quantity": 2,
+        "ResourceTypeId": "Rock"
+      },
+      {
+        "ItemId": "Ingredient_Bar_Steel"
       }
     ],
     "Output": [
       {
-        "ItemId": "Stone_Router"
+        "ItemId": "Stone_Conveyor",
+        "Quantity": 8
       }
     ],
     "BenchRequirement": [
@@ -23,9 +28,9 @@
         "Id": "Invention"
       }
     ],
-    "TimeSeconds": 0.0
+    "TimeSeconds": 2.0
   },
-  "Icon": "Icons/ItemsGenerated/Stone_Router_Icon.png",
+  "Icon": "Icons/ItemsGenerated/Stone_Conveyor_Icon.png",
   "Categories": [
     "ArchStar.Cables"
   ],
@@ -33,13 +38,15 @@
     "Material": "Solid",
     "DrawType": "Model",
     "Opacity": "Transparent",
-    "CustomModel": "Blocks/Stone_Router.blockymodel",
+    "CustomModel": "Blocks/Conveyor/Conveyor.blockymodel",
     "CustomModelTexture": [
       {
-        "Texture": "Blocks/Stone_Router.png",
+        "Texture": "Blocks/Conveyor/Conveyor.png",
         "Weight": 1
       }
     ],
+    "HitboxType": "Block_Flat",
+    "VariantRotation": "NESW",
     "Gathering": {
       "Breaking": {
         "GatherType": "SoftBlocks"
@@ -48,11 +55,20 @@
     "BlockParticleSetId": "Metal",
     "ParticleColor": "#8f8f8f",
     "BlockSoundSetId": "Metal",
+    "State": {
+      "Id": "conveyor",
+      "Definitions": {
+        "Move": {
+          "CustomModelAnimation": "Blocks/Conveyor/Conveyor_Move.blockyanim",
+          "Looping": true
+        }
+      }
+    },
     "BlockEntity":{
       "Components":{
         "Conveyor": {
           "SpeedMultiplier": 1.0,
-          "Type": "ROUTER"
+          "Type": "CONVEYOR"
         }
       }
     }

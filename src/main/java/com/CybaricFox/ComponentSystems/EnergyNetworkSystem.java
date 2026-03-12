@@ -237,7 +237,7 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
             return;
         }
 
-        int targetNetwork = confirmAndCombineNetworks(neighbors, world, commandBuffer);
+        int targetNetwork = confirmAndCombineNetworks(neighbors, world, commandBuffer, null);
 
         //Finally, add this entity to the network
         if(targetNetwork == -1) {
@@ -259,16 +259,18 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
         }
 
         //Confirm networks are combined if needed
-        confirmAndCombineNetworks(neighbors, world, commandBuffer);
+        confirmAndCombineNetworks(neighbors, world, commandBuffer, location);
     }
 
-    private int confirmAndCombineNetworks(ArrayList<Vector3i> neighbors, World world, CommandBuffer<ChunkStore> commandBuffer) {
+    private int confirmAndCombineNetworks(ArrayList<Vector3i> neighbors, World world, CommandBuffer<ChunkStore> commandBuffer, Vector3i origin) {
         ArrayList<Integer> foundNetworks = new ArrayList<>();
 
         //Get the network id of every branch of this block
         for(Vector3i neighbor : neighbors) {
             if(getNetworkFromVector(neighbor) == -1) {
-                foundNetworks.add(findConnectedNetwork(neighbor, commandBuffer, world));
+                ArrayList<Vector3i> temp = new ArrayList<>();
+                temp.add(origin);
+                foundNetworks.add(findConnectedNetwork(neighbor, commandBuffer, world, temp));
             } else {
                 foundNetworks.add(getNetworkFromVector(neighbor));
             }
@@ -298,7 +300,7 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
     }
 
     //Travel across cables until a machine is found with a network id
-    private int findConnectedNetwork(Vector3i pos, CommandBuffer<ChunkStore> buffer, World world) {
+    private int findConnectedNetwork(Vector3i pos, CommandBuffer<ChunkStore> buffer, World world, ArrayList<Vector3i> blacklist) {
         ArrayList<Vector3i> neighbors = getValidNeighbors(world, pos, buffer);
 
         //If no valid neighbors, return
@@ -309,6 +311,10 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
         //Iterate over the stack 1 cable at a time. Save all found cables in the set to prevent loops
         ArrayList<Vector3i> stack = new ArrayList<>();
         HashSet<Vector3i> set = new HashSet<>();
+
+        if(blacklist != null) {
+            set.addAll(blacklist);
+        }
 
         stack.add(pos);
         set.add(pos);
@@ -423,36 +429,22 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
 
     @Override
     public void onEntityRemove(@Nonnull Ref<ChunkStore> ref, @Nonnull RemoveReason removeReason, @Nonnull Store<ChunkStore> store, @Nonnull CommandBuffer<ChunkStore> commandBuffer) {
-        World world = commandBuffer.getExternalData().getWorld();
-
-        BlockModule.BlockStateInfo info = commandBuffer.getComponent(ref, BlockModule.BlockStateInfo.getComponentType());
-        if(info == null) {
-            ArchStar.LOGGER.at(Level.SEVERE).log("EnergyNetworkSystem: Failed to remove entity! BlockState was null!");
-            return;
-        }
-
-        WorldChunk worldChunk = commandBuffer.getComponent(info.getChunkRef(), WorldChunk.getComponentType());
-        if(worldChunk == null) {
-            ArchStar.LOGGER.at(Level.SEVERE).log("EnergyNetworkSystem: Failed to remove entity! World was null!");
-            return;
-        }
-
-        Vector3i location = ArchLibrary.getGlobalCoordsFromChunk(info, worldChunk);
+        EssentialsContext context = new EssentialsContext(ref, commandBuffer);
 
         EnergyComponent energy = commandBuffer.getComponent(ref, ArchStar.get().getEnergyComponentType());
         EnergyCableComponent cable = commandBuffer.getComponent(ref, ArchStar.get().getEnergyCableComponentType());
 
-        ArrayList<Vector3i> neighbors = getValidNeighbors(world, location, commandBuffer);
+        ArrayList<Vector3i> neighbors = getValidNeighbors(context.world, context.pos, commandBuffer);
 
         if(energy != null) {
-            getNetwork(energy.getNetworkID()).removeEntity(location);
-            recalibrateNetwork(energy.getNetworkID(), location, world, commandBuffer);
+            getNetwork(energy.getNetworkID()).removeEntity(context.pos);
+            recalibrateNetwork(energy.getNetworkID(), context.pos, context.world, commandBuffer);
 
             for(Vector3i neighbor : neighbors) {
                 changeCableState(ref, commandBuffer, neighbor, false);
             }
         } else if(cable != null) {
-            recalibrateNetwork(findConnectedNetwork(location, commandBuffer, world), location, world, commandBuffer);
+            recalibrateNetwork(findConnectedNetwork(context.pos, commandBuffer, context.world, null), context.pos, context.world, commandBuffer);
             for(Vector3i neighbor : neighbors) {
                 changeCableState(ref, commandBuffer, neighbor, false);
             }

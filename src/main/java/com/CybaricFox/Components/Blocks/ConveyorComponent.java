@@ -11,8 +11,10 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.component.Component;
+import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import javax.annotation.Nullable;
@@ -148,6 +150,19 @@ public class ConveyorComponent implements Component<ChunkStore> {
         }
 
         return readyInstances;
+    }
+
+    public void updateEntityLocations(Vector3i pos, Vector3i target, World world) {
+        if(target == null) return;
+
+        for(ConveyorInstance instance : items) {
+            if(instance.from == Direction.NOT_SET) {
+                instance.updateItemLocation(DirectionLibrary.getCoordsFromDirection(instance.to, pos), pos, world);
+            }
+            else {
+                instance.updateItemLocation(pos, target, world);
+            }
+        }
     }
 
     public void removeReadyItems() {
