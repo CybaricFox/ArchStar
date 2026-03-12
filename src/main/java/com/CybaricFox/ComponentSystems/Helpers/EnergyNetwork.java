@@ -1,6 +1,6 @@
 package com.CybaricFox.ComponentSystems.Helpers;
 
-import com.CybaricFox.API.FoxLibrary;
+import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Helpers.EnergyBlockType;
 import com.CybaricFox.Components.Blocks.EnergyComponent;
@@ -10,7 +10,6 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -86,7 +85,7 @@ public class EnergyNetwork {
 
         for(ConcurrentHashMap.Entry<Vector3i, EnergyBlockType> entry : entities.entrySet()) {
             if(entry.getValue() == type) {
-                Ref<ChunkStore> entity = FoxLibrary.getBlockEntity(Universe.get().getWorld(worldUUID), entry.getKey());
+                Ref<ChunkStore> entity = ArchLibrary.getBlockEntity(Universe.get().getWorld(worldUUID), entry.getKey());
 
                 EnergyComponent component = entity.getStore().getComponent(entity, ArchStar.get().getEnergyComponentType());
 
@@ -104,7 +103,7 @@ public class EnergyNetwork {
     //Push all entities into a new network. This is used to combine networks.
     public void pushEntitiesToNetwork(EnergyNetwork newNetwork, CommandBuffer<ChunkStore> buffer) {
         for(Vector3i entry : entities.keySet()) {
-            newNetwork.addEntity(FoxLibrary.getBlockEntity(Universe.get().getWorld(worldUUID), entry), entry, buffer);
+            newNetwork.addEntity(ArchLibrary.getBlockEntity(Universe.get().getWorld(worldUUID), entry), entry, buffer);
         }
 
         entities.clear();
@@ -114,7 +113,7 @@ public class EnergyNetwork {
     //Push the specific entity to the given network and remove it from this network.
     public void pushEntityToNetwork(EnergyNetwork newNetwork, Vector3i key, CommandBuffer<ChunkStore> buffer) {
         if(entities.containsKey(key)) {
-            newNetwork.addEntity(FoxLibrary.getBlockEntity(Universe.get().getWorld(worldUUID), key), key, buffer);
+            newNetwork.addEntity(ArchLibrary.getBlockEntity(Universe.get().getWorld(worldUUID), key), key, buffer);
             removeEntity(key);
         }
     }

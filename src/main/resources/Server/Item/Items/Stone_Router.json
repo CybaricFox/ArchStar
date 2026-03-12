@@ -1,0 +1,75 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Stone_Router.name",
+    "Description": "ArchStar.Stone_Router.description"
+  },
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Stone_Conveyor"
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "Stone_Router"
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Industrial"
+        ],
+        "Id": "Invention"
+      }
+    ],
+    "TimeSeconds": 0.0
+  },
+  "Icon": "Icons/ItemsGenerated/Stone_Router_Icon.png",
+  "Categories": [
+    "ArchStar.Cables"
+  ],
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Stone_Router.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Stone_Router.png",
+        "Weight": 1
+      }
+    ],
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "SoftBlocks"
+      }
+    },
+    "BlockParticleSetId": "Metal",
+    "ParticleColor": "#8f8f8f",
+    "BlockSoundSetId": "Metal",
+    "BlockEntity":{
+      "Components":{
+        "Conveyor": {
+          "SpeedMultiplier": 1.0,
+          "Type": "ROUTER"
+        }
+      }
+    }
+  },
+  "PlayerAnimationsId": "Block",
+  "IconProperties": {
+    "Scale": 0.42,
+    "Rotation": [
+      22.5,
+      45.0,
+      22.5
+    ],
+    "Translation": [
+      12.9,
+      -11.7
+    ]
+  },
+  "MaxStack": 100,
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

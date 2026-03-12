@@ -3,7 +3,6 @@ package com.CybaricFox.API;
 import com.CybaricFox.ArchStar;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.block.BlockUtil;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
@@ -19,18 +18,16 @@ import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.BlockComponentChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
-import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.FillerBlockUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Random;
 import java.util.logging.Level;
 
 //General Library class for common functions
-public class FoxLibrary {
+public class ArchLibrary {
     private static final Random rng = new Random();
 
     //Converts global coordinates to local chunk coordinates
@@ -53,8 +50,10 @@ public class FoxLibrary {
 
     //Returns a block entity at the world location if one exists
     public static Ref<ChunkStore> getBlockEntity(World world, Vector3i globalPos) {
+        if(globalPos == null) return null;
+
         //Convert global coords to local coords
-        Vector3i localCoords = FoxLibrary.convertToLocalCoords(globalPos);
+        Vector3i localCoords = ArchLibrary.convertToLocalCoords(globalPos);
 
         //Get the worldChunk by indexing the target chunk from the blocks location
         WorldChunk chunk = world.getChunkIfLoaded(ChunkUtil.indexChunkFromBlock(globalPos.x, globalPos.z));
@@ -100,7 +99,7 @@ public class FoxLibrary {
             return;
         }
 
-        Vector3i pos = FoxLibrary.getGlobalCoordsFromChunk(info, chunk);
+        Vector3i pos = ArchLibrary.getGlobalCoordsFromChunk(info, chunk);
 
         //Get the block state
         World world = buffer.getExternalData().getWorld();
@@ -127,58 +126,17 @@ public class FoxLibrary {
         return rng.nextFloat(-bound, bound);
     }
 
-    //Returns the forward direction of a block from its rotation index
-    public static Direction getForwardDirection(int rotationIndex, boolean reverse) {
-
-        Direction direction = Direction.Not_Set;
-        switch(rotationIndex) {
-            case 0 -> direction = Direction.North;
-            case 1 -> direction = Direction.West;
-            case 2 -> direction = Direction.South;
-            case 3 -> direction = Direction.East;
-        }
-
-        if(reverse) {
-            switch(direction) {
-                case North -> direction = Direction.South;
-                case East -> direction = Direction.West;
-                case South -> direction = Direction.North;
-                case West -> direction = Direction.East;
-            }
-        }
-
-        if(direction == Direction.Not_Set) {
-            ArchStar.LOGGER.at(Level.WARNING).log("INVALID FORWARD DIRECTION! Expected 0-3, got " + rotationIndex + " instead.");
-        }
-
-        return direction;
-    }
-
-    public static Vector3i getCoordsFromDirection(Direction direction, Vector3i pos) {
-        Vector3i targetVector = pos;
-
-        switch(direction) {
-            case North -> targetVector = new Vector3i(pos.x, pos.y, pos.z - 1);
-            case South -> targetVector = new Vector3i(pos.x, pos.y, pos.z + 1);
-            case West -> targetVector = new Vector3i(pos.x - 1, pos.y, pos.z);
-            case East -> targetVector = new Vector3i(pos.x + 1, pos.y, pos.z);
-            case Up -> targetVector = new Vector3i(pos.x, pos.y + 1, pos.z);
-            case Down -> targetVector = new Vector3i(pos.x, pos.y - 1, pos.z);
-        }
-
-        return targetVector;
-    }
-
+    //Returned in order of North South East West Up Down
     public static ArrayList<Vector3i> getNeighborVectors(Vector3i location) {
         ArrayList<Vector3i> neighbors = new ArrayList<>();
 
         //Global coords
-        neighbors.add(new Vector3i(location.x, location.y + 1, location.z));
-        neighbors.add(new Vector3i(location.x, location.y - 1, location.z));
-        neighbors.add(new Vector3i(location.x + 1, location.y, location.z));
-        neighbors.add(new Vector3i(location.x - 1, location.y, location.z));
-        neighbors.add(new Vector3i(location.x, location.y, location.z + 1));
-        neighbors.add(new Vector3i(location.x, location.y, location.z - 1));
+        neighbors.addLast(new Vector3i(location.x, location.y, location.z - 1));
+        neighbors.addLast(new Vector3i(location.x, location.y, location.z + 1));
+        neighbors.addLast(new Vector3i(location.x + 1, location.y, location.z));
+        neighbors.addLast(new Vector3i(location.x - 1, location.y, location.z));
+        neighbors.addLast(new Vector3i(location.x, location.y + 1, location.z));
+        neighbors.addLast(new Vector3i(location.x, location.y - 1, location.z));
         return neighbors;
     }
 }

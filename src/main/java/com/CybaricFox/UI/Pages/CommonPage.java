@@ -1,6 +1,6 @@
 package com.CybaricFox.UI.Pages;
 
-import com.CybaricFox.API.FoxLibrary;
+import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Blocks.EnergyComponent;
 import com.CybaricFox.Components.Blocks.FuelComponent;
@@ -83,7 +83,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         World world = player.getWorld();
 
         //Convert global coords to local coords
-        Vector3i localCoords = FoxLibrary.convertToLocalCoords(pos);
+        Vector3i localCoords = ArchLibrary.convertToLocalCoords(pos);
 
         //Get the worldChunk by indexing the target chunk from the blocks location
         WorldChunk chunk = world.getChunkIfLoaded(ChunkUtil.indexChunkFromBlock(pos.x, pos.z));
@@ -141,7 +141,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
     private void onDrop(Ref<EntityStore> ref, int firstSlot, int secondSlot, int quantity, int sourceID, int receiverID) {
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
+        Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), pos);
 
         int inventoryCapacity = player.getInventory().getStorage().getCapacity();
         int hotbarCapacity = player.getInventory().getHotbar().getCapacity();
@@ -288,7 +288,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         builder.append("#ContentContainerGroup", "Pages/Common/EnergyUI.ui");
 
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
+        Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), pos);
 
         EnergyComponent energy = block.getStore().getComponent(block, ArchStar.get().getEnergyComponentType());
 
@@ -301,7 +301,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         event.addEventBinding(CustomUIEventBindingType.SlotClickReleaseWhileDragging, "#FuelItemGrid", new EventData().append("Type", "Release").append("Grid", "Fuel"), false);
 
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
+        Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), pos);
 
         FuelComponent fuel = block.getStore().getComponent(block, ArchStar.get().getFuelComponentType());
 
@@ -337,7 +337,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         event.addEventBinding(CustomUIEventBindingType.SlotClickReleaseWhileDragging, "#InputItemGrid", new EventData().append("Type", "Release").append("Grid", "Input"), false);
 
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
+        Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), pos);
 
         InputComponent input = block.getStore().getComponent(block, ArchStar.get().getInputComponentType());
 
@@ -384,7 +384,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         event.addEventBinding(CustomUIEventBindingType.SlotClickReleaseWhileDragging, "#OutputItemGrid", new EventData().append("Type", "Release").append("Grid", "Output"), false);
 
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), pos);
+        Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), pos);
 
         OutputComponent output = block.getStore().getComponent(block, ArchStar.get().getOutputComponentType());
 

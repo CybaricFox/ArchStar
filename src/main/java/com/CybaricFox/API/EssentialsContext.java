@@ -24,7 +24,7 @@ public class EssentialsContext {
         chunk = commandBuffer.getComponent(info.getChunkRef(), WorldChunk.getComponentType());
         if(chunk == null) return;
 
-        pos = FoxLibrary.getGlobalCoordsFromChunk(info, chunk);
+        pos = ArchLibrary.getGlobalCoordsFromChunk(info, chunk);
 
         isValid = true;
     }

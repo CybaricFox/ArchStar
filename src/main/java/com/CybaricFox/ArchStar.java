@@ -2,6 +2,7 @@ package com.CybaricFox;
 
 import com.CybaricFox.ComponentSystems.*;
 import com.CybaricFox.Components.Blocks.*;
+import com.CybaricFox.Interactions.DebuggerInteraction;
 import com.CybaricFox.Interactions.OpenGeneratorInteraction;
 import com.CybaricFox.Interactions.OpenPoweredProcessorInteraction;
 import com.CybaricFox.Systems.CommonUIReader;
@@ -78,6 +79,7 @@ public class ArchStar extends JavaPlugin {
         //Interactions
         getCodecRegistry(Interaction.CODEC).register("Open_Power_Generator", OpenGeneratorInteraction.class, OpenGeneratorInteraction.CODEC);
         getCodecRegistry(Interaction.CODEC).register("Open_Powered_Processor", OpenPoweredProcessorInteraction.class, OpenPoweredProcessorInteraction.CODEC);
+        getCodecRegistry(Interaction.CODEC).register("Debug_ArchStar_Block", DebuggerInteraction.class, DebuggerInteraction.CODEC);
 
         //WorldGen
         LOGGER.at(Level.INFO).log("ArchStar setup finished.");

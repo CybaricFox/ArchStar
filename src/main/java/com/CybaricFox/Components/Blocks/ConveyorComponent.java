@@ -1,154 +1,190 @@
 package com.CybaricFox.Components.Blocks;
 
-import com.CybaricFox.Components.Helpers.ConveyorState;
-import com.CybaricFox.Components.Helpers.ConveyorType;
+import com.CybaricFox.API.Direction;
+import com.CybaricFox.API.DirectionLibrary;
+import com.CybaricFox.Components.Helpers.Conveyors.ConveyorImporter;
+import com.CybaricFox.Components.Helpers.Conveyors.ConveyorInstance;
+import com.CybaricFox.Components.Helpers.Conveyors.ConveyorRouter;
+import com.CybaricFox.Components.Helpers.Conveyors.ConveyorType;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ConveyorComponent implements Component<ChunkStore> {
     public static final BuilderCodec<ConveyorComponent> CODEC;
-    private final int baseTimer = 150;
-
-    private SimpleItemContainer container;
-    //How much longer before the item is transferred.
-    private int timer = 0;
-    private int timerIO = 0;
+    //List of all items in this conveyor
+    private ArrayList<ConveyorInstance> items = new ArrayList<>();
+    //Forward direction of this conveyor
+    private Direction forwardDirection = Direction.NOT_SET;
+    //The block location of the target
     private Vector3i targetBlock;
-    private Vector3i targetMachine;
-    public ConveyorState state = ConveyorState.VOLATILE;
-
-    private ConveyorType type = ConveyorType.NOTSET;
+    //Type of conveyor, controls how it functions
+    private ConveyorType type = ConveyorType.NOT_SET;
     //A multiplier to the timer
     //Tier I = 1.0 (5s by default)
     //Tier II =
     //Tier III =
     private float speedMultiplier = 1.0f;
-    //The value the timer will be reset to. This value is set dynamically.
-
-    private int maxTimer = baseTimer;
+    //Is valid is true when the target block and forward direction are valid values.
+    public boolean isValid = false;
+    //Data related to the importer
+    private ConveyorImporter importerData = null;
+    //Data related to routers
+    private ConveyorRouter routerData = null;
+    //Max size of this conveyor DEFAULT: 100. Can be overriden in the json.
+    private int maxSize = 100;
 
     public ConveyorComponent() {
-        setMaxTimer();
+
     }
-    public ConveyorComponent(SimpleItemContainer container, ConveyorType type, float speedMultiplier, int timer, int timerIO) {
+
+    public ConveyorComponent(ConveyorType type, float speedMultiplier, ArrayList<ConveyorInstance> items, Direction forwardDirection, Vector3i targetBlock, int maxSize) {
         this.type = type;
         this.speedMultiplier = speedMultiplier;
-        setMaxTimer();
-        this.timer = timer;
-        this.timerIO = timerIO;
+        this.items = new ArrayList<>(items);
+        this.forwardDirection = forwardDirection;
+        this.targetBlock = targetBlock;
+        this.maxSize = maxSize;
 
-        setContainer(container);
+        checkValidity();
     }
 
-    private void setContainer(SimpleItemContainer container) {
-        this.container = Objects.requireNonNullElseGet(container, () -> new SimpleItemContainer((short) 2));
+    @Nullable
+    @Override
+    public Component<ChunkStore> clone() {
+        return new ConveyorComponent(type, speedMultiplier, items, forwardDirection, targetBlock, maxSize);
     }
 
     public ConveyorType getType() {
         return type;
     }
 
-    public boolean hasItem() {
-        return !container.isEmpty();
+    public int getMaxSize() {
+        return maxSize;
     }
 
-    private void setMaxTimer() {
-        maxTimer = Math.round(baseTimer * speedMultiplier);
+    public void setTarget(Vector3i targetBlock) {
+        this.targetBlock = targetBlock;
+        checkValidity();
     }
 
-    public void startTimer() {
-        timer = maxTimer;
+    public void setForwardDirection(Direction direction) {
+        forwardDirection = direction;
+        checkValidity();
     }
 
-    public void startIOTimer() {
-        timerIO = maxTimer;
+    public void setImporterData(Vector3i pos, boolean reverse) {
+        if(!isValid || pos == null) return;
+        importerData = new ConveyorImporter(reverse ? DirectionLibrary.getBackwardDirection(forwardDirection) : forwardDirection, pos);
     }
 
-    public void decrementTimer() {
-        if(timer > 0) {
-            timer--;
+    public void setRouterData(Vector3i pos, World world) {
+        if(pos == null || world == null) return;
+        routerData = new ConveyorRouter(pos, world);
+    }
+
+    public ConveyorImporter getImportData() {
+        if(importerData == null) return null;
+        return importerData;
+    }
+
+    public ConveyorRouter getRouterData() {
+        if(routerData == null) return null;
+        return routerData;
+    }
+
+    public Direction getForwardDirection() {
+        return forwardDirection;
+    }
+
+    public void addItem(ConveyorInstance instance) {
+        if(items.size() >= maxSize) return;
+
+        instance.setCooldown(getTimer());
+        items.add(instance);
+    }
+
+    private void checkValidity() {
+        isValid = targetBlock != null && forwardDirection != Direction.NOT_SET;
+
+        if(getType() == ConveyorType.ROUTER) {
+            isValid = true;
         }
-        if(timerIO > 0) {
-            timerIO--;
-        }
+    }
+
+    public boolean canAddItem() {
+        return items.size() < maxSize;
     }
 
     public int getTimer() {
-        return timer;
-    }
-
-    public int getIOTimer() {
-        return timerIO;
-    }
-
-    public ItemStack getItem() {
-        return container.getItemStack((short) 0);
-    }
-
-    public ItemStack getIOItem() {
-        return container.getItemStack((short) 1);
-    }
-
-    public void removeItem() {
-        container.removeItemStackFromSlot((short) 0);
-    }
-
-    public void removeIOItem() {
-        container.removeItemStackFromSlot((short) 1);
-    }
-
-    public void setItem(ItemStack item) {
-        container.addItemStackToSlot((short) 0, item);
-    }
-
-    public void setIOItem(ItemStack item) {
-        container.addItemStackToSlot((short) 1, item);
-    }
-
-    public void setTargetBlock(Vector3i target) {
-        targetBlock = target;
+        //The base timer value. 150 = 5 seconds
+        return Math.round(150 * speedMultiplier);
     }
 
     public Vector3i getTargetBlock() {
         return targetBlock;
     }
 
-    public Vector3i getTargetMachine() {
-        return targetMachine;
+    public ArrayList<ConveyorInstance> getAllInstances() {
+        return items;
     }
 
-    public void setTargetMachine(Vector3i target) {
-        targetMachine = target;
+    public ArrayList<ConveyorInstance> decrementTimers() {
+        ArrayList<ConveyorInstance> readyInstances = new ArrayList<>();
+        for(ConveyorInstance instance : items) {
+            instance.decrementTimer();
+            if(instance.getCooldown() == 0) {
+                readyInstances.add(instance);
+            }
+        }
+
+        return readyInstances;
     }
 
-    @Nullable
-    @Override
-    public Component<ChunkStore> clone() {
-        return new ConveyorComponent(container, type, speedMultiplier, timer, timerIO);
+    public void removeReadyItems() {
+        ArrayList<ConveyorInstance> remaining = new ArrayList<>();
+
+        for (ConveyorInstance item : items) {
+            if (item.getCooldown() > 0) {
+                remaining.add(item);
+            }
+        }
+
+        clearItems();
+        items = remaining;
+    }
+
+    public void clearItems() {
+        items.clear();
+    }
+
+    public boolean isEmpty() {
+        return items.isEmpty();
     }
 
     static {
+
         CODEC = (BuilderCodec.builder(ConveyorComponent.class, ConveyorComponent::new))
                 //Required fields
                 .append(new KeyedCodec<>("Type", Codec.STRING), (component, s) -> component.type = ConveyorType.valueOf(s.toUpperCase()), (component) -> component.type.toString()).add()
                 .append(new KeyedCodec<>("SpeedMultiplier", Codec.FLOAT), (component, s) -> component.speedMultiplier = s, (component) -> component.speedMultiplier).add()
 
-                //Common fields
-                .append(new KeyedCodec<>("Container", SimpleItemContainer.CODEC), (component, s) -> component.container = s, (component) -> component.container).add()
-                .append(new KeyedCodec<>("Timer", Codec.INTEGER), (component, s) -> component.timer = s, (component) -> component.timer).add()
-                .append(new KeyedCodec<>("TimerIO", Codec.INTEGER), (component, s) -> component.timerIO = s, (component) -> component.timerIO).add()
+                //Optional overrides
+                .append(new KeyedCodec<>("MaxSize", Codec.INTEGER), (component, s) -> component.maxSize = s, (component) -> component.maxSize).add()
+
+                //Save data
+                .append(new KeyedCodec<>("ItemList", new ArrayCodec<>(ConveyorInstance.CODEC, ConveyorInstance[]::new)), (component, s) -> component.items = new ArrayList<>(Arrays.asList(s)), (component) -> component.items.toArray(ConveyorInstance[]::new)).add()
+                .append(new KeyedCodec<>("ForwardDirection", Codec.STRING), (component, s) -> component.forwardDirection = Direction.valueOf(s.toUpperCase()), (component) -> component.forwardDirection.toString()).add()
                 .append(new KeyedCodec<>("TargetBlock", Vector3i.CODEC), (component, s) -> component.targetBlock = s, (component) -> component.targetBlock).add()
-                .append(new KeyedCodec<>("TargetMachine", Vector3i.CODEC), (component, s) -> component.targetMachine = s, (component) -> component.targetMachine).add()
 
                 .build();
     }

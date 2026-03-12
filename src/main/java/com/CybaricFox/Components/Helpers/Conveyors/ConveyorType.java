@@ -1,4 +1,4 @@
-package com.CybaricFox.Components.Helpers;
+package com.CybaricFox.Components.Helpers.Conveyors;
 
 //What type of conveyor is this?
 public enum ConveyorType {
@@ -6,5 +6,5 @@ public enum ConveyorType {
     ROUTER, //Multi-Output
     IMPORT, //Imports items into the conveyor
     EXPORT, //Exports items into blocks
-    NOTSET //Type not set
+    NOT_SET //Type not set
 }

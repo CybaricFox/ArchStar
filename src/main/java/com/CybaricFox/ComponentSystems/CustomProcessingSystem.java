@@ -1,6 +1,6 @@
 package com.CybaricFox.ComponentSystems;
 
-import com.CybaricFox.API.FoxLibrary;
+import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Blocks.EnergyComponent;
 import com.CybaricFox.Components.Blocks.InputComponent;
@@ -54,7 +54,7 @@ public class CustomProcessingSystem extends EntityTickingSystem<ChunkStore> {
             //iterate over all tickable blocks
             blocks.forEachTicking(blockComponentChunk, commandBuffer, section.getY(), (blockComponentChunk1, commandBuffer1, localX, localY, localZ, blockId) ->
             {
-                Ref<ChunkStore> blockRef = FoxLibrary.getBlockEntity(blockComponentChunk1, new Vector3i(localX, localY, localZ));
+                Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(blockComponentChunk1, new Vector3i(localX, localY, localZ));
                 if (blockRef == null) {
                     return BlockTickStrategy.IGNORED;
                 }
@@ -75,13 +75,13 @@ public class CustomProcessingSystem extends EntityTickingSystem<ChunkStore> {
 
                         //No energy for processing!
                         if(!result) {
-                            FoxLibrary.changeBlockState(blockRef, commandBuffer1, "default");
+                            ArchLibrary.changeBlockState(blockRef, commandBuffer1, "default");
                             return BlockTickStrategy.CONTINUE;
                         } else {
-                            FoxLibrary.changeBlockState(blockRef, commandBuffer1, "Processing");
+                            ArchLibrary.changeBlockState(blockRef, commandBuffer1, "Processing");
                         }
                     } else {
-                        FoxLibrary.changeBlockState(blockRef, commandBuffer1, "Processing");
+                        ArchLibrary.changeBlockState(blockRef, commandBuffer1, "Processing");
                     }
 
                     //Get the current input process
@@ -104,7 +104,7 @@ public class CustomProcessingSystem extends EntityTickingSystem<ChunkStore> {
 
                         //if no output, do not continue.
                         if(outputComponent == null) {
-                            FoxLibrary.changeBlockState(blockRef, commandBuffer1, "ProcessComplete");
+                            ArchLibrary.changeBlockState(blockRef, commandBuffer1, "ProcessComplete");
                             return clearTargets(inputComponent, null);
                         }
 
@@ -115,7 +115,7 @@ public class CustomProcessingSystem extends EntityTickingSystem<ChunkStore> {
                             outputComponent.getContainer().addItemStack(item);
                         }
 
-                        FoxLibrary.changeBlockState(blockRef, commandBuffer1, "ProcessComplete");
+                        ArchLibrary.changeBlockState(blockRef, commandBuffer1, "ProcessComplete");
                         return clearTargets(inputComponent, outputComponent);
                     } else {
                         return BlockTickStrategy.CONTINUE;
@@ -186,7 +186,7 @@ public class CustomProcessingSystem extends EntityTickingSystem<ChunkStore> {
                     }
                 }
 
-                FoxLibrary.changeBlockState(blockRef, commandBuffer1, "default");
+                ArchLibrary.changeBlockState(blockRef, commandBuffer1, "default");
                 return BlockTickStrategy.CONTINUE;
             });
         }

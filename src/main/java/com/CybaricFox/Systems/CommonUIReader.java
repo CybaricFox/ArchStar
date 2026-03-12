@@ -1,6 +1,6 @@
 package com.CybaricFox.Systems;
 
-import com.CybaricFox.API.FoxLibrary;
+import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Blocks.EnergyComponent;
 import com.CybaricFox.Components.Blocks.FuelComponent;
@@ -33,7 +33,7 @@ public class CommonUIReader extends EntityTickingSystem<EntityStore> {
         CustomUIPage customPage = player.getPageManager().getCustomPage();
 
         if(customPage instanceof CommonPage commonPage) {
-            Ref<ChunkStore> block = FoxLibrary.getBlockEntity(player.getWorld(), commonPage.getPos());
+            Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), commonPage.getPos());
 
             EnergyComponent energyComponent = block.getStore().getComponent(block, ArchStar.get().getEnergyComponentType());
             FuelComponent fuelComponent = block.getStore().getComponent(block, ArchStar.get().getFuelComponentType());

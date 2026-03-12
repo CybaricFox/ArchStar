@@ -1,11 +1,11 @@
 package com.CybaricFox.API;
 
 public enum Direction {
-    North,
-    South,
-    East,
-    West,
-    Up,
-    Down,
-    Not_Set
+    NORTH,
+    SOUTH,
+    EAST,
+    WEST,
+    UP,
+    DOWN,
+    NOT_SET
 }

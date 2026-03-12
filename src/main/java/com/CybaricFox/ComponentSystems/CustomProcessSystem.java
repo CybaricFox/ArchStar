@@ -1,7 +1,7 @@
 package com.CybaricFox.ComponentSystems;
 
 import com.CybaricFox.API.EssentialsContext;
-import com.CybaricFox.API.FoxLibrary;
+import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Blocks.FuelComponent;
 import com.CybaricFox.Components.Blocks.InputComponent;
@@ -10,17 +10,13 @@ import com.CybaricFox.Components.Helpers.CommonContainerComponent;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefSystem;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.block.BlockModule;
-import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 /*
     This system handles powered processing blocks being destroyed.
@@ -48,7 +44,7 @@ public class CustomProcessSystem extends RefSystem<ChunkStore> {
             items = dropItems(input, items);
             items = dropItems(output, items);
 
-            FoxLibrary.spawnItems(context.world, context.pos, items);
+            ArchLibrary.spawnItems(context.world, context.pos, items);
         }
     }
 

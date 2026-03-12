@@ -1,12 +1,10 @@
 package com.CybaricFox.ComponentSystems;
 
-import com.CybaricFox.API.Direction;
 import com.CybaricFox.API.EssentialsContext;
-import com.CybaricFox.API.FoxLibrary;
+import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Blocks.ConveyorComponent;
-import com.CybaricFox.Components.Helpers.ConveyorState;
-import com.CybaricFox.Components.Helpers.ConveyorType;
+import com.CybaricFox.Components.Helpers.Conveyors.ConveyorType;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefSystem;
@@ -15,7 +13,6 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.logging.Level;
 
 public class ConveyorPlaceSystem extends RefSystem<ChunkStore> {
     @Override
@@ -32,17 +29,7 @@ public class ConveyorPlaceSystem extends RefSystem<ChunkStore> {
         }
 
         //Finished setting up component. Change state.
-        if(conveyorComponent.hasItem()) {
-            changeTickState(context.pos, commandBuffer, true);
-            if(conveyorComponent.getTimer() == 0) {
-                conveyorComponent.state = ConveyorState.WAIT;
-            } else {
-                conveyorComponent.state = ConveyorState.TRANSFER;
-            }
-        } else {
-            changeTickState(context.pos, commandBuffer, false);
-            conveyorComponent.state = ConveyorState.OPEN;
-        }
+        changeTickState(context.pos, commandBuffer, !conveyorComponent.isEmpty());
     }
 
     @Override
@@ -57,7 +44,7 @@ public class ConveyorPlaceSystem extends RefSystem<ChunkStore> {
     }
 
     public void changeTickState(Vector3i pos, CommandBuffer<ChunkStore> commandBuffer, boolean ticking) {
-        Ref<ChunkStore> blockRef = FoxLibrary.getBlockEntity(commandBuffer.getExternalData().getWorld(), pos);
+        Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(commandBuffer.getExternalData().getWorld(), pos);
         if(blockRef == null) return;
 
         EssentialsContext context = new EssentialsContext(blockRef, commandBuffer);
@@ -69,8 +56,8 @@ public class ConveyorPlaceSystem extends RefSystem<ChunkStore> {
         //Importer must always tick
         if(!ticking && conveyorComponent.getType() == ConveyorType.IMPORT) return;
 
-        Vector3i localCoords = FoxLibrary.convertToLocalCoords(context.pos);
+        Vector3i localCoords = ArchLibrary.convertToLocalCoords(pos);
 
-        context.chunk.setTicking(pos.x, pos.y, pos.z, ticking);
+        context.chunk.setTicking(localCoords.x, localCoords.y, localCoords.z, ticking);
     }
 }

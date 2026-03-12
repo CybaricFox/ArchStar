@@ -12,9 +12,11 @@ Solid_Fuel_Generator.name = Solid Fuel Generator
 Solid_Fuel_Generator.description = Burn fuel to generate 16v/t.
 
 Stone_Conveyor.name = Stone Conveyor
-Stone_Conveyor.description = Speed Tier I.
+Stone_Conveyor.description = Speed Tier I
 Conveyor_Importer.name = Conveyor Importer
 Conveyor_Exporter.name = Conveyor Exporter
+Stone_Router.name = Stone Router
+Stone_Router.description = Routes items vertically and to multiple outputs.\nSpeed Tier I
 Copper_Cable.name = Copper Cable
 Copper_Cable.description = Transfers 172v/t
 

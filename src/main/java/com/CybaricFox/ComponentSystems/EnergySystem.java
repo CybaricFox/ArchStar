@@ -1,6 +1,6 @@
 package com.CybaricFox.ComponentSystems;
 
-import com.CybaricFox.API.FoxLibrary;
+import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.ComponentSystems.Helpers.EnergyNetwork;
 import com.CybaricFox.Components.Helpers.EnergyBlockType;
@@ -12,9 +12,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
-import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.server.core.asset.type.blockhitbox.BlockBoundingBoxes;
 import com.hypixel.hytale.server.core.asset.type.blocktick.BlockTickStrategy;
 import com.hypixel.hytale.server.core.universe.world.chunk.BlockComponentChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
@@ -44,7 +42,7 @@ public class EnergySystem extends EntityTickingSystem<ChunkStore> {
 
             blocks.forEachTicking(blockComponentChunk, commandBuffer, section.getY(), (blockComponentChunk1, commandBuffer1, localX, localY, localZ, blockId) ->
             {
-                Ref<ChunkStore> blockRef = FoxLibrary.getBlockEntity(blockComponentChunk1, new Vector3i(localX, localY, localZ));
+                Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(blockComponentChunk1, new Vector3i(localX, localY, localZ));
 
                 if (blockRef == null) {
                     return BlockTickStrategy.IGNORED;
@@ -57,9 +55,9 @@ public class EnergySystem extends EntityTickingSystem<ChunkStore> {
                         //Run different functions depending on the type of energy block
                         if(energyBlock.getType() == EnergyBlockType.PRODUCER) {
                             if(runProducer(energyBlock, fuelComponent)) {
-                                FoxLibrary.changeBlockState(blockRef, commandBuffer1, "Processing");
+                                ArchLibrary.changeBlockState(blockRef, commandBuffer1, "Processing");
                             } else {
-                                FoxLibrary.changeBlockState(blockRef, commandBuffer1, "default");
+                                ArchLibrary.changeBlockState(blockRef, commandBuffer1, "default");
                             }
                         } else if(energyBlock.getType() == EnergyBlockType.CONSUMER) {
                             runConsumer(energyBlock);

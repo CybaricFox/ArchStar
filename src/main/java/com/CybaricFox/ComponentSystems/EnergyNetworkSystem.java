@@ -1,7 +1,7 @@
 package com.CybaricFox.ComponentSystems;
 
 import com.CybaricFox.API.EssentialsContext;
-import com.CybaricFox.API.FoxLibrary;
+import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ComponentSystems.Helpers.EnergyNetwork;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Blocks.EnergyCableComponent;
@@ -11,12 +11,8 @@ import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefSystem;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.protocol.BlockPlacementRotationMode;
-import com.hypixel.hytale.protocol.BlockRotation;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.Rotation;
 import com.hypixel.hytale.server.core.modules.block.BlockModule;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.chunk.BlockRotationUtil;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
@@ -106,11 +102,11 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
         ArrayList<Vector3i> neighbors = getValidNeighbors(buffer.getExternalData().getWorld(), pos, buffer);
 
         if(!isInitial) {
-            ref = FoxLibrary.getBlockEntity(buffer.getExternalData().getWorld(), pos);
+            ref = ArchLibrary.getBlockEntity(buffer.getExternalData().getWorld(), pos);
         }
 
         if(neighbors.isEmpty()) {
-            FoxLibrary.changeBlockState(ref, buffer, "default");
+            ArchLibrary.changeBlockState(ref, buffer, "default");
         }
 
         ArrayList<String> directions = new ArrayList<>();
@@ -142,7 +138,7 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
             }
         }
 
-        FoxLibrary.changeBlockState(ref, buffer, finalString);
+        ArchLibrary.changeBlockState(ref, buffer, finalString);
 
         if(!isInitial || neighbors.isEmpty()) return;
         for(Vector3i neighbor : neighbors) {
@@ -441,7 +437,7 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
             return;
         }
 
-        Vector3i location = FoxLibrary.getGlobalCoordsFromChunk(info, worldChunk);
+        Vector3i location = ArchLibrary.getGlobalCoordsFromChunk(info, worldChunk);
 
         EnergyComponent energy = commandBuffer.getComponent(ref, ArchStar.get().getEnergyComponentType());
         EnergyCableComponent cable = commandBuffer.getComponent(ref, ArchStar.get().getEnergyCableComponentType());
@@ -539,7 +535,7 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
 
     //Check that the block at the location is compatible
     private boolean isValidNeighbor(World world, Vector3i location, CommandBuffer<ChunkStore> buffer) {
-        Ref<ChunkStore> blockRef = FoxLibrary.getBlockEntity(world, location);
+        Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(world, location);
         if (blockRef == null) {
             return false;
         }

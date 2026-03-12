@@ -1,13 +1,17 @@
 package com.CybaricFox.ComponentSystems;
 
 import com.CybaricFox.API.Direction;
+import com.CybaricFox.API.DirectionLibrary;
 import com.CybaricFox.API.EssentialsContext;
-import com.CybaricFox.API.FoxLibrary;
+import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Blocks.ConveyorComponent;
 import com.CybaricFox.Components.Blocks.InputComponent;
 import com.CybaricFox.Components.Blocks.OutputComponent;
-import com.CybaricFox.Components.Helpers.ConveyorState;
+import com.CybaricFox.Components.Helpers.Conveyors.ConveyorImporter;
+import com.CybaricFox.Components.Helpers.Conveyors.ConveyorInstance;
+import com.CybaricFox.Components.Helpers.Conveyors.ConveyorRouter;
+import com.CybaricFox.Components.Helpers.Conveyors.ConveyorType;
 import com.hypixel.hytale.builtin.crafting.state.ProcessingBenchState;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
@@ -15,10 +19,10 @@ import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.asset.type.blocktick.BlockTickStrategy;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.bench.ProcessingBench;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.BlockComponentChunk;
+import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.ChunkSection;
 import com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerState;
@@ -28,7 +32,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
 
 public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
     @Override
@@ -51,12 +54,13 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
 
             blocks.forEachTicking(blockComponentChunk, commandBuffer, section.getY(), (blockComponentChunk1, commandBuffer1, localX, localY, localZ, blockId) ->
             {
-                Ref<ChunkStore> blockRef = FoxLibrary.getBlockEntity(blockComponentChunk1, new Vector3i(localX, localY, localZ));
+                Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(blockComponentChunk1, new Vector3i(localX, localY, localZ));
                 if (blockRef == null) {
                     return BlockTickStrategy.IGNORED;
                 }
 
                 EssentialsContext context = new EssentialsContext(blockRef, commandBuffer);
+                if(!context.isValid) return BlockTickStrategy.IGNORED;
 
                 ConveyorComponent conveyorComponent = commandBuffer1.getComponent(blockRef, ArchStar.get().getConveyorComponentType());
 
@@ -64,12 +68,22 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
                     return BlockTickStrategy.IGNORED;
                 }
 
+                if(!conveyorComponent.isValid) {
+                    setTargetBlock(context.world, context.pos, conveyorComponent);
+                    return BlockTickStrategy.CONTINUE;
+                }
+
+                if(!conveyorComponent.isEmpty() && conveyorComponent.getType() != ConveyorType.ROUTER) {
+                    ArchLibrary.changeBlockState(blockRef, commandBuffer1, "Move");
+                }
+
                 BlockTickStrategy strategy = BlockTickStrategy.IGNORED;
 
                 switch(conveyorComponent.getType()) {
-                    case CONVEYOR -> strategy = handleConveyor(conveyorComponent, context.world, new Vector3i(localX, localY, localZ), context.pos, commandBuffer1);
-                    case IMPORT -> strategy = handleImport(conveyorComponent, context.world, new Vector3i(localX, localY, localZ), context.pos, commandBuffer1);
-                    case EXPORT -> strategy = handleExport(conveyorComponent, context.world, new Vector3i(localX, localY, localZ), context.pos, commandBuffer1);
+                    case CONVEYOR -> strategy = handleConveyor(conveyorComponent, context.world, commandBuffer1, context.chunk, context.pos);
+                    case IMPORT -> strategy = handleImport(conveyorComponent, context.world, context.pos, commandBuffer1, context.chunk);
+                    case EXPORT -> strategy = handleExport(conveyorComponent, context.world, context.pos, commandBuffer1);
+                    case ROUTER -> strategy = handleRouter(conveyorComponent, context.world, context.pos, commandBuffer1, context.chunk);
                 }
 
                 return strategy;
@@ -77,387 +91,338 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
         }
     }
 
-    private CompletableFuture<Vector3i> getTargetBlock(World world, Vector3i localCoords, Vector3i globalCoords, boolean reverse) {
+    private BlockTickStrategy handleRouter(ConveyorComponent conveyorComponent, World world, Vector3i globalCoords, CommandBuffer<ChunkStore> buffer, WorldChunk chunk) {
+        //Setup router if not yet setup
+        ConveyorRouter router = conveyorComponent.getRouterData();
+        if(router == null) {
+            conveyorComponent.setRouterData(globalCoords, world);
+            return BlockTickStrategy.CONTINUE;
+        }
+
+        //Handle output to target
+        ArrayList<ConveyorInstance> readyItems = conveyorComponent.decrementTimers();
+        if(readyItems.isEmpty()) return BlockTickStrategy.CONTINUE;
+
+        router.setOUT(globalCoords, world);
+        if(router.noOut() || router.noPath) {
+            ejectItems(readyItems, DirectionLibrary.getCoordsFromDirection(Direction.UP, globalCoords), world);
+            conveyorComponent.removeReadyItems();
+            if(conveyorComponent.isEmpty()) {
+                return BlockTickStrategy.IGNORED;
+            } else {
+                return BlockTickStrategy.CONTINUE;
+            }
+        }
+
+        for(ConveyorInstance instance : readyItems) {
+            boolean structureFailed = false;
+            Vector3i targetLocation = DirectionLibrary.getCoordsFromDirection(router.getNextDirection(instance.from), globalCoords);
+            if(targetLocation == null) {
+                //This can only be NOT_SET if out is null, so we can safely stop here
+                //This can only ever run on the first iteration
+                return BlockTickStrategy.CONTINUE;
+            }
+            Direction direction = router.getLastDirection();
+
+            //These are guaranteed because of the router object
+            Ref<ChunkStore> targetRef = ArchLibrary.getBlockEntity(world, targetLocation);
+            ConveyorComponent targetConveyorComponent = buffer.getComponent(targetRef, ArchStar.get().getConveyorComponentType());
+
+            if(!targetConveyorComponent.canAddItem()) {
+                ArrayList<ConveyorInstance> temp = new ArrayList<>();
+                temp.add(instance);
+                ejectItems(temp, targetLocation, world);
+                structureFailed = true;
+            } else {
+                ConveyorInstance newInstance = instance.clone();
+                newInstance.from = DirectionLibrary.getBackwardDirection(direction);
+                newInstance.to = targetConveyorComponent.getForwardDirection();
+
+                targetConveyorComponent.addItem(newInstance);
+                ArchStar.get().getConveyorPlaceSystem().changeTickState(targetLocation, buffer, true);
+            }
+
+            if(structureFailed) {
+                structureFailure(targetConveyorComponent, targetLocation, world, chunk);
+            }
+        }
+
+        conveyorComponent.removeReadyItems();
+
+        if(conveyorComponent.isEmpty()) {
+            return BlockTickStrategy.IGNORED;
+        } else {
+            return BlockTickStrategy.CONTINUE;
+        }
+    }
+
+    private void setTargetBlock(World world, Vector3i globalCoords, ConveyorComponent component) {
         CompletableFuture<Vector3i> future = new CompletableFuture<>();
+        CompletableFuture<Direction> futureDirection = new CompletableFuture<>();
 
         world.execute(() -> {
             int rotationIndex = world.getBlockRotationIndex(globalCoords.x, globalCoords.y, globalCoords.z);
-            Direction direction = FoxLibrary.getForwardDirection(rotationIndex, reverse);
-            Vector3i result = FoxLibrary.getCoordsFromDirection(direction, globalCoords);
+            Direction direction = DirectionLibrary.getForwardDirection(rotationIndex);
+            if(component.getType() == ConveyorType.IMPORT) {
+                direction = DirectionLibrary.getBackwardDirection(direction);
+            }
+            if(component.getType() == ConveyorType.ROUTER) {
+                direction = Direction.NOT_SET;
+            }
+            Vector3i result = DirectionLibrary.getCoordsFromDirection(direction, globalCoords);
             future.complete(result);
+            futureDirection.complete(direction);
         });
 
-        return future;
+        future.thenAccept(component::setTarget);
+        futureDirection.thenAccept(component::setForwardDirection);
     }
 
     //Handles conveyor behaviour
-    private BlockTickStrategy handleConveyor(ConveyorComponent conveyorComponent, World world, Vector3i localCoords, Vector3i globalCoords, CommandBuffer<ChunkStore> buffer) {
-        //Check the state of the target block
-        Vector3i target;
-        CompletableFuture<Vector3i> targetFuture;
-        //Check that the conveyor has a target block in memory, otherwise set it manually
-        if(conveyorComponent.getTargetBlock() == null) {
-            targetFuture = getTargetBlock(world, localCoords, globalCoords, false);
-            targetFuture.thenAccept(conveyorComponent::setTargetBlock);
-            return BlockTickStrategy.CONTINUE;
-        }
+    private BlockTickStrategy handleConveyor(ConveyorComponent conveyorComponent, World world, CommandBuffer<ChunkStore> buffer, WorldChunk chunk, Vector3i pos) {
+        boolean structureFailed = false;
 
-        target = conveyorComponent.getTargetBlock();
-        Ref<ChunkStore> blockRef = FoxLibrary.getBlockEntity(world, target);
+        //Handle output to target
+        ArrayList<ConveyorInstance> readyItems = conveyorComponent.decrementTimers();
 
-        //Block reference can only be null if there is no block at that location
-        if(blockRef == null) {
-            switch(conveyorComponent.state) {
-                case WAIT -> {
-                    conveyorComponent.state = ConveyorState.TRANSFER;
-                    conveyorComponent.startTimer();
-                }
-                case TRANSFER -> {
-                    FoxLibrary.changeBlockState(FoxLibrary.getBlockEntity(world, globalCoords), buffer, "Move");
-                    conveyorComponent.decrementTimer();
+        if(readyItems.isEmpty()) return BlockTickStrategy.CONTINUE;
 
-                    if(conveyorComponent.getTimer() == 0) {
-                        ArrayList<ItemStack> items = new ArrayList<>();
-                        ItemStack item = conveyorComponent.getItem();
-                        items.add(item);
-
-                        conveyorComponent.removeItem();
-                        conveyorComponent.state = ConveyorState.OPEN;
-                        FoxLibrary.changeBlockState(FoxLibrary.getBlockEntity(world, globalCoords), buffer, "default");
-
-                        FoxLibrary.spawnItems(world, globalCoords, items);
-                        return BlockTickStrategy.IGNORED;
-                    }
-                }
-            }
-            return BlockTickStrategy.CONTINUE;
-        }
-
-        ConveyorComponent targetConveyor = buffer.getComponent(blockRef, ArchStar.get().getConveyorComponentType());
-
-        //Check that the target block has a conveyor component
+        //If the target is not a conveyor, eject the items!
+        Ref<ChunkStore> targetConveyor = ArchLibrary.getBlockEntity(world, conveyorComponent.getTargetBlock());
         if(targetConveyor == null) {
-            return BlockTickStrategy.CONTINUE;
-        };
+            ejectItems(readyItems, conveyorComponent.getTargetBlock(), world);
+        } else {
+            ConveyorComponent targetConveyorComponent = buffer.getComponent(targetConveyor, ArchStar.get().getConveyorComponentType());
+            if(targetConveyorComponent == null) {
+                ejectItems(readyItems, conveyorComponent.getTargetBlock(), world);
+            } else {
+                //export the items
+                for(ConveyorInstance instance : readyItems) {
+                    if(!targetConveyorComponent.canAddItem()) {
+                        ArrayList<ConveyorInstance> temp = new ArrayList<>();
+                        temp.add(instance);
+                        ejectItems(temp, conveyorComponent.getTargetBlock(), world);
+                        structureFailed = true;
+                    } else {
+                        ConveyorInstance newInstance = instance.clone();
+                        newInstance.from = DirectionLibrary.getBackwardDirection(newInstance.to);
+                        newInstance.to = targetConveyorComponent.getForwardDirection();
 
-        switch(targetConveyor.state) {
-            case OPEN, TRANSFER -> {
-                return handleConveyorState(conveyorComponent, targetConveyor, target, buffer, world, globalCoords);
+                        targetConveyorComponent.addItem(newInstance);
+                        ArchStar.get().getConveyorPlaceSystem().changeTickState(conveyorComponent.getTargetBlock(), buffer, true);
+                    }
+                }
+
+                if(structureFailed) {
+                    structureFailure(targetConveyorComponent, conveyorComponent.getTargetBlock(), world, chunk);
+                }
             }
+        }
+
+        conveyorComponent.removeReadyItems();
+
+        if(conveyorComponent.isEmpty()) {
+            ArchLibrary.changeBlockState(ArchLibrary.getBlockEntity(world, pos), buffer, "default");
+            return BlockTickStrategy.IGNORED;
+        } else {
+            return BlockTickStrategy.CONTINUE;
+        }
+    }
+
+    private BlockTickStrategy handleImport(ConveyorComponent conveyorComponent, World world, Vector3i globalCoords, CommandBuffer<ChunkStore> buffer, WorldChunk chunk) {
+        boolean structureFailed = false;
+        //Check machine block for item to import
+        ConveyorImporter importer = conveyorComponent.getImportData();
+        if(importer == null) {
+            conveyorComponent.setImporterData(globalCoords, false);
+            return BlockTickStrategy.CONTINUE;
+        }
+
+        //Get the specific component we need to extract
+        OutputComponent outputComponent = importer.getOutputComponent(buffer, world);
+        ItemContainerState containerState = importer.getItemContainer(world);
+        ProcessingBenchState benchState = importer.getBenchState(world);
+
+        //Do not pull an item if the importers size is already maxed out.
+        if(conveyorComponent.canAddItem()) {
+            ItemStack item = null;
+            Direction direction = DirectionLibrary.getBackwardDirection(conveyorComponent.getForwardDirection());
+
+            if(outputComponent != null) {
+                short slot = outputComponent.getSlotWithFirstItem();
+                if(slot != -1) {
+                    item = outputComponent.getItemStack(outputComponent.getSlotWithFirstItem());
+                    outputComponent.getContainer().removeItemStackFromSlot(slot);
+                }
+            }
+            else if(containerState != null) {
+                for(short i = 0; i < containerState.getItemContainer().getCapacity(); i++) {
+                    if(containerState.getItemContainer().getItemStack(i) != null) {
+                        item = containerState.getItemContainer().getItemStack(i);
+                        containerState.getItemContainer().removeItemStackFromSlot(i);
+                        break;
+                    }
+                }
+            }
+            else if(benchState != null) {
+                short avoid = (short) (benchState.getItemContainer().getContainer(0).getCapacity() + benchState.getItemContainer().getContainer(1).getCapacity());
+                for(short i = avoid; i < benchState.getItemContainer().getCapacity(); i++) {
+                    if(benchState.getItemContainer().getItemStack(i) != null) {
+                        item = benchState.getItemContainer().getItemStack(i);
+                        benchState.getItemContainer().removeItemStackFromSlot(i);
+                        break;
+                    }
+                }
+            }
+
+            //If an item is found, add it to the queue
+            //NOTE: Importer can never result in a situation where the queue is already full. We do not need to check earlier for sudden changes in size.
+            if(item != null) {
+                ConveyorInstance instance = new ConveyorInstance(item, direction);
+                conveyorComponent.addItem(instance);
+            }
+        }
+
+        //Handle output to target
+        ArrayList<ConveyorInstance> readyItems = conveyorComponent.decrementTimers();
+
+        if(readyItems.isEmpty()) return BlockTickStrategy.CONTINUE;
+
+        //If the target is not a conveyor, eject the items!
+        Ref<ChunkStore> targetConveyor = ArchLibrary.getBlockEntity(world, conveyorComponent.getTargetBlock());
+        if(targetConveyor == null) {
+            ejectItems(readyItems, conveyorComponent.getTargetBlock(), world);
+        } else {
+            ConveyorComponent targetConveyorComponent = buffer.getComponent(targetConveyor, ArchStar.get().getConveyorComponentType());
+            if(targetConveyorComponent == null) {
+                ejectItems(readyItems, conveyorComponent.getTargetBlock(), world);
+            } else {
+                //export the items
+                for(ConveyorInstance instance : readyItems) {
+                    //This item was exported from a machine. Do not delete it!
+                    if(instance.from == Direction.NOT_SET) {
+                        ConveyorInstance newInstance = instance.clone();
+                        newInstance.from = newInstance.to;
+                        newInstance.to = conveyorComponent.getForwardDirection();
+
+                        conveyorComponent.addItem(newInstance);
+                    } else {
+                        if(!targetConveyorComponent.canAddItem()) {
+                            ArrayList<ConveyorInstance> temp = new ArrayList<>();
+                            temp.add(instance);
+                            ejectItems(temp, conveyorComponent.getTargetBlock(), world);
+                            structureFailed = true;
+                        } else {
+                            ConveyorInstance newInstance = instance.clone();
+                            newInstance.from = DirectionLibrary.getBackwardDirection(newInstance.to);
+                            newInstance.to = targetConveyorComponent.getForwardDirection();
+
+                            targetConveyorComponent.addItem(newInstance);
+                            ArchStar.get().getConveyorPlaceSystem().changeTickState(conveyorComponent.getTargetBlock(), buffer, true);
+                        }
+                    }
+                }
+
+                if(structureFailed) {
+                    structureFailure(targetConveyorComponent, conveyorComponent.getTargetBlock(), world, chunk);
+                }
+            }
+        }
+
+        conveyorComponent.removeReadyItems();
+
+        if(conveyorComponent.isEmpty()) {
+            ArchLibrary.changeBlockState(ArchLibrary.getBlockEntity(world, globalCoords), buffer, "default");
         }
 
         return BlockTickStrategy.CONTINUE;
     }
 
-    private BlockTickStrategy handleConveyorState(ConveyorComponent conveyorComponent, ConveyorComponent targetConveyor, Vector3i target, CommandBuffer<ChunkStore> buffer, World world, Vector3i pos) {
-        switch(conveyorComponent.state) {
-            case WAIT -> {
-                conveyorComponent.state = ConveyorState.TRANSFER;
-                conveyorComponent.startTimer();
-            }
-            case TRANSFER -> {
-                FoxLibrary.changeBlockState(FoxLibrary.getBlockEntity(world, pos), buffer, "Move");
-                conveyorComponent.decrementTimer();
+    private BlockTickStrategy handleExport(ConveyorComponent conveyorComponent, World world, Vector3i globalCoords, CommandBuffer<ChunkStore> buffer) {
+        //Handle output to target
+        ArrayList<ConveyorInstance> readyItems = conveyorComponent.decrementTimers();
 
-                if(conveyorComponent.getTimer() == 0) {
-                    ItemStack item = conveyorComponent.getItem();
+        if(readyItems.isEmpty()) return BlockTickStrategy.CONTINUE;
 
-                    //Do not output until the conveyor state becomes open
-                    if(targetConveyor.state != ConveyorState.OPEN) return BlockTickStrategy.CONTINUE;
+        //Check machine block for item to export
+        ConveyorImporter importer = conveyorComponent.getImportData();
+        if(importer == null) {
+            conveyorComponent.setImporterData(globalCoords, true);
+            return BlockTickStrategy.CONTINUE;
+        }
 
-                    conveyorComponent.removeItem();
-                    conveyorComponent.state = ConveyorState.OPEN;
-                    FoxLibrary.changeBlockState(FoxLibrary.getBlockEntity(world, pos), buffer, "default");
+        //Get the specific component we need to extract
+        InputComponent inputComponent = importer.getInputComponent(buffer, world);
+        ItemContainerState containerState = importer.getItemContainer(world);
+        ProcessingBenchState benchState = importer.getBenchState(world);
 
-                    targetConveyor.setItem(item);
-                    targetConveyor.state = ConveyorState.WAIT;
-                    ArchStar.get().getConveyorPlaceSystem().changeTickState(target, buffer, true);
+        ArrayList<ConveyorInstance> failedToExport = new ArrayList<>();
 
-                    return BlockTickStrategy.IGNORED;
+        for(ConveyorInstance instance : readyItems) {
+            ItemStack item = instance.getItem();
+            boolean exported = false;
+
+            if(inputComponent != null) {
+                for(short i = 0; i < inputComponent.getCapacity(); i++) {
+                    if(inputComponent.getContainer().canAddItemStackToSlot(i, item, false, false)) {
+                        inputComponent.getContainer().addItemStackToSlot(i, item);
+                        exported = true;
+                        break;
+                    }
                 }
             }
-            case IMPORT_TRANSFER_OUT -> {
-                FoxLibrary.changeBlockState(FoxLibrary.getBlockEntity(world, pos), buffer, "Move");
-                conveyorComponent.decrementTimer();
-
-                if(conveyorComponent.getTimer() == 0) {
-                    ItemStack item = conveyorComponent.getItem();
-
-                    //Do not output until the conveyor state becomes open
-                    if(targetConveyor.state != ConveyorState.OPEN) return BlockTickStrategy.CONTINUE;
-
-                    conveyorComponent.removeItem();
-                    conveyorComponent.state = ConveyorState.OPEN;
-                    FoxLibrary.changeBlockState(FoxLibrary.getBlockEntity(world, pos), buffer, "default");
-
-                    targetConveyor.setItem(item);
-                    targetConveyor.state = ConveyorState.WAIT;
-                    ArchStar.get().getConveyorPlaceSystem().changeTickState(target, buffer, true);
+            else if(containerState != null){
+                for(short i = 0; i < containerState.getItemContainer().getCapacity(); i++) {
+                    if(containerState.getItemContainer().canAddItemStackToSlot(i, item, false, false)) {
+                        containerState.getItemContainer().addItemStackToSlot(i, item);
+                        exported = true;
+                        break;
+                    }
                 }
             }
-            case IMPORT_TRANSFER_IN -> {
-                FoxLibrary.changeBlockState(FoxLibrary.getBlockEntity(world, pos), buffer, "Move");
-                conveyorComponent.decrementTimer();
-
-                if(conveyorComponent.getIOTimer() == 0) {
-                    ItemStack item = conveyorComponent.getIOItem();
-
-                    conveyorComponent.removeIOItem();
-                    conveyorComponent.setItem(item);
-                    conveyorComponent.state = ConveyorState.WAIT;
-                    FoxLibrary.changeBlockState(FoxLibrary.getBlockEntity(world, pos), buffer, "default");
+            else if (benchState != null){
+                for(short i = 0; i < benchState.getItemContainer().getCapacity(); i++) {
+                    if(benchState.getItemContainer().canAddItemStackToSlot(i, item, false, true)) {
+                        benchState.getItemContainer().addItemStackToSlot(i, item);
+                        exported = true;
+                        break;
+                    }
                 }
             }
-            case IMPORT_TRANSFER_IO -> {
-                FoxLibrary.changeBlockState(FoxLibrary.getBlockEntity(world, pos), buffer, "Move");
-                conveyorComponent.decrementTimer();
 
-                if(conveyorComponent.getTimer() == 0) {
-                    ItemStack item = conveyorComponent.getItem();
-
-                    //Do not output until the conveyor state becomes open
-                    if(targetConveyor.state != ConveyorState.OPEN) return BlockTickStrategy.CONTINUE;
-
-                    conveyorComponent.removeItem();
-                    conveyorComponent.state = ConveyorState.IMPORT_TRANSFER_IN;
-
-                    targetConveyor.setItem(item);
-                    targetConveyor.state = ConveyorState.WAIT;
-                    ArchStar.get().getConveyorPlaceSystem().changeTickState(target, buffer, true);
-                }
+            if(!exported) {
+                failedToExport.add(instance);
             }
         }
 
-        return BlockTickStrategy.CONTINUE;
+        ejectItems(failedToExport, globalCoords, world);
+        conveyorComponent.removeReadyItems();
+
+        if(conveyorComponent.isEmpty()) {
+            ArchLibrary.changeBlockState(ArchLibrary.getBlockEntity(world, globalCoords), buffer, "default");
+            return BlockTickStrategy.IGNORED;
+        } else {
+            return BlockTickStrategy.CONTINUE;
+        }
     }
 
-    private BlockTickStrategy handleImport(ConveyorComponent conveyorComponent, World world, Vector3i localCoords, Vector3i globalCoords, CommandBuffer<ChunkStore> buffer) {
-        //Check the state of the target block
-        Vector3i target;
-        CompletableFuture<Vector3i> targetFuture;
-        //Check that the conveyor has a target block in memory, otherwise set it manually
-        if(conveyorComponent.getTargetBlock() == null) {
-            targetFuture = getTargetBlock(world, localCoords, globalCoords, true);
-            targetFuture.thenAccept(conveyorComponent::setTargetBlock);
-            return BlockTickStrategy.CONTINUE;
+    private void ejectItems(ArrayList<ConveyorInstance> instances, Vector3i pos, World world) {
+        ArrayList<ItemStack> items = new ArrayList<>();
+
+        for(ConveyorInstance instance : instances) {
+            items.add(instance.getItem());
         }
 
-        target = conveyorComponent.getTargetBlock();
-        Ref<ChunkStore> blockRef = FoxLibrary.getBlockEntity(world, target);
-        ConveyorComponent targetConveyor = null;
-        if(blockRef != null) {
-            targetConveyor = buffer.getComponent(blockRef, ArchStar.get().getConveyorComponentType());
-        }
-
-        //Check the state of the target block
-        Vector3i importTarget;
-        CompletableFuture<Vector3i> importTargetFuture;
-        //Check that the conveyor has a target block in memory, otherwise set it manually
-        if(conveyorComponent.getTargetMachine() == null) {
-            importTargetFuture = getTargetBlock(world, localCoords, globalCoords, false);
-            importTargetFuture.thenAccept(conveyorComponent::setTargetMachine);
-            return BlockTickStrategy.CONTINUE;
-        }
-
-        importTarget = conveyorComponent.getTargetMachine();
-        Ref<ChunkStore> importRef = FoxLibrary.getBlockEntity(world, importTarget);
-
-        OutputComponent outputComponent = null;
-        ItemContainerState containerState = null;
-        ProcessingBenchState benchState = null;
-
-        if(importRef != null) {
-            outputComponent = buffer.getComponent(importRef, ArchStar.get().getOutputComponentType());
-            //noinspection deprecation
-            if (world.getState(importTarget.x, importTarget.y, importTarget.z, true) instanceof ItemContainerState itemContainerState) {
-                containerState = itemContainerState;
-            } else //noinspection deprecation
-                if (world.getState(importTarget.x, importTarget.y, importTarget.z, true) instanceof ProcessingBenchState processingBenchState) {
-                    benchState = processingBenchState;
-                }
-        }
-
-        switch(conveyorComponent.state) {
-            case OPEN -> {
-                if(outputComponent == null && containerState == null && benchState == null) return BlockTickStrategy.CONTINUE;
-
-                ItemStack item = null;
-
-                if(outputComponent != null) {
-                    short slot = outputComponent.getSlotWithFirstItem();
-                    if(slot != -1) {
-                        item = outputComponent.getItemStack(outputComponent.getSlotWithFirstItem());
-                        outputComponent.getContainer().removeItemStackFromSlot(slot);
-                    }
-                }
-                else if(containerState != null) {
-                    for(short i = 0; i < containerState.getItemContainer().getCapacity(); i++) {
-                        if(containerState.getItemContainer().getItemStack(i) != null) {
-                            item = containerState.getItemContainer().getItemStack(i);
-                            containerState.getItemContainer().removeItemStackFromSlot(i);
-                            break;
-                        }
-                    }
-                }
-                else if(benchState != null) {
-                    short avoid = (short) (benchState.getItemContainer().getContainer(0).getCapacity() + benchState.getItemContainer().getContainer(1).getCapacity());
-                    for(short i = avoid; i < benchState.getItemContainer().getCapacity(); i++) {
-                        if(benchState.getItemContainer().getItemStack(i) != null) {
-                            item = benchState.getItemContainer().getItemStack(i);
-                            benchState.getItemContainer().removeItemStackFromSlot(i);
-                            break;
-                        }
-                    }
-                }
-
-                if(item == null) return BlockTickStrategy.CONTINUE;
-
-                conveyorComponent.setIOItem(item);
-                conveyorComponent.state = ConveyorState.IMPORT_TRANSFER_IN;
-                conveyorComponent.startIOTimer();
-            }
-            case WAIT -> {
-                if(targetConveyor != null) {
-                    switch(targetConveyor.state) {
-                        case OPEN, TRANSFER -> {
-                            conveyorComponent.state = ConveyorState.IMPORT_TRANSFER_OUT;
-                            conveyorComponent.startTimer();
-                        }
-                    }
-                }
-            }
-            case IMPORT_TRANSFER_IN, IMPORT_TRANSFER_IO -> {
-                if(targetConveyor == null) return BlockTickStrategy.CONTINUE;
-                handleConveyorState(conveyorComponent, targetConveyor, target, buffer, world, globalCoords);
-            }
-            case IMPORT_TRANSFER_OUT -> {
-                ItemStack item = null;
-
-                if(outputComponent != null) {
-                    short slot = outputComponent.getSlotWithFirstItem();
-                    if(slot != -1) {
-                        item = outputComponent.getItemStack(slot);
-                        outputComponent.getContainer().removeItemStackFromSlot(slot);
-                    }
-                }
-                else if(containerState != null) {
-                    for(short i = 0; i < containerState.getItemContainer().getCapacity(); i++) {
-                        if(containerState.getItemContainer().getItemStack(i) != null) {
-                            item = containerState.getItemContainer().getItemStack(i);
-                            containerState.getItemContainer().removeItemStackFromSlot(i);
-                            break;
-                        }
-                    }
-                }
-                else if(benchState != null) {
-                    short avoid = benchState.getItemContainer().getContainer(0).getCapacity();
-                    for(short i = avoid; i < benchState.getItemContainer().getCapacity(); i++) {
-                        if(benchState.getItemContainer().getItemStack(i) != null) {
-                            item = benchState.getItemContainer().getItemStack(i);
-                            benchState.getItemContainer().removeItemStackFromSlot(i);
-                            break;
-                        }
-                    }
-                }
-
-                if(item != null) {
-                    conveyorComponent.setIOItem(item);
-                    conveyorComponent.startIOTimer();
-                    conveyorComponent.state = ConveyorState.IMPORT_TRANSFER_IO;
-                    return BlockTickStrategy.CONTINUE;
-                }
-
-                if(targetConveyor == null) return BlockTickStrategy.CONTINUE;
-                handleConveyorState(conveyorComponent, targetConveyor, target, buffer, world, globalCoords);
-            }
-        }
-
-        return BlockTickStrategy.CONTINUE;
+        ArchLibrary.spawnItems(world, pos, items);
     }
 
-    private BlockTickStrategy handleExport(ConveyorComponent conveyorComponent, World world, Vector3i localCoords, Vector3i globalCoords, CommandBuffer<ChunkStore> buffer) {
-        //Check the state of the target block
-        Vector3i target;
-        CompletableFuture<Vector3i> targetFuture;
-        //Check that the conveyor has a target block in memory, otherwise set it manually
-        if(conveyorComponent.getTargetBlock() == null) {
-            targetFuture = getTargetBlock(world, localCoords, globalCoords, false);
-            targetFuture.thenAccept(conveyorComponent::setTargetBlock);
-            return BlockTickStrategy.CONTINUE;
-        }
+    private void structureFailure(ConveyorComponent conveyorComponent, Vector3i pos, World world, WorldChunk chunk) {
+        ejectItems(conveyorComponent.getAllInstances(), pos, world);
+        conveyorComponent.clearItems();
 
-        target = conveyorComponent.getTargetBlock();
-        Ref<ChunkStore> blockRef = FoxLibrary.getBlockEntity(world, target);
-        InputComponent targetMachine = null;
-        ItemContainerState containerState = null;
-        ProcessingBenchState benchState = null;
-
-        if(blockRef != null) {
-            targetMachine = buffer.getComponent(blockRef, ArchStar.get().getInputComponentType());
-            //noinspection deprecation
-            if (world.getState(target.x, target.y, target.z, true) instanceof ItemContainerState itemContainerState) {
-                containerState = itemContainerState;
-            } else //noinspection deprecation
-                if (world.getState(target.x, target.y, target.z, true) instanceof ProcessingBenchState processingBenchState) {
-                    benchState = processingBenchState;
-                }
-        }
-
-        switch(conveyorComponent.state) {
-            case WAIT -> {
-                if(targetMachine == null && containerState == null && benchState == null) return BlockTickStrategy.CONTINUE;
-
-                conveyorComponent.startTimer();
-                conveyorComponent.state = ConveyorState.TRANSFER;
-            }
-            case TRANSFER -> {
-                FoxLibrary.changeBlockState(FoxLibrary.getBlockEntity(world, globalCoords), buffer, "Move");
-                conveyorComponent.decrementTimer();
-
-                if(conveyorComponent.getTimer() == 0) {
-                    if(targetMachine == null && containerState == null && benchState == null) return BlockTickStrategy.CONTINUE;
-
-                    ItemStack item = conveyorComponent.getItem();
-
-                    short slot = -1;
-                    if(targetMachine != null) {
-                        for(short i = 0; i < targetMachine.getCapacity(); i++) {
-                            if(targetMachine.getContainer().canAddItemStackToSlot(i, item, false, false)) {
-                                slot = i;
-                                targetMachine.getContainer().addItemStackToSlot(slot, item);
-                                break;
-                            }
-                        }
-                    } else if(containerState != null){
-                        for(short i = 0; i < containerState.getItemContainer().getCapacity(); i++) {
-                            if(containerState.getItemContainer().canAddItemStackToSlot(i, item, false, false)) {
-                                slot = i;
-                                containerState.getItemContainer().addItemStackToSlot(i, item);
-                                break;
-                            }
-                        }
-                    } else if (benchState != null){
-                        for(short i = 0; i < benchState.getItemContainer().getCapacity(); i++) {
-                            if(benchState.getItemContainer().canAddItemStackToSlot(i, item, false, true)) {
-                                slot = i;
-                                benchState.getItemContainer().addItemStackToSlot(i, item);
-                                break;
-                            }
-                        }
-                    }
-
-                    if(slot == -1) return BlockTickStrategy.CONTINUE;
-
-                    conveyorComponent.removeItem();
-                    conveyorComponent.state = ConveyorState.OPEN;
-                    FoxLibrary.changeBlockState(FoxLibrary.getBlockEntity(world, globalCoords), buffer, "default");
-
-                    return BlockTickStrategy.IGNORED;
-                }
-            }
-        }
-
-        return BlockTickStrategy.CONTINUE;
+        world.execute(() -> {
+            chunk.setBlock(pos.x, pos.y, pos.z, BlockType.EMPTY);
+        });
     }
 
     @Nullable
