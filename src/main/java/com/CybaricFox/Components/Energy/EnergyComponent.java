@@ -1,6 +1,7 @@
-package com.CybaricFox.Components.Blocks;
+package com.CybaricFox.Components.Energy;
 
-import com.CybaricFox.Components.Helpers.EnergyBlockType;
+import com.CybaricFox.API.EssentialsContext;
+import com.CybaricFox.Components.Energy.EnergyBehaviour.EnergyBehaviour;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -33,6 +34,26 @@ public class EnergyComponent implements Component<ChunkStore> {
         return networkID;
     }
 
+    public boolean isMaxed() {
+        return currentEnergy >= maxEnergy;
+    }
+
+    public int getRemaining() {
+        return maxEnergy - currentEnergy;
+    }
+
+    public void setEnergyBehaviour(String blockId) {
+        energyBehaviour = EnergyBehaviourRegistry.create(blockId);
+    }
+
+    public boolean run(EssentialsContext context) {
+        if(energyBehaviour == null) {
+            throw new NullPointerException("Energy Block behaviour not set! Attempted to run the behaviour before setting it!");
+        }
+
+        return energyBehaviour.run(context, this);
+    }
+
     //Producers use this to determine the amount of energy to produce per tick
     //Consumers use this to determine the amount of energy to consume per tick
     public int getProductionRate() {return productionRate;}
@@ -44,11 +65,17 @@ public class EnergyComponent implements Component<ChunkStore> {
     private int inputRate = 0;
     private int outputRate = 0;
     private int productionRate = 0;
+    private int outputThisTick = 0;
     private int networkID = -1;
-    private EnergyBlockType type = EnergyBlockType.NOTSET;
+    private EnergyBlockType type = EnergyBlockType.NOT_SET;
+
+    //Dictates how this block will process energy
+    private EnergyBehaviour energyBehaviour = null;
 
     //Create component with default values
-    public EnergyComponent(){}
+    public EnergyComponent(){
+
+    }
     //Used for cloning
     public EnergyComponent(int maxEnergy, int currentEnergy, int inputRate, int outputRate, int networkID, EnergyBlockType type, int productionRate) {
         this.maxEnergy = maxEnergy;
@@ -99,22 +126,29 @@ public class EnergyComponent implements Component<ChunkStore> {
 
     //Remove energy as a result of transfer
     public int transferEnergy(int inputOfTarget, int remaining) {
-        //If true, there is not enough energy to output
-        if(currentEnergy < outputRate) return 0;
-
-        //If transfering energy would cause an overflow using the lesser value, do not transfer.
-        if(remaining < outputRate && remaining < inputOfTarget) {
+        //Cannot output more than rate in 1 tick
+        //Cannot output if there is no energy
+        if(outputThisTick >= outputRate || currentEnergy == 0) {
             return 0;
         }
 
-        //Output the lesser of the 2 values
-        if(outputRate > inputOfTarget) {
-            currentEnergy -= inputOfTarget;
-            return inputOfTarget;
-        } else {
-            currentEnergy -= outputRate;
-            return outputRate;
-        }
+        int targetAmount = outputRate - outputThisTick;
+
+        if(targetAmount > remaining) targetAmount = remaining;
+        if(targetAmount > inputOfTarget) targetAmount = inputOfTarget;
+        if(targetAmount > currentEnergy) targetAmount = currentEnergy;
+
+        currentEnergy -= targetAmount;
+        outputThisTick += targetAmount;
+        return targetAmount;
+    }
+
+    public void resetOutputThisTick() {
+        outputThisTick = 0;
+    }
+
+    public int getOutputThisTick() {
+        return outputThisTick;
     }
 
     static {

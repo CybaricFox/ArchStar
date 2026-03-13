@@ -1,17 +1,14 @@
 package com.CybaricFox.ComponentSystems;
 
-import com.CybaricFox.API.Direction;
-import com.CybaricFox.API.DirectionLibrary;
-import com.CybaricFox.API.EssentialsContext;
-import com.CybaricFox.API.ArchLibrary;
+import com.CybaricFox.API.*;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.Components.Blocks.ConveyorComponent;
-import com.CybaricFox.Components.Blocks.InputComponent;
-import com.CybaricFox.Components.Blocks.OutputComponent;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorImporter;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorInstance;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorRouter;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorType;
+import com.CybaricFox.Components.Conveyors.ConveyorComponent;
+import com.CybaricFox.Components.Processing.InputComponent;
+import com.CybaricFox.Components.Processing.OutputComponent;
+import com.CybaricFox.Components.Conveyors.ConveyorImporter;
+import com.CybaricFox.Components.Conveyors.ConveyorInstance;
+import com.CybaricFox.Components.Conveyors.ConveyorRouter;
+import com.CybaricFox.Components.Conveyors.ConveyorType;
 import com.hypixel.hytale.builtin.crafting.state.ProcessingBenchState;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
@@ -27,7 +24,6 @@ import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.modules.entity.item.PreventItemMerging;
 import com.hypixel.hytale.server.core.modules.physics.component.Velocity;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.chunk.BlockComponentChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.ChunkSection;
@@ -44,67 +40,53 @@ import java.util.concurrent.CompletableFuture;
 public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
     @Override
     public void tick(float v, int index, @Nonnull ArchetypeChunk<ChunkStore> archetypeChunk, @Nonnull Store<ChunkStore> store, @Nonnull CommandBuffer<ChunkStore> commandBuffer) {
-        BlockSection blocks = archetypeChunk.getComponent(index, BlockSection.getComponentType());
-        if(blocks == null) {
-            return;
-        }
+        TickContext tickContext = new TickContext(index, archetypeChunk, commandBuffer);
+        if(!tickContext.isValid) return;
 
-        if (blocks.getTickingBlocksCountCopy() != 0) {
-            ChunkSection section = archetypeChunk.getComponent(index, ChunkSection.getComponentType());
-            if(section == null) {
-                return;
+        tickContext.blockSection.forEachTicking(tickContext.blockComponentChunk, commandBuffer, tickContext.chunkSection.getY(), (blockComponentChunk1, commandBuffer1, localX, localY, localZ, blockId) ->
+        {
+            Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(blockComponentChunk1, new Vector3i(localX, localY, localZ));
+            if (blockRef == null) {
+                return BlockTickStrategy.IGNORED;
             }
 
-            BlockComponentChunk blockComponentChunk = commandBuffer.getComponent(section.getChunkColumnReference(), BlockComponentChunk.getComponentType());
-            if(blockComponentChunk == null) {
-                return;
+            EssentialsContext context = new EssentialsContext(blockRef, commandBuffer);
+            if(!context.isValid) return BlockTickStrategy.IGNORED;
+
+            ConveyorComponent conveyorComponent = commandBuffer1.getComponent(blockRef, ArchStar.get().getConveyorComponentType());
+
+            if(conveyorComponent == null) {
+                return BlockTickStrategy.IGNORED;
             }
 
-            blocks.forEachTicking(blockComponentChunk, commandBuffer, section.getY(), (blockComponentChunk1, commandBuffer1, localX, localY, localZ, blockId) ->
-            {
-                Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(blockComponentChunk1, new Vector3i(localX, localY, localZ));
-                if (blockRef == null) {
-                    return BlockTickStrategy.IGNORED;
-                }
+            if(!conveyorComponent.isValid) {
+                setTargetBlock(context.world, context.pos, conveyorComponent);
+                return BlockTickStrategy.CONTINUE;
+            }
 
-                EssentialsContext context = new EssentialsContext(blockRef, commandBuffer);
-                if(!context.isValid) return BlockTickStrategy.IGNORED;
+            if(!conveyorComponent.isEmpty() && conveyorComponent.getType() != ConveyorType.ROUTER) {
+                ArchLibrary.changeBlockState(blockRef, commandBuffer1, "Move");
 
-                ConveyorComponent conveyorComponent = commandBuffer1.getComponent(blockRef, ArchStar.get().getConveyorComponentType());
-
-                if(conveyorComponent == null) {
-                    return BlockTickStrategy.IGNORED;
-                }
-
-                if(!conveyorComponent.isValid) {
-                    setTargetBlock(context.world, context.pos, conveyorComponent);
-                    return BlockTickStrategy.CONTINUE;
-                }
-
-                if(!conveyorComponent.isEmpty() && conveyorComponent.getType() != ConveyorType.ROUTER) {
-                    ArchLibrary.changeBlockState(blockRef, commandBuffer1, "Move");
-
-                    Ref<ChunkStore> targetConveyor = ArchLibrary.getBlockEntity(context.world, conveyorComponent.getTargetBlock());
-                    if(targetConveyor != null) {
-                        ConveyorComponent conveyer = commandBuffer1.getComponent(targetConveyor, ArchStar.get().getConveyorComponentType());
-                        if(conveyer != null && conveyer.getType() != ConveyorType.ROUTER) {
-                            ArchLibrary.changeBlockState(targetConveyor, commandBuffer1, "Move");
-                        }
+                Ref<ChunkStore> targetConveyor = ArchLibrary.getBlockEntity(context.world, conveyorComponent.getTargetBlock());
+                if(targetConveyor != null) {
+                    ConveyorComponent conveyer = commandBuffer1.getComponent(targetConveyor, ArchStar.get().getConveyorComponentType());
+                    if(conveyer != null && conveyer.getType() != ConveyorType.ROUTER) {
+                        ArchLibrary.changeBlockState(targetConveyor, commandBuffer1, "Move");
                     }
                 }
+            }
 
-                BlockTickStrategy strategy = BlockTickStrategy.IGNORED;
+            BlockTickStrategy strategy = BlockTickStrategy.IGNORED;
 
-                switch(conveyorComponent.getType()) {
-                    case CONVEYOR -> strategy = handleConveyor(conveyorComponent, context.world, commandBuffer1, context.chunk, context.pos);
-                    case IMPORT -> strategy = handleImport(conveyorComponent, context.world, context.pos, commandBuffer1, context.chunk);
-                    case EXPORT -> strategy = handleExport(conveyorComponent, context.world, context.pos, commandBuffer1);
-                    case ROUTER -> strategy = handleRouter(conveyorComponent, context.world, context.pos, commandBuffer1, context.chunk);
-                }
+            switch(conveyorComponent.getType()) {
+                case CONVEYOR -> strategy = handleConveyor(conveyorComponent, context.world, commandBuffer1, context.chunk, context.pos);
+                case IMPORT -> strategy = handleImport(conveyorComponent, context.world, context.pos, commandBuffer1, context.chunk);
+                case EXPORT -> strategy = handleExport(conveyorComponent, context.world, context.pos, commandBuffer1);
+                case ROUTER -> strategy = handleRouter(conveyorComponent, context.world, context.pos, commandBuffer1, context.chunk);
+            }
 
-                return strategy;
-            });
-        }
+            return strategy;
+        });
     }
 
     private BlockTickStrategy handleRouter(ConveyorComponent conveyorComponent, World world, Vector3i globalCoords, CommandBuffer<ChunkStore> buffer, WorldChunk chunk) {

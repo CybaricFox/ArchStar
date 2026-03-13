@@ -1,11 +1,11 @@
-package com.CybaricFox.Components.Helpers.Conveyors;
+package com.CybaricFox.Components.Conveyors;
 
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.API.Direction;
 import com.CybaricFox.API.DirectionLibrary;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.Components.Blocks.InputComponent;
-import com.CybaricFox.Components.Blocks.OutputComponent;
+import com.CybaricFox.Components.Processing.InputComponent;
+import com.CybaricFox.Components.Processing.OutputComponent;
 import com.hypixel.hytale.builtin.crafting.state.ProcessingBenchState;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;

@@ -1,9 +1,8 @@
-package com.CybaricFox.Components.Helpers.Conveyors;
+package com.CybaricFox.Components.Conveyors;
 
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.API.Direction;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.Components.Blocks.ConveyorComponent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.World;

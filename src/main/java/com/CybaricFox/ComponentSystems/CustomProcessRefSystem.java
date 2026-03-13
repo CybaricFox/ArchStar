@@ -3,10 +3,10 @@ package com.CybaricFox.ComponentSystems;
 import com.CybaricFox.API.EssentialsContext;
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.Components.Blocks.FuelComponent;
-import com.CybaricFox.Components.Blocks.InputComponent;
-import com.CybaricFox.Components.Blocks.OutputComponent;
-import com.CybaricFox.Components.Helpers.CommonContainerComponent;
+import com.CybaricFox.Components.Processing.FuelComponent;
+import com.CybaricFox.Components.Processing.InputComponent;
+import com.CybaricFox.Components.Processing.OutputComponent;
+import com.CybaricFox.Components.CommonContainerComponent;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefSystem;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 /*
     This system handles powered processing blocks being destroyed.
  */
-public class CustomProcessSystem extends RefSystem<ChunkStore> {
+public class CustomProcessRefSystem extends RefSystem<ChunkStore> {
     @Override
     public void onEntityAdded(@Nonnull Ref<ChunkStore> ref, @Nonnull AddReason addReason, @Nonnull Store<ChunkStore> store, @Nonnull CommandBuffer<ChunkStore> commandBuffer) {
 
@@ -66,10 +66,9 @@ public class CustomProcessSystem extends RefSystem<ChunkStore> {
     @Nullable
     @Override
     public Query<ChunkStore> getQuery() {
-        return Query.and(BlockModule.BlockStateInfo.getComponentType(),
-                Query.or(
+        return Query.or(
                         ArchStar.get().getInputComponentType(),
                         ArchStar.get().getOutputComponentType(),
-                        ArchStar.get().getFuelComponentType()));
+                        ArchStar.get().getFuelComponentType());
     }
 }

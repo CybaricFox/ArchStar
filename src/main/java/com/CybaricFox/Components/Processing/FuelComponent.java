@@ -1,6 +1,6 @@
-package com.CybaricFox.Components.Blocks;
+package com.CybaricFox.Components.Processing;
 
-import com.CybaricFox.Components.Helpers.CommonContainerComponent;
+import com.CybaricFox.Components.CommonContainerComponent;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -15,8 +15,6 @@ import javax.annotation.Nullable;
 public class FuelComponent extends CommonContainerComponent {
     public static final BuilderCodec<FuelComponent> CODEC;
 
-    //Is fuel currently processing?
-    public boolean isCooking = false;
     //Should this block be allowed to process fuel?
     public boolean isActive = true;
     //The time left in ticks before another fuel is consumed.
@@ -39,7 +37,8 @@ public class FuelComponent extends CommonContainerComponent {
         return new FuelComponent(actualSize, maxSize, container, cookTimeLeft);
     }
 
-    public boolean consumeFuel() {
+    public void consumeFuel() {
+        //The slot to take the fuel out of
         short targetSlot = -1;
 
         //Get the first container that contains an item
@@ -51,45 +50,43 @@ public class FuelComponent extends CommonContainerComponent {
         }
 
         //no fuel in machine. Do not process.
-        if(targetSlot == -1) return false;
+        if(targetSlot == -1) return;
 
+        //The item to be consumed
         ItemStack item = container.getItemStack(targetSlot);
 
         //Check if the item is a type of fuel
-        if(item.getItem().getResourceTypes() == null) return false;
+        if(item.getItem().getResourceTypes() == null) return;
+
         for(ItemResourceType type : item.getItem().getResourceTypes()) {
             if(type.id.equals("Fuel")) {
                 double quality = item.getItem().getFuelQuality();
                 itemCookTime = (int) quality * 66;
                 cookTimeLeft = itemCookTime;
-                isCooking = true;
 
                 container.removeItemStackFromSlot(targetSlot, 1);
                 isUIUpdated = false;
-                return true;
+                return;
             }
         }
-
-        return false;
     }
 
     public void decrementCookTime() {
         if(cookTimeLeft > 0) {
             cookTimeLeft--;
-        } else {
-            isCooking = false;
         }
     }
 
     private void loadCookTime(int time) {
         cookTimeLeft = time;
-        if(time != 0) {
-            isCooking = true;
-        }
+    }
+
+    public boolean isCooking() {
+        return cookTimeLeft > 0;
     }
 
     public float getProgressAsPercentage() {
-        if(!isCooking || cookTimeLeft == 0) return 0;
+        if(!isCooking()) return 0;
 
         return 1 / ((float) itemCookTime / cookTimeLeft);
     }
@@ -102,7 +99,6 @@ public class FuelComponent extends CommonContainerComponent {
                 .append(new KeyedCodec<SimpleItemContainer>("Container", SimpleItemContainer.CODEC), (component, s) -> component.container = s, (component) -> component.container).add()
 
                 //Save fields
-                .append(new KeyedCodec<Integer>("CookTimeLeft", Codec.INTEGER), FuelComponent::loadCookTime, (component) -> component.cookTimeLeft).add()
 
                 .build();
     }

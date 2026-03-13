@@ -3,9 +3,9 @@ package com.CybaricFox.ComponentSystems;
 import com.CybaricFox.API.EssentialsContext;
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.Components.Blocks.ConveyorComponent;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorInstance;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorType;
+import com.CybaricFox.Components.Conveyors.ConveyorComponent;
+import com.CybaricFox.Components.Conveyors.ConveyorInstance;
+import com.CybaricFox.Components.Conveyors.ConveyorType;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefSystem;
@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class ConveyorPlaceSystem extends RefSystem<ChunkStore> {
+public class ConveyorRefSystem extends RefSystem<ChunkStore> {
     @Override
     public void onEntityAdded(@Nonnull Ref<ChunkStore> ref, @Nonnull AddReason addReason, @Nonnull Store<ChunkStore> store, @Nonnull CommandBuffer<ChunkStore> commandBuffer) {
         ConveyorComponent conveyorComponent = commandBuffer.getComponent(ref, ArchStar.get().getConveyorComponentType());

@@ -1,4 +1,4 @@
-package com.CybaricFox.Components.Helpers.Conveyors;
+package com.CybaricFox.Components.Conveyors;
 
 import com.CybaricFox.API.Direction;
 import com.hypixel.hytale.codec.Codec;
@@ -10,7 +10,6 @@ import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.modules.entity.DespawnComponent;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.universe.world.World;

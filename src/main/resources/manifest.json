@@ -1,8 +1,8 @@
 {
   "Group": "CybaricFox",
   "Name": "ArchStar",
-  "Version": "0.2.0",
-  "Description": "A test mod for now.",
+  "Version": "0.2.1",
+  "Description": "A small tech mod inspired by industrial craft that adds machines, energy production, item transportation, and electric tools.",
   "Authors": [
     {
       "Name": "CybaricFox"

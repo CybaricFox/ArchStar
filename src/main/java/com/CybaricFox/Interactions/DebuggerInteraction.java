@@ -2,11 +2,10 @@ package com.CybaricFox.Interactions;
 
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.Components.Blocks.ConveyorComponent;
-import com.CybaricFox.Components.Blocks.EnergyComponent;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorImporter;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorInstance;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorType;
+import com.CybaricFox.Components.Conveyors.ConveyorComponent;
+import com.CybaricFox.Components.Energy.EnergyComponent;
+import com.CybaricFox.Components.Conveyors.ConveyorInstance;
+import com.CybaricFox.Components.Conveyors.ConveyorType;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
@@ -56,6 +55,9 @@ public class DebuggerInteraction  extends SimpleBlockInteraction {
         playerComponent.sendMessage(Message.raw("================"));
         playerComponent.sendMessage(Message.raw("Type: " + energyComponent.getType().toString()));
         playerComponent.sendMessage(Message.raw("Network ID: " + energyComponent.getNetworkID()));
+        playerComponent.sendMessage(Message.raw("Input Rate: " + energyComponent.getInputRate()));
+        playerComponent.sendMessage(Message.raw("Output Rate: " + energyComponent.getOutputRate()));
+        playerComponent.sendMessage(Message.raw("Output This Tick: " + energyComponent.getOutputThisTick()));
     }
 
     private void conveyorInteraction(Player playerComponent, ConveyorComponent conveyorComponent) {

@@ -2,10 +2,10 @@ package com.CybaricFox.Systems;
 
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.Components.Blocks.EnergyComponent;
-import com.CybaricFox.Components.Blocks.FuelComponent;
-import com.CybaricFox.Components.Blocks.InputComponent;
-import com.CybaricFox.Components.Blocks.OutputComponent;
+import com.CybaricFox.Components.Energy.EnergyComponent;
+import com.CybaricFox.Components.Processing.FuelComponent;
+import com.CybaricFox.Components.Processing.InputComponent;
+import com.CybaricFox.Components.Processing.OutputComponent;
 import com.CybaricFox.UI.Pages.CommonPage;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;

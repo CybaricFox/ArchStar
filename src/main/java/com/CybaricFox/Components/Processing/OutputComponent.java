@@ -1,11 +1,10 @@
-package com.CybaricFox.Components.Blocks;
+package com.CybaricFox.Components.Processing;
 
-import com.CybaricFox.Components.Helpers.CommonContainerComponent;
+import com.CybaricFox.Components.CommonContainerComponent;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Component;
-import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 

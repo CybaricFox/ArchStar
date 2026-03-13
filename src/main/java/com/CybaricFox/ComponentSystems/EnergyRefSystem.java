@@ -1,17 +1,17 @@
 package com.CybaricFox.ComponentSystems;
 
+import com.CybaricFox.API.Direction;
 import com.CybaricFox.API.EssentialsContext;
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ComponentSystems.Helpers.EnergyNetwork;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.Components.Blocks.EnergyCableComponent;
-import com.CybaricFox.Components.Helpers.EnergyBlockType;
-import com.CybaricFox.Components.Blocks.EnergyComponent;
+import com.CybaricFox.Components.Energy.EnergyCableComponent;
+import com.CybaricFox.Components.Energy.EnergyBlockType;
+import com.CybaricFox.Components.Energy.EnergyComponent;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefSystem;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.server.core.modules.block.BlockModule;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
@@ -26,15 +26,19 @@ import java.util.logging.Level;
     This system checks for when an energy block is created and destroyed.
     It then adds and removes it from its respective energy networks.
  */
-public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
+public class EnergyRefSystem extends RefSystem<ChunkStore>{
     //Map of Ids to energy networks.
     private final ConcurrentHashMap<Integer, EnergyNetwork> energyNetworks = new ConcurrentHashMap<Integer, EnergyNetwork>();
 
     //The next network that's created will use this id
     private int nextNetworkID = 0;
 
-    public EnergyNetworkSystem() {
+    public EnergyRefSystem() {
 
+    }
+
+    public ArrayList<EnergyNetwork> getAllNetworks() {
+        return new ArrayList<>(energyNetworks.values());
     }
 
     private void addNetwork(EnergyNetwork network) {
@@ -78,26 +82,23 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
         EssentialsContext context = new EssentialsContext(ref, commandBuffer);
         if(!context.isValid) return;
 
+        //All ticking is handled by energy networks. Do not handle ticks from machines.
+        context.chunk.setTicking(context.pos.x, context.pos.y, context.pos.z, false);
+
         EnergyComponent energy = commandBuffer.getComponent(ref, ArchStar.get().getEnergyComponentType());
         EnergyCableComponent cable = commandBuffer.getComponent(ref, ArchStar.get().getEnergyCableComponentType());
 
         if(energy != null) {
+            energy.setEnergyBehaviour(context.world.getBlockType(context.pos).getItem().getId());
+
             handleEnergyBlock(ref, commandBuffer, context.pos, context.chunk, context.world);
             changeCableState(ref, commandBuffer, context.pos, true);
         } else if(cable != null) {
-            handleCableBlock(ref, commandBuffer, context.pos, context.chunk, context.world, cable);
+            handleCableBlock(commandBuffer, context.pos, context.world);
             changeCableState(ref, commandBuffer, context.pos, true);
         }
     }
-
-    /*
-        0 = North
-        1 = South
-        2 = East
-        3 = West
-        4 = Up
-        5 = Down
-     */
+    
     private void changeCableState(Ref<ChunkStore> ref, CommandBuffer<ChunkStore> buffer, Vector3i pos, boolean isInitial) {
         ArrayList<Vector3i> neighbors = getValidNeighbors(buffer.getExternalData().getWorld(), pos, buffer);
 
@@ -107,37 +108,42 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
 
         if(neighbors.isEmpty()) {
             ArchLibrary.changeBlockState(ref, buffer, "default");
+            return;
         }
 
-        ArrayList<String> directions = new ArrayList<>();
-
-        if(neighbors.size() == 1) {
-            directions.add(getDirectionString(getDirectionOfNeighbor(pos, neighbors.getFirst())));
-        }
-
-        if(neighbors.size() > 1) {
-            for(Vector3i neighbor : neighbors) {
-                directions.add(getDirectionString(getDirectionOfNeighbor(pos, neighbor)));
+        ArrayList<Direction> directions = new ArrayList<>();
+        ArrayList<Vector3i> vectorsForDirections = ArchLibrary.getNeighborVectors(pos);
+        
+        for(Vector3i neighbor : neighbors) {
+            for(int i = 0; i < 6; i++) {
+                if(vectorsForDirections.get(i).equals(neighbor)) {
+                    switch(i) {
+                        case 0 -> directions.addLast(Direction.NORTH);
+                        case 1 -> directions.addLast(Direction.SOUTH);
+                        case 2 -> directions.addLast(Direction.EAST);
+                        case 3 -> directions.addLast(Direction.WEST);
+                        case 4 -> directions.addLast(Direction.UP);
+                        case 5 -> directions.addLast(Direction.DOWN);
+                    }
+                    
+                    break;
+                }
             }
         }
-
-        ArrayList<Boolean> sortedList = sortDirections(directions);
+        
         String finalString = "";
-
-        for(int i = 0; i < sortedList.size(); i++) {
-            if(sortedList.get(i)) {
-                finalString = switch (i) {
-                    case 0 -> finalString.concat("North");
-                    case 1 -> finalString.concat("South");
-                    case 2 -> finalString.concat("East");
-                    case 3 -> finalString.concat("West");
-                    case 4 -> finalString.concat("Up");
-                    case 5 -> finalString.concat("Down");
-                    default -> finalString;
-                };
+        
+        for(Direction direction : directions) {
+            switch (direction) {
+                case NORTH -> finalString = finalString.concat("North");
+                case SOUTH -> finalString = finalString.concat("South");
+                case EAST -> finalString = finalString.concat("East");
+                case WEST -> finalString = finalString.concat("West");
+                case UP -> finalString = finalString.concat("Up");
+                case DOWN -> finalString = finalString.concat("Down");
             }
         }
-
+        
         ArchLibrary.changeBlockState(ref, buffer, finalString);
 
         if(!isInitial || neighbors.isEmpty()) return;
@@ -145,116 +151,35 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
             changeCableState(ref, buffer, neighbor, false);
         }
     }
-
-    private ArrayList<Boolean> sortDirections(ArrayList<String> unsorted) {
-        ArrayList<Boolean> sorted = new ArrayList<>();
-
-        sorted.add(false);
-        sorted.add(false);
-        sorted.add(false);
-        sorted.add(false);
-        sorted.add(false);
-        sorted.add(false);
-
-        for(String direction : unsorted) {
-            switch(direction) {
-                case "North" :
-                    sorted.set(0, true);
-                    break;
-                case "South":
-                    sorted.set(1, true);
-                    break;
-                case "East":
-                    sorted.set(2, true);
-                    break;
-                case "West":
-                    sorted.set(3, true);
-                    break;
-                case "Up":
-                    sorted.set(4, true);
-                    break;
-                case "Down":
-                    sorted.set(5, true);
-                    break;
-            }
-        }
-
-        return sorted;
-    }
-
-    private String getDirectionString(int direction) {
-        return switch (direction) {
-            case 1 -> "Up";
-            case 2 -> "Down";
-            case 3 -> "North";
-            case 4 -> "East";
-            case 5 -> "South";
-            case 6 -> "West";
-            default -> null;
-        };
-    }
-
-    private int getDirectionOfNeighbor(Vector3i pos, Vector3i neighbor) {
-        int x = neighbor.x - pos.x;
-        int y = neighbor.y - pos.y;
-        int z = neighbor.z - pos.z;
-
-        if(x != 0) {
-            if(x > 0) {
-                return 4;
-            } else {
-                return 6;
-            }
-        }
-        if(y != 0) {
-            if(y > 0) {
-                return 1;
-            } else {
-                return 2;
-            }
-        }
-        if(z != 0) {
-            if(z > 0) {
-                return 5;
-            } else {
-                return 3;
-            }
-        }
-
-        return 0;
-    }
-
+    
     //Handles adding energy blocks to the network system. Systems may need to recalibrate.
     private void handleEnergyBlock(Ref<ChunkStore> ref, CommandBuffer<ChunkStore> commandBuffer, Vector3i location, WorldChunk worldChunk, World world) {
         //Go along every adjacent cable and find the nearest energy block
         ArrayList<Vector3i> neighbors = getValidNeighbors(world, location, commandBuffer);
-
-
+        
         //if no neighbors, just create a new network
         if(neighbors.isEmpty()) {
             createNetwork(ref, location, worldChunk, commandBuffer);
-            addToTick(ref, worldChunk, commandBuffer, location);
             return;
         }
 
-        int targetNetwork = confirmAndCombineNetworks(neighbors, world, commandBuffer, null);
+        int targetNetwork = confirmAndCombineNetworks(neighbors, world, commandBuffer, location);
 
         //Finally, add this entity to the network
         if(targetNetwork == -1) {
             createNetwork(ref, location, worldChunk, commandBuffer);
-            addToTick(ref, worldChunk, commandBuffer, location);
         } else {
             getNetwork(targetNetwork).addEntity(ref, location, commandBuffer);
             addToTick(ref, worldChunk, commandBuffer, location);
         }
     }
 
-    private void handleCableBlock(Ref<ChunkStore> ref, CommandBuffer<ChunkStore> commandBuffer, Vector3i location, WorldChunk worldChunk, World world, EnergyCableComponent cable) {
+    private void handleCableBlock(CommandBuffer<ChunkStore> commandBuffer, Vector3i location, World world) {
         //Go along every adjacent cable and find the nearest energy block
         ArrayList<Vector3i> neighbors = getValidNeighbors(world, location, commandBuffer);
 
         //if no neighbors, then theres nothing to do here
-        if(neighbors.isEmpty() || neighbors.size() == 1) {
+        if(neighbors.isEmpty()) {
             return;
         }
 
@@ -267,10 +192,10 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
 
         //Get the network id of every branch of this block
         for(Vector3i neighbor : neighbors) {
+            //This block does not have a network assigned to it
             if(getNetworkFromVector(neighbor) == -1) {
-                ArrayList<Vector3i> temp = new ArrayList<>();
-                temp.add(origin);
-                foundNetworks.add(findConnectedNetwork(neighbor, commandBuffer, world, temp));
+                foundNetworks.add(findConnectedNetwork(neighbor, commandBuffer, world, origin));
+                //This block does have a network assigned to it
             } else {
                 foundNetworks.add(getNetworkFromVector(neighbor));
             }
@@ -300,20 +225,20 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
     }
 
     //Travel across cables until a machine is found with a network id
-    private int findConnectedNetwork(Vector3i pos, CommandBuffer<ChunkStore> buffer, World world, ArrayList<Vector3i> blacklist) {
+    private int findConnectedNetwork(Vector3i pos, CommandBuffer<ChunkStore> buffer, World world, Vector3i origin) {
         ArrayList<Vector3i> neighbors = getValidNeighbors(world, pos, buffer);
 
         //If no valid neighbors, return
-        if(neighbors.isEmpty() || neighbors.size() == 1) {
-            return - 1;
+        if(neighbors.isEmpty()) {
+            return -1;
         }
 
         //Iterate over the stack 1 cable at a time. Save all found cables in the set to prevent loops
         ArrayList<Vector3i> stack = new ArrayList<>();
         HashSet<Vector3i> set = new HashSet<>();
 
-        if(blacklist != null) {
-            set.addAll(blacklist);
+        if(origin != null) {
+            set.add(origin);
         }
 
         stack.add(pos);
@@ -430,6 +355,7 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
     @Override
     public void onEntityRemove(@Nonnull Ref<ChunkStore> ref, @Nonnull RemoveReason removeReason, @Nonnull Store<ChunkStore> store, @Nonnull CommandBuffer<ChunkStore> commandBuffer) {
         EssentialsContext context = new EssentialsContext(ref, commandBuffer);
+        if(!context.isValid) return;
 
         EnergyComponent energy = commandBuffer.getComponent(ref, ArchStar.get().getEnergyComponentType());
         EnergyCableComponent cable = commandBuffer.getComponent(ref, ArchStar.get().getEnergyCableComponentType());
@@ -437,7 +363,7 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
         ArrayList<Vector3i> neighbors = getValidNeighbors(context.world, context.pos, commandBuffer);
 
         if(energy != null) {
-            getNetwork(energy.getNetworkID()).removeEntity(context.pos);
+            getNetwork(energy.getNetworkID()).removeEntity(context.pos, energy.getType());
             recalibrateNetwork(energy.getNetworkID(), context.pos, context.world, commandBuffer);
 
             for(Vector3i neighbor : neighbors) {
@@ -465,13 +391,14 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
             ArrayList<Vector3i> foundTargets = findAllEnergyBlocks(neighbor, world, buffer, networkID, pos);
             int size = foundTargets.size();
 
+            networkSize -= size;
+
             //All machines are accounted for. No need to recalibrate the network.
-            if(networkSize == size) {
+            if(networkSize == 0) {
                 return;
             }
 
             //Move the found machines to a new network
-            networkSize -= size;
             EnergyNetwork network = createNetwork(world.getWorldConfig().getUuid());
 
             for(Vector3i target : foundTargets) {
@@ -488,49 +415,24 @@ public class EnergyNetworkSystem extends RefSystem<ChunkStore>{
     @Nullable
     @Override
     public Query<ChunkStore> getQuery() {
-        return Query.and(BlockModule.BlockStateInfo.getComponentType(), Query.or(ArchStar.get().getEnergyComponentType(), ArchStar.get().getEnergyCableComponentType()));
+        return Query.or(ArchStar.get().getEnergyComponentType(), ArchStar.get().getEnergyCableComponentType());
     }
 
     //Returns a list of all valid neighbors
     private ArrayList<Vector3i> getValidNeighbors(World world, Vector3i location, CommandBuffer<ChunkStore> buffer) {
         ArrayList<Vector3i> neighbors = new ArrayList<>();
 
-        //Global coords
-        Vector3i up = new Vector3i(location.x, location.y + 1, location.z);
-        Vector3i down = new Vector3i(location.x, location.y - 1, location.z);
-        Vector3i north = new Vector3i(location.x + 1, location.y, location.z);
-        Vector3i east = new Vector3i(location.x, location.y, location.z + 1);
-        Vector3i south = new Vector3i(location.x - 1, location.y, location.z);
-        Vector3i west = new Vector3i(location.x, location.y, location.z - 1);
-
-        if(isValidNeighbor(world, up, buffer)) {
-            neighbors.add(up);
+        for(Vector3i neighbor : ArchLibrary.getNeighborVectors(location)) {
+            if(isValidNeighbor(world, neighbor, buffer)) neighbors.add(neighbor);
         }
-        if(isValidNeighbor(world, down, buffer)) {
-            neighbors.add(down);
-        }
-        if(isValidNeighbor(world, north, buffer)) {
-            neighbors.add(north);
-        }
-        if(isValidNeighbor(world, east, buffer)) {
-            neighbors.add(east);
-        }
-        if(isValidNeighbor(world, south, buffer)) {
-            neighbors.add(south);
-        }
-        if(isValidNeighbor(world, west, buffer)) {
-            neighbors.add(west);
-        }
-
+        
         return neighbors;
     }
 
     //Check that the block at the location is compatible
     private boolean isValidNeighbor(World world, Vector3i location, CommandBuffer<ChunkStore> buffer) {
         Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(world, location);
-        if (blockRef == null) {
-            return false;
-        }
+        if (blockRef == null) return false;
 
         EnergyComponent energy = buffer.getComponent(blockRef, ArchStar.get().getEnergyComponentType());
         EnergyCableComponent cable = buffer.getComponent(blockRef, ArchStar.get().getEnergyCableComponentType());

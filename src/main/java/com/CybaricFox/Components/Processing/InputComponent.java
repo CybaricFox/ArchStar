@@ -1,7 +1,6 @@
-package com.CybaricFox.Components.Blocks;
+package com.CybaricFox.Components.Processing;
 
-import com.CybaricFox.Components.Helpers.CommonContainerComponent;
-import com.CybaricFox.Components.Helpers.ProcessContext;
+import com.CybaricFox.Components.CommonContainerComponent;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;

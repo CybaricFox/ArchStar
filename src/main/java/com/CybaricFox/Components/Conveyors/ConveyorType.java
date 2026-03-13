@@ -1,4 +1,4 @@
-package com.CybaricFox.Components.Helpers.Conveyors;
+package com.CybaricFox.Components.Conveyors;
 
 //What type of conveyor is this?
 public enum ConveyorType {

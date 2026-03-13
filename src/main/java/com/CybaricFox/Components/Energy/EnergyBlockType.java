@@ -1,9 +1,9 @@
-package com.CybaricFox.Components.Helpers;
+package com.CybaricFox.Components.Energy;
 
 //What type of energy block is this?
 public enum EnergyBlockType {
     PRODUCER, //Produces energy
     CONSUMER, //Consumes energy
     STORAGE, //Stores energy
-    NOTSET //Type not set
+    NOT_SET //Type not set
 }

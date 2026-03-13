@@ -1,7 +1,15 @@
 package com.CybaricFox;
 
 import com.CybaricFox.ComponentSystems.*;
-import com.CybaricFox.Components.Blocks.*;
+import com.CybaricFox.Components.Conveyors.ConveyorComponent;
+import com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours.CommonConsumer;
+import com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours.CommonFueledProducer;
+import com.CybaricFox.Components.Energy.EnergyBehaviourRegistry;
+import com.CybaricFox.Components.Energy.EnergyCableComponent;
+import com.CybaricFox.Components.Energy.EnergyComponent;
+import com.CybaricFox.Components.Processing.FuelComponent;
+import com.CybaricFox.Components.Processing.InputComponent;
+import com.CybaricFox.Components.Processing.OutputComponent;
 import com.CybaricFox.Interactions.DebuggerInteraction;
 import com.CybaricFox.Interactions.OpenGeneratorInteraction;
 import com.CybaricFox.Interactions.OpenPoweredProcessorInteraction;
@@ -10,15 +18,11 @@ import com.CybaricFox.Systems.CommonUIUpdater;
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.plugin.PluginBase;
 import com.hypixel.hytale.server.core.plugin.PluginManager;
-import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import javax.annotation.Nonnull;
@@ -36,22 +40,25 @@ public class ArchStar extends JavaPlugin {
     private ComponentType<ChunkStore, EnergyCableComponent> energyCableComponent;
     private ComponentType<ChunkStore, ConveyorComponent> conveyorComponent;
 
-    private final EnergyNetworkSystem energyNetworkSystem = new EnergyNetworkSystem();
-    private final ConveyorPlaceSystem conveyorPlaceSystem = new ConveyorPlaceSystem();
+    private final EnergyRefSystem energyRefSystem = new EnergyRefSystem();
+    private final ConveyorRefSystem conveyorRefSystem = new ConveyorRefSystem();
 
     public ArchStar(@Nonnull JavaPluginInit init) {
         super(init);
         instance = this;
     }
 
-    public EnergyNetworkSystem getEnergyNetworkSystem() {
-        return energyNetworkSystem;
+    public EnergyRefSystem getEnergyNetworkSystem() {
+        return energyRefSystem;
     }
-    public ConveyorPlaceSystem getConveyorPlaceSystem() {return conveyorPlaceSystem;}
+    public ConveyorRefSystem getConveyorPlaceSystem() {return conveyorRefSystem;}
 
     @Override
     protected void setup() {
         LOGGER.at(Level.INFO).log("Beginning ArchStar setup.");
+
+        //Custom registry setups
+        setupEnergyBehaviours();
 
         energyComponent = getChunkStoreRegistry().registerComponent(EnergyComponent.class, "EnergyBlock", EnergyComponent.CODEC);
         fuelComponent = getChunkStoreRegistry().registerComponent(FuelComponent.class, "FuelBlock", FuelComponent.CODEC);
@@ -60,11 +67,11 @@ public class ArchStar extends JavaPlugin {
         energyCableComponent = getChunkStoreRegistry().registerComponent(EnergyCableComponent.class, "CableBlock", EnergyCableComponent.CODEC);
         conveyorComponent = getChunkStoreRegistry().registerComponent(ConveyorComponent.class, "Conveyor", ConveyorComponent.CODEC);
 
-        getChunkStoreRegistry().registerSystem(energyNetworkSystem);
+        getChunkStoreRegistry().registerSystem(energyRefSystem);
         getChunkStoreRegistry().registerSystem(new EnergySystem());
         getChunkStoreRegistry().registerSystem(new CustomProcessingSystem());
-        getChunkStoreRegistry().registerSystem(new CustomProcessSystem());
-        getChunkStoreRegistry().registerSystem(conveyorPlaceSystem);
+        getChunkStoreRegistry().registerSystem(new CustomProcessRefSystem());
+        getChunkStoreRegistry().registerSystem(conveyorRefSystem);
         getChunkStoreRegistry().registerSystem(new ConveyorSystem());
 
         getEntityStoreRegistry().registerSystem(new CommonUIReader());
@@ -83,6 +90,12 @@ public class ArchStar extends JavaPlugin {
 
         //WorldGen
         LOGGER.at(Level.INFO).log("ArchStar setup finished.");
+    }
+
+    private void setupEnergyBehaviours() {
+        EnergyBehaviourRegistry.register("Solid_Fuel_Generator", CommonFueledProducer::new);
+        EnergyBehaviourRegistry.register("Electric_Grinder", CommonConsumer::new);
+        EnergyBehaviourRegistry.register("Electric_Furnace", CommonConsumer::new);
     }
 
     @Override

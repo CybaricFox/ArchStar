@@ -1,4 +1,4 @@
-package com.CybaricFox.Components.Blocks;
+package com.CybaricFox.Components.Energy;
 
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;

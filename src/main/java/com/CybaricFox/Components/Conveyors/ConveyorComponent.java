@@ -1,20 +1,15 @@
-package com.CybaricFox.Components.Blocks;
+package com.CybaricFox.Components.Conveyors;
 
 import com.CybaricFox.API.Direction;
 import com.CybaricFox.API.DirectionLibrary;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorImporter;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorInstance;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorRouter;
-import com.CybaricFox.Components.Helpers.Conveyors.ConveyorType;
+import com.CybaricFox.Components.Energy.EnergyBehaviour.EnergyBehaviour;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.component.Component;
-import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import javax.annotation.Nullable;

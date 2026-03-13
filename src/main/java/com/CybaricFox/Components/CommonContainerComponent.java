@@ -1,4 +1,4 @@
-package com.CybaricFox.Components.Helpers;
+package com.CybaricFox.Components;
 
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
