@@ -30,6 +30,8 @@ import java.util.logging.Level;
 public class ArchLibrary {
     private static final Random rng = new Random();
 
+    public static boolean activateDebug = false;
+
     //Converts global coordinates to local chunk coordinates
     public static Vector3i convertToLocalCoords(Vector3i globalCoords) {
         return new Vector3i(
@@ -89,23 +91,18 @@ public class ArchLibrary {
     }
 
     public static void changeBlockState(Ref<ChunkStore> ref, CommandBuffer<ChunkStore> buffer, String stateName) {
-        //Get the global position
-        BlockModule.BlockStateInfo info = buffer.getComponent(ref, BlockModule.BlockStateInfo.getComponentType());
-        if(info == null) {
-            return;
-        }
-        WorldChunk chunk = buffer.getComponent(info.getChunkRef(), WorldChunk.getComponentType());
-        if(chunk == null) {
-            return;
-        }
-
-        Vector3i pos = ArchLibrary.getGlobalCoordsFromChunk(info, chunk);
+        EssentialsContext context = new EssentialsContext(ref, buffer);
 
         //Get the block state
-        World world = buffer.getExternalData().getWorld();
-        BlockType type = world.getBlockType(pos);
+        BlockType type = context.world.getBlockType(context.pos);
 
-        world.setBlockInteractionState(pos, type, stateName);
+        context.world.setBlockInteractionState(context.pos, type, stateName);
+    }
+    public static void changeBlockState(EssentialsContext context, String stateName) {
+        //Get the block state
+        BlockType type = context.world.getBlockType(context.pos);
+
+        context.world.setBlockInteractionState(context.pos, type, stateName);
     }
 
     public static void registerCustomPagePackets(HytaleLogger LOGGER) {
@@ -138,5 +135,12 @@ public class ArchLibrary {
         neighbors.addLast(new Vector3i(location.x, location.y + 1, location.z));
         neighbors.addLast(new Vector3i(location.x, location.y - 1, location.z));
         return neighbors;
+    }
+
+    //Used to get messages that are normally silent
+    public static void printDebugMessage(Level level, String message) {
+        if(activateDebug) {
+            ArchStar.LOGGER.at(level).log(message);
+        }
     }
 }

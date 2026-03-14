@@ -10,10 +10,10 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 /*
@@ -39,7 +39,11 @@ public class EnergyNetwork {
     }
 
     public void requestTransaction(EnergyTransaction transaction, EnergyComponent component) {
-        transactionQueue.add(new EnergyTransactionContext(transaction, component));
+        transactionQueue.addLast(new EnergyTransactionContext(transaction, component));
+    }
+
+    public World getWorld() {
+        return Universe.get().getWorld(worldUUID);
     }
 
     public void runTransactions() {
@@ -73,7 +77,19 @@ public class EnergyNetwork {
                     requester.addEnergy(total);
                 }
                 case SEND -> {
+                    //Send energy to storage
+                    for(EnergyComponent storage : getAllOfType(EnergyBlockType.STORAGE).values()) {
+                        //Requester cannot send anymore this tick
+                        if(requester.getOutputThisTick() >= requester.getOutputRate()) break;
 
+                        //The amount that can be sent to this storage.
+                        int amountToSend = requester.transferEnergy(storage.getInputRate() - storage.getInputThisTick(), storage.getRemaining());
+
+                        if(amountToSend == 0) continue;
+
+                        storage.addEnergy(amountToSend);
+                        storage.addInputThisTick(amountToSend);
+                    }
                 }
             }
         }

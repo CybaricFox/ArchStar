@@ -1,0 +1,109 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Capacitor.name",
+    "Description": "ArchStar.Capacitor.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Capacitor_Icon.png",
+  "Categories": [
+    "ArchStar.Machines"
+  ],
+  "BlockType": {
+    "CustomModel": "Blocks/Machines/Capacitor.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Machines/Capacitor.png",
+        "Weight": 1
+      }
+    ],
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "Flags": {},
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "Group": "Machine",
+    "VariantRotation": "NESW",
+    "BlockParticleSetId": "Metal",
+    "BlockSoundSetId": "Metal",
+    "ParticleColor": "#8f8f8f",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "Open_Powered_Processor"
+          }
+        ]
+      }
+    },
+    "BlockEntity":{
+      "Components":{
+        "EnergyBlock": {
+          "MaxEnergy": 8000000,
+          "InputRate": 344,
+          "OutputRate": 344,
+          "Type": "STORAGE"
+        },
+        "InputBlock": {
+          "MaxSize": 1,
+          "Size": 1,
+          "ID": "Charger",
+          "ProgressMultiplier": 1.0
+        },
+        "OutputBlock": {
+          "MaxSize": 1,
+          "Size": 1
+        }
+      }
+    }
+  },
+  "IconProperties": {
+    "Scale": 0.55,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -13.5
+    ]
+  },
+  "PlayerAnimationsId": "Block",
+  "Scale": 1,
+  "DropOnDeath": false,
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Industrial_Frame"
+      },
+      {
+        "ItemId": "Copper_Cable",
+        "Quantity": 4
+      },
+      {
+        "ItemId": "Sodium_Battery",
+        "Quantity": 4
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "Capacitor"
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Industrial"
+        ],
+        "Id": "Invention"
+      }
+    ],
+    "TimeSeconds": 8.0
+  },
+  "MaxStack": 100
+}

@@ -61,7 +61,7 @@
   "ItemSoundSetId": "ISS_Weapons_Stone_Small",
   "DropOnDeath": false,
   "MaxStack": 1,
-  "Quality": "Rare",
+  "Quality": "Uncommon",
   "Tool": {
     "Specs": [
       {

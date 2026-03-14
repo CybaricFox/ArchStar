@@ -10,6 +10,8 @@ Electric_Grinder.name = Electric Grinder
 Electric_Grinder.description = A grinder that slowly grinds ores into powder at a 1->2 ratio. Consumes 4v/t.
 Solid_Fuel_Generator.name = Solid Fuel Generator
 Solid_Fuel_Generator.description = Burn fuel to generate 16v/t.
+Capacitor.name = Capacitor
+Capacitor.description = Stores 8mv\nOutputs 344v/t\nInputs 344v/t
 
 Stone_Conveyor.name = Stone Conveyor
 Stone_Conveyor.description = 1.0x speed

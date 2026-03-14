@@ -1,0 +1,45 @@
+{
+  "TranslationProperties": {
+    "Name": "Debug Stick"
+  },
+  "Categories": [
+    "ArchStar.Equipment"
+  ],
+  "Model": "Items/Ingredients/Stick.blockymodel",
+  "Texture": "Items/Ingredients/Stick_Texture.png",
+  "Icon": "Icons/ItemsGenerated/Ingredient_Stick.png",
+  "PlayerAnimationsId": "Item",
+  "IconProperties": {
+    "Scale": 0.5,
+    "Translation": [
+      0,
+      -3
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Equipment"
+    ]
+  },
+  "ItemEntity": {
+    "ParticleSystemId": null
+  },
+  "ItemSoundSetId": "ISS_Items_Ingots",
+  "DropOnDeath": false,
+  "MaxStack": 1,
+  "Quality": "Developer",
+  "Interactions": {
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "Debug_ArchStar_Block"
+        }
+      ]
+    }
+  }
+}

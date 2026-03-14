@@ -1,7 +1,9 @@
 package com.CybaricFox;
 
+import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ComponentSystems.*;
 import com.CybaricFox.Components.Conveyors.ConveyorComponent;
+import com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours.CommonCapacitor;
 import com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours.CommonConsumer;
 import com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours.CommonFueledProducer;
 import com.CybaricFox.Components.Energy.EnergyBehaviourRegistry;
@@ -57,6 +59,8 @@ public class ArchStar extends JavaPlugin {
     protected void setup() {
         LOGGER.at(Level.INFO).log("Beginning ArchStar setup.");
 
+        ArchLibrary.activateDebug = true;
+
         //Custom registry setups
         setupEnergyBehaviours();
 
@@ -96,6 +100,7 @@ public class ArchStar extends JavaPlugin {
         EnergyBehaviourRegistry.register("Solid_Fuel_Generator", CommonFueledProducer::new);
         EnergyBehaviourRegistry.register("Electric_Grinder", CommonConsumer::new);
         EnergyBehaviourRegistry.register("Electric_Furnace", CommonConsumer::new);
+        EnergyBehaviourRegistry.register("Capacitor", CommonCapacitor::new);
     }
 
     @Override

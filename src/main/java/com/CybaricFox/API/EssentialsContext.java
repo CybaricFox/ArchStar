@@ -2,6 +2,7 @@ package com.CybaricFox.API;
 
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.modules.block.BlockModule;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -22,6 +23,20 @@ public class EssentialsContext {
         if(info == null) return;
 
         chunk = commandBuffer.getComponent(info.getChunkRef(), WorldChunk.getComponentType());
+        if(chunk == null) return;
+
+        pos = ArchLibrary.getGlobalCoordsFromChunk(info, chunk);
+
+        isValid = true;
+    }
+
+    public EssentialsContext(Ref<ChunkStore> ref, Store<ChunkStore> store) {
+        world = store.getExternalData().getWorld();
+
+        info = store.getComponent(ref, BlockModule.BlockStateInfo.getComponentType());
+        if(info == null) return;
+
+        chunk = store.getComponent(info.getChunkRef(), WorldChunk.getComponentType());
         if(chunk == null) return;
 
         pos = ArchLibrary.getGlobalCoordsFromChunk(info, chunk);

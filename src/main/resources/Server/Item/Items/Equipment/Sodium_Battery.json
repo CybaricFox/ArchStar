@@ -63,5 +63,6 @@
   "ItemSoundSetId": "ISS_Items_Ingots",
   "DropOnDeath": false,
   "MaxStack": 1,
-  "Quality": "Common"
+  "Quality": "Common",
+  "MaxDurability": 20000
 }

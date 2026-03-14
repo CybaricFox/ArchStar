@@ -1,6 +1,7 @@
 package com.CybaricFox.Components.Energy;
 
 import com.CybaricFox.API.EssentialsContext;
+import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Energy.EnergyBehaviour.EnergyBehaviour;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
@@ -9,6 +10,7 @@ import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import javax.annotation.Nullable;
+import java.util.logging.Level;
 
 //Component that contains data on energy
 public class EnergyComponent implements Component<ChunkStore> {
@@ -66,6 +68,7 @@ public class EnergyComponent implements Component<ChunkStore> {
     private int outputRate = 0;
     private int productionRate = 0;
     private int outputThisTick = 0;
+    private int inputThisTick = 0;
     private int networkID = -1;
     private EnergyBlockType type = EnergyBlockType.NOT_SET;
 
@@ -124,6 +127,14 @@ public class EnergyComponent implements Component<ChunkStore> {
         }
     }
 
+    public void addInputThisTick(int amount) {
+        inputThisTick += amount;
+
+        if(inputThisTick > inputRate) {
+            ArchStar.LOGGER.at(Level.WARNING).log("A machine accepted more energy than it can in one 1 tick! Max input per tick: " + inputRate + ". Energy this tick: " + inputThisTick);
+        }
+    }
+
     //Remove energy as a result of transfer
     public int transferEnergy(int inputOfTarget, int remaining) {
         //Cannot output more than rate in 1 tick
@@ -143,12 +154,17 @@ public class EnergyComponent implements Component<ChunkStore> {
         return targetAmount;
     }
 
-    public void resetOutputThisTick() {
+    public void resetIOThisTick() {
         outputThisTick = 0;
+        inputThisTick = 0;
     }
 
     public int getOutputThisTick() {
         return outputThisTick;
+    }
+
+    public int getInputThisTick() {
+        return inputThisTick;
     }
 
     static {
