@@ -1,5 +1,10 @@
 package com.CybaricFox.UI.Pages;
 
+import com.CybaricFox.API.ArchLibrary;
+import com.CybaricFox.ArchStar;
+import com.CybaricFox.Components.Processing.FuelComponent;
+import com.CybaricFox.Components.Processing.InputComponent;
+import com.CybaricFox.Components.Processing.OutputComponent;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -10,24 +15,33 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import javax.annotation.Nonnull;
 
 public class PoweredProcessingPage extends CommonPage {
     public PoweredProcessingPage(@Nonnull PlayerRef playerRef, @Nonnull BuilderCodec<CommonData> eventDataCodec, Vector3i pos) {
-        super(playerRef, eventDataCodec);
-
-        this.pos = pos;
+        super(playerRef, eventDataCodec, pos);
     }
 
     @Override
     public void build(@Nonnull Ref<EntityStore> ref, @Nonnull UICommandBuilder uiCommandBuilder, @Nonnull UIEventBuilder uiEventBuilder, @Nonnull Store<EntityStore> store) {
         super.build(ref, uiCommandBuilder, uiEventBuilder, store);
 
-        addEnergyUI(ref, uiCommandBuilder);
-        addInputUI(ref, uiCommandBuilder, uiEventBuilder);
-        addOutputUI(ref, uiCommandBuilder, uiEventBuilder);
+        Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(ref.getStore().getExternalData().getWorld(), pos);
+
+        InputComponent inputComponent = blockRef.getStore().getComponent(blockRef, ArchStar.get().getInputComponentType());
+        addUI("Input", inputComponent);
+        enableItemGridEventBindings(uiEventBuilder, "Input");
+
+        OutputComponent outputComponent = blockRef.getStore().getComponent(blockRef, ArchStar.get().getOutputComponentType());
+        addUI("Output", outputComponent);
+
+        addEnergyUI(ref);
+
+        globalBuilder = null;
+        isValid = true;
     }
 
     @Override

@@ -2,7 +2,9 @@ package com.CybaricFox.UI.Pages;
 
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.Components.Processing.FuelComponent;
+import com.CybaricFox.Components.Energy.ChargerComponent;
+import com.CybaricFox.Components.Processing.InputComponent;
+import com.CybaricFox.Components.Processing.OutputComponent;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -18,9 +20,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import javax.annotation.Nonnull;
 
-public class GeneratorPage extends CommonPage {
-
-    public GeneratorPage(@Nonnull PlayerRef playerRef, @Nonnull BuilderCodec<CommonData> eventDataCodec, Vector3i pos) {
+public class ChargerPage extends CommonPage {
+    public ChargerPage(@Nonnull PlayerRef playerRef, @Nonnull BuilderCodec<CommonData> eventDataCodec, Vector3i pos) {
         super(playerRef, eventDataCodec, pos);
     }
 
@@ -30,11 +31,14 @@ public class GeneratorPage extends CommonPage {
 
         Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(ref.getStore().getExternalData().getWorld(), pos);
 
-        FuelComponent fuelComponent = blockRef.getStore().getComponent(blockRef, ArchStar.get().getFuelComponentType());
-        addUI("Fuel", fuelComponent);
-        enableItemGridEventBindings(uiEventBuilder, "Fuel");
+        ChargerComponent chargerComponent = blockRef.getStore().getComponent(blockRef, ArchStar.get().getChargerComponentType());
+        addUI("Charger", chargerComponent);
+        enableItemGridEventBindings(uiEventBuilder, "Charger");
 
         addEnergyUI(ref);
+
+        OutputComponent outputComponent = blockRef.getStore().getComponent(blockRef, ArchStar.get().getOutputComponentType());
+        addUI("Output", outputComponent);
 
         globalBuilder = null;
         isValid = true;

@@ -21,6 +21,11 @@
       "Id": "Ingredients",
       "Name": "ArchStar.Ingredients_Category",
       "Icon": "Icons/ItemCategories/Circuit_Icon.png"
+    },
+    {
+      "Id": "Equipment",
+      "Name": "ArchStar.Equipment_Category",
+      "Icon": "Icons/ItemCategories/Equipment_Icon.png"
     }
   ],
   "Name": "ArchStar.ArchStar_Category",

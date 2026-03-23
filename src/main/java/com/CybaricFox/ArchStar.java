@@ -3,6 +3,7 @@ package com.CybaricFox;
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ComponentSystems.*;
 import com.CybaricFox.Components.Conveyors.ConveyorComponent;
+import com.CybaricFox.Components.Energy.ChargerComponent;
 import com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours.CommonCapacitor;
 import com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours.CommonConsumer;
 import com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours.CommonFueledProducer;
@@ -12,20 +13,23 @@ import com.CybaricFox.Components.Energy.EnergyComponent;
 import com.CybaricFox.Components.Processing.FuelComponent;
 import com.CybaricFox.Components.Processing.InputComponent;
 import com.CybaricFox.Components.Processing.OutputComponent;
-import com.CybaricFox.Interactions.DebuggerInteraction;
-import com.CybaricFox.Interactions.OpenGeneratorInteraction;
-import com.CybaricFox.Interactions.OpenPoweredProcessorInteraction;
+import com.CybaricFox.Interactions.*;
 import com.CybaricFox.Systems.CommonUIReader;
-import com.CybaricFox.Systems.CommonUIUpdater;
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.component.ComponentType;
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.protocol.packets.interface_.CustomPageEvent;
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
+import com.hypixel.hytale.server.core.io.adapter.PlayerPacketFilter;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.plugin.PluginBase;
 import com.hypixel.hytale.server.core.plugin.PluginManager;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import javax.annotation.Nonnull;
 import java.util.logging.Level;
@@ -41,6 +45,7 @@ public class ArchStar extends JavaPlugin {
     private ComponentType<ChunkStore, OutputComponent> outputComponent;
     private ComponentType<ChunkStore, EnergyCableComponent> energyCableComponent;
     private ComponentType<ChunkStore, ConveyorComponent> conveyorComponent;
+    private ComponentType<ChunkStore, ChargerComponent> chargerComponent;
 
     private final EnergyRefSystem energyRefSystem = new EnergyRefSystem();
     private final ConveyorRefSystem conveyorRefSystem = new ConveyorRefSystem();
@@ -59,7 +64,7 @@ public class ArchStar extends JavaPlugin {
     protected void setup() {
         LOGGER.at(Level.INFO).log("Beginning ArchStar setup.");
 
-        ArchLibrary.activateDebug = true;
+        ArchLibrary.activateDebug = false;
 
         //Custom registry setups
         setupEnergyBehaviours();
@@ -70,6 +75,7 @@ public class ArchStar extends JavaPlugin {
         outputComponent = getChunkStoreRegistry().registerComponent(OutputComponent.class, "OutputBlock", OutputComponent.CODEC);
         energyCableComponent = getChunkStoreRegistry().registerComponent(EnergyCableComponent.class, "CableBlock", EnergyCableComponent.CODEC);
         conveyorComponent = getChunkStoreRegistry().registerComponent(ConveyorComponent.class, "Conveyor", ConveyorComponent.CODEC);
+        chargerComponent = getChunkStoreRegistry().registerComponent(ChargerComponent.class, "ChargerBlock", ChargerComponent.CODEC);
 
         getChunkStoreRegistry().registerSystem(energyRefSystem);
         getChunkStoreRegistry().registerSystem(new EnergySystem());
@@ -79,21 +85,23 @@ public class ArchStar extends JavaPlugin {
         getChunkStoreRegistry().registerSystem(new ConveyorSystem());
 
         getEntityStoreRegistry().registerSystem(new CommonUIReader());
-        getEntityStoreRegistry().registerSystem(new CommonUIUpdater(1));
 
         //Debug helper
-        //FoxLibrary.registerCustomPagePackets(LOGGER);
+        //ArchLibrary.registerCustomPagePackets(LOGGER);
 
         //Commands
-
 
         //Interactions
         getCodecRegistry(Interaction.CODEC).register("Open_Power_Generator", OpenGeneratorInteraction.class, OpenGeneratorInteraction.CODEC);
         getCodecRegistry(Interaction.CODEC).register("Open_Powered_Processor", OpenPoweredProcessorInteraction.class, OpenPoweredProcessorInteraction.CODEC);
+        getCodecRegistry(Interaction.CODEC).register("Open_Charger", OpenChargerInteraction.class, OpenChargerInteraction.CODEC);
         getCodecRegistry(Interaction.CODEC).register("Debug_ArchStar_Block", DebuggerInteraction.class, DebuggerInteraction.CODEC);
+        getCodecRegistry(Interaction.CODEC).register("Recharge_Held_Item", RechargeHeldItemInteraction.class, RechargeHeldItemInteraction.CODEC);
 
         //WorldGen
         LOGGER.at(Level.INFO).log("ArchStar setup finished.");
+
+        fixCustomUI();
     }
 
     private void setupEnergyBehaviours() {
@@ -101,6 +109,26 @@ public class ArchStar extends JavaPlugin {
         EnergyBehaviourRegistry.register("Electric_Grinder", CommonConsumer::new);
         EnergyBehaviourRegistry.register("Electric_Furnace", CommonConsumer::new);
         EnergyBehaviourRegistry.register("Capacitor", CommonCapacitor::new);
+    }
+
+    //FIXES THE GOD DAMN ITEM GRID NOT PLAYING WELL WITH CUSTOM UIS!!!
+    private void fixCustomUI() {
+        PacketAdapters.registerInbound((PlayerPacketFilter) (player,  packet) -> {
+            if(player.getReference() == null) return false;
+            player.getReference().getStore().getExternalData().getWorld().execute(() -> {
+                if(packet instanceof CustomPageEvent customPageEvent && customPageEvent.data != null) {
+                    Ref<EntityStore> playerRef = player.getReference();
+                    Player playerComponent = playerRef.getStore().getComponent(playerRef, Player.getComponentType());
+
+                    playerComponent.getPageManager().getCustomPage().handleDataEvent(playerRef, playerRef.getStore(), customPageEvent.data);
+
+                    //if(((CustomPageEvent) packet).data != null) {
+                    //    LOGGER.at(Level.INFO).log("Packet Received: " + ((CustomPageEvent) packet).data);
+                    //}
+                }
+            });
+            return false;
+        });
     }
 
     @Override
@@ -118,6 +146,7 @@ public class ArchStar extends JavaPlugin {
     public ComponentType<ChunkStore, OutputComponent> getOutputComponentType() {return outputComponent;}
     public ComponentType<ChunkStore, EnergyCableComponent> getEnergyCableComponentType() {return energyCableComponent;}
     public ComponentType<ChunkStore, ConveyorComponent> getConveyorComponentType() {return conveyorComponent;}
+    public ComponentType<ChunkStore, ChargerComponent> getChargerComponentType() {return chargerComponent;}
 
     public static ArchStar get() {return instance;}
 

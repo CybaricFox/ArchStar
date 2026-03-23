@@ -1,5 +1,6 @@
 package com.CybaricFox.Components;
 
+import com.CybaricFox.UI.Pages.Common.IMachineUIComponent;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
@@ -15,6 +16,8 @@ public class CommonContainerComponent implements Component<ChunkStore> {
 
     public boolean isUIUpdated = false;
 
+    private static int nextID = 99;
+
     public CommonContainerComponent() {
 
     }
@@ -27,6 +30,12 @@ public class CommonContainerComponent implements Component<ChunkStore> {
         }
 
         setContainer(container);
+    }
+
+    protected int setSectionID() {
+        nextID++;
+
+        return nextID;
     }
 
     private void setContainer(SimpleItemContainer container) {

@@ -2,7 +2,7 @@
 @SlotSize = 80;
 @Padding = 5;
 
-ItemGrid #ItemGrid{
+ItemGrid #InventoryItemGrid{
      FlexWeight: 1.0;
      RenderItemQualityBackground: true;
      AreItemsDraggable: true;
@@ -12,6 +12,8 @@ ItemGrid #ItemGrid{
          SlotSize: @SlotSize,
          SlotIconSize: @SlotSize,
          SlotSpacing: @Padding,
-         SlotBackground: "SlotDefault2x.png"
+         SlotBackground: "SlotDefault2x.png",
+         BrokenSlotIconOverlay: "Alert.png",
+         BrokenSlotBackgroundOverlay: "BrokenItem.png"
      );
 }

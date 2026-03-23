@@ -53,11 +53,6 @@
       0
     ]
   },
-  "Tags": {
-    "Type": [
-      "Tools"
-    ]
-  },
   "ItemSoundSetId": "ISS_Weapons_Stone_Small",
   "DropOnDeath": false,
   "MaxStack": 1,
@@ -138,7 +133,14 @@
     "Compatible": true
   },
   "Interactions": {
-    "Primary": "Pickaxe_Attack"
+    "Primary": {
+      "Interactions": [
+        "Pickaxe_Attack",
+        {
+          "Type": "Recharge_Held_Item"
+        }
+      ]
+    }
   },
   "InteractionVars": {
     "Block_Hit_Camera_Effects": {
@@ -175,7 +177,8 @@
           "DamageEffects": {
             "WorldSoundEventId": "SFX_Light_Melee_T1_Impact"
           }
-        }
+        },
+        "Recharge_Held_Item"
       ]
     }
   },
@@ -187,5 +190,10 @@
       "Scale": 0.25
     }
   ],
-  "MaxDurability": 60000
+  "MaxDurability": 60000,
+  "Tags": {
+    "Type": [
+      "Powered_Item"
+    ]
+  }
 }

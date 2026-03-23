@@ -1,6 +1,7 @@
 package com.CybaricFox.Components.Processing;
 
 import com.CybaricFox.Components.CommonContainerComponent;
+import com.CybaricFox.UI.Pages.Common.IMachineUIComponent;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -10,7 +11,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import javax.annotation.Nullable;
 
-public class OutputComponent extends CommonContainerComponent {
+public class OutputComponent extends CommonContainerComponent implements IMachineUIComponent {
     public static final BuilderCodec<OutputComponent> CODEC;
 
     public OutputComponent() {
@@ -44,5 +45,27 @@ public class OutputComponent extends CommonContainerComponent {
                 .append(new KeyedCodec<SimpleItemContainer>("Container", SimpleItemContainer.CODEC), (component, s) -> component.container = s, (component) -> component.container).add()
 
                 .build();
+    }
+
+    @Override
+    public float getProgress() {
+        return -1.0f;
+    }
+
+    private static int sectionID = 0;
+    @Override
+    public int getSectionID() {
+        if(sectionID == 0) sectionID = setSectionID();
+        return sectionID;
+    }
+
+    @Override
+    public boolean canInsert() {
+        return false;
+    }
+
+    @Override
+    public void onDrop(String sender, String receiver, short senderSlot, short receiverSlot, int quantity) {
+
     }
 }

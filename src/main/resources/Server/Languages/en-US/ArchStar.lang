@@ -64,6 +64,7 @@ Machines_Category = Machines
 Cables_Category = Cables
 Ingredients_Category = Ingredients
 Resources_Category = Resources
+Equipment_Category = Equipment
 
 Steel_Drill.name = Steel Drill
 Steel_Drill.description = An electric drill. Equivalent to an iron pickaxe. Hope you brought ear muffs.\n\nPlace in an upgrade station to view stats.

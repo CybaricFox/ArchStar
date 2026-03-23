@@ -2,16 +2,17 @@ $C = "../../Common.ui";
 @SlotSize = 80;
 @Padding = 5;
 
-Group #FuelPanel{
+Group #InputPanel{
     LayoutMode: MiddleCenter;
     FlexWeight: 1.0;
 
-    AssetImage {
-        Anchor: (Width: 64, Height: 64);
-        AssetPath: "UI/Custom/Pages/Common/Fuel.png";
+    Label {
+         Style: (TextColor: #ffffff, HorizontalAlignment: Center, RenderBold: true);
+         Anchor: (Width: 192);
+         Text: "Equipment Charger";
     }
 
-    ItemGrid #FuelItemGrid {
+    ItemGrid #ChargerItemGrid {
         RenderItemQualityBackground: true;
         AreItemsDraggable: true;
         SlotsPerRow: 1;
@@ -25,8 +26,8 @@ Group #FuelPanel{
         );
     }
 
-    $C.@ProgressBar #FuelProgress {
-        Anchor: (Width: 192, Height: 6, Top: 10);
-        Value: 0.0;
+    $C.@ProgressBar #ChargerProgress {
+      Anchor: (Width: 192, Height: 6, Top: 10);
+      Value: 0.0;
     }
 }

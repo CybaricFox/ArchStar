@@ -1,17 +1,19 @@
 package com.CybaricFox.Components.Processing;
 
 import com.CybaricFox.Components.CommonContainerComponent;
+import com.CybaricFox.UI.Pages.Common.IMachineUIComponent;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Component;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class InputComponent extends CommonContainerComponent {
+public class InputComponent extends CommonContainerComponent implements IMachineUIComponent {
     public static final BuilderCodec<InputComponent> CODEC;
 
     //Id is used for crafting recipes
@@ -108,5 +110,71 @@ public class InputComponent extends CommonContainerComponent {
                 //Save fields
                 .append(new KeyedCodec<Integer>("Progress", Codec.INTEGER), (component, s) -> component.lastProgress = s, (component) -> component.lastProgress).add()
                 .build();
+    }
+
+    @Override
+    public float getProgress() {
+        return getProgressAsPercentage();
+    }
+
+    private static int sectionID = 0;
+    @Override
+    public int getSectionID() {
+        if(sectionID == 0) sectionID = setSectionID();
+        return sectionID;
+    }
+
+    @Override
+    public boolean canInsert() {
+        return true;
+    }
+
+    private void checkForRecipeCancel(int slot, int quantity) {
+        ProcessContext context = getProcess();
+
+        if(context == null) return;
+
+        ItemStack item = getItemStack((short) slot);
+        if(item == null) return;
+
+        //Check every input in the recipe to see if the item moving out is part of the recipe
+        for(int i = 0; i < context.targetInputIds.size(); i++) {
+            String targetID = context.targetInputIds.get(i);
+            //If the item is part of the recipe
+            if(item.getItemId().equals(targetID)) {
+                //Required quantity of this item for the recipe
+                int requiredQuantity = context.targetInputQuantities.get(i);
+                int currentQuantity = item.getQuantity();
+
+                //Cancel the recipe if there isnt eneough of the item left over
+                if(currentQuantity - quantity < requiredQuantity) {
+                    //WAIT! Check if another slot has the item too
+                    for(int j = 0; j < getContainer().getCapacity(); j++) {
+                        if(j == slot) continue; //We already checked this
+
+                        item = getItemStack((short) j);
+
+                        if(item == null) continue;
+
+                        //If another slot contains the item and has enough quantity, the recipe can go through.
+                        if(item.getItemId().equals(targetID)) {
+                            currentQuantity = item.getQuantity();
+                            if(currentQuantity >= requiredQuantity) {
+                                //The recipe can still be processed!
+                                return;
+                            }
+                        }
+                    }
+
+                    //The recipe is cancelled
+                    clearTargets();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDrop(String sender, String receiver, short senderSlot, short receiverSlot, int quantity) {
+        checkForRecipeCancel(senderSlot, quantity);
     }
 }

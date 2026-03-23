@@ -3,11 +3,11 @@ package com.CybaricFox.UI.Pages;
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Energy.EnergyComponent;
-import com.CybaricFox.Components.Processing.FuelComponent;
 import com.CybaricFox.Components.Processing.InputComponent;
-import com.CybaricFox.Components.Processing.OutputComponent;
 import com.CybaricFox.Components.Processing.ProcessContext;
 import com.CybaricFox.UI.Pages.Common.EnergyImageState;
+import com.CybaricFox.UI.Pages.Common.IMachineUIComponent;
+import com.CybaricFox.UI.Pages.Common.UIComponentContext;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -26,12 +26,14 @@ import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.ui.ItemGridSlot;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
@@ -39,6 +41,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 /*
@@ -52,31 +55,27 @@ ITEM GRID SECTION ID REFERENCE
 
 public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
-    public ItemGridSlot[] slots; //inventory slots
-    public ItemGridSlot[] fuelSlots;
-    public ItemGridSlot[] inputSlots;
-    public ItemGridSlot[] outputSlots;
-
     //Position of the block this interacted with
-    protected Vector3i pos = null;
+    protected Vector3i pos;
+
+    protected HashMap<String, UIComponentContext> componentMapping = new HashMap<>();
 
     protected boolean isDismissed = false;
 
-    private final int inventoryID = 1;
-    private final int fuelID = 2;
-    private final int inputID = 3;
-    private final int outputID = 4;
-    private final int storageID = 5;
-
     protected EnergyImageState energyState = EnergyImageState.EMPTY;
 
-    public CommonPage(@Nonnull PlayerRef playerRef, @Nonnull BuilderCodec<CommonPage.CommonData> eventDataCodec) {
+    protected UICommandBuilder globalBuilder;
+    public boolean isValid = false;
+
+    public CommonPage(@Nonnull PlayerRef playerRef, @Nonnull BuilderCodec<CommonPage.CommonData> eventDataCodec, Vector3i pos) {
         super(playerRef, CustomPageLifetime.CanDismiss, eventDataCodec);
 
+        this.pos = pos;
     }
 
     @Override
     public void build(@Nonnull Ref<EntityStore> ref, @Nonnull UICommandBuilder uiCommandBuilder, @Nonnull UIEventBuilder uiEventBuilder, @Nonnull Store<EntityStore> store) {
+        globalBuilder = uiCommandBuilder;
         uiCommandBuilder.append("Pages/CommonPage.ui");
 
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
@@ -92,362 +91,187 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
         uiCommandBuilder.append("#InventoryRow", "Pages/Common/InventoryUI.ui");
 
-        setSlots(ref, uiCommandBuilder);
-        translateBlockName(type, uiCommandBuilder);
+        CombinedItemContainer container = new CombinedItemContainer(player.getInventory().getStorage(), player.getInventory().getHotbar());
+        componentMapping.put("Inventory", new UIComponentContext("Inventory", container, true, 1));
 
-        uiEventBuilder.addEventBinding(CustomUIEventBindingType.Dropped, "#ItemGrid", new EventData().append("Type", "Drop").append("Grid", "Inventory"), false);
-        uiEventBuilder.addEventBinding(CustomUIEventBindingType.SlotClickReleaseWhileDragging, "#ItemGrid", new EventData().append("Type", "Release").append("Grid", "Inventory"), false);
+        setItemGridSlots("Inventory", container);
+        enableItemGridEventBindings(uiEventBuilder, "Inventory");
+        translateBlockName(type);
+    }
+
+    public UICommandBuilder beginBuildingCycle() {
+        sendBuilder(globalBuilder);
+        globalBuilder = new UICommandBuilder();
+        return globalBuilder;
     }
 
     public Vector3i getPos() {
         return pos;
     }
 
-    private void setSlots(Ref<EntityStore> ref, UICommandBuilder builder) {
-        Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-
-        int inventoryCapacity = player.getInventory().getStorage().getCapacity();
-        int hotbarCapacity = player.getInventory().getHotbar().getCapacity();
-
-        int fullCapacity = inventoryCapacity + hotbarCapacity;
-
-        slots = new ItemGridSlot[fullCapacity];
-
-        for(short i = 0; i < fullCapacity; i++) {
-            slots[i] = new ItemGridSlot();
-            slots[i].setActivatable(true);
-
-            if(i < inventoryCapacity) {
-                slots[i].setItemStack(player.getInventory().getStorage().getItemStack(i));
-            } else {
-                slots[i].setItemStack(player.getInventory().getHotbar().getItemStack((short) (i - inventoryCapacity)));
-            }
-        }
-
-        builder.set("#ItemGrid.Slots", slots);
-    }
-
     private int getInventoryID(String name) {
-        if(name.equals("Inventory")) {
-            return inventoryID;
-        } else if(name.equals("Fuel")) {
-            return fuelID;
-        } else if(name.equals("Input")) {
-            return inputID;
+        for(UIComponentContext context : componentMapping.values()) {
+            if(context.name.equals(name)) {
+                return context.sectionID;
+            }
         }
 
         return -1;
     }
 
-    private void onDrop(Ref<EntityStore> ref, int firstSlot, int secondSlot, int quantity, int sourceID, int receiverID) {
-        Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), pos);
-
-        int inventoryCapacity = player.getInventory().getStorage().getCapacity();
-        int hotbarCapacity = player.getInventory().getHotbar().getCapacity();
-
-        int fullCapacity = inventoryCapacity + hotbarCapacity;
-
-        ItemContainer from = null;
-        ItemContainer to = null;
-
-        short realFromIndex = (short) firstSlot;
-        short realToIndex = (short) secondSlot;
-
-        if(sourceID == inventoryID) {
-            if(firstSlot < inventoryCapacity ) {
-                from = player.getInventory().getStorage();
-            } else {
-                from = player.getInventory().getHotbar();
-                realFromIndex = (short)(firstSlot - inventoryCapacity);
+    private String getNameFromID(int id) {
+        for(UIComponentContext context : componentMapping.values()) {
+            if(context.sectionID == id) {
+                return context.name;
             }
         }
-        if(sourceID == fuelID) {
-            FuelComponent fuel = block.getStore().getComponent(block, ArchStar.get().getFuelComponentType());
-            fuel.isUIUpdated = false;
-            from = fuel.getContainer();
-        }
-        if(sourceID == inputID) {
-            InputComponent input = block.getStore().getComponent(block, ArchStar.get().getInputComponentType());
-            input.isUIUpdated = false;
-            //If we move an item, check that the current recipe is not negated
-            checkForRecipeCancel(input, firstSlot, quantity);
 
-            from = input.getContainer();
-        }
-        if(sourceID == outputID) {
-            OutputComponent output = block.getStore().getComponent(block, ArchStar.get().getOutputComponentType());
-            output.isUIUpdated = false;
-            from = output.getContainer();
-        }
-
-        if(receiverID == inventoryID) {
-            if(secondSlot < inventoryCapacity) {
-                to = player.getInventory().getStorage();
-            } else {
-                to = player.getInventory().getHotbar();
-                realToIndex = (short) (secondSlot - inventoryCapacity);
-            }
-        }
-        if(receiverID == fuelID) {
-            FuelComponent fuel = block.getStore().getComponent(block, ArchStar.get().getFuelComponentType());
-            fuel.isUIUpdated = false;
-            to = fuel.getContainer();
-        }
-        if(receiverID == inputID) {
-            InputComponent input = block.getStore().getComponent(block, ArchStar.get().getInputComponentType());
-            input.isUIUpdated = false;
-            to = input.getContainer();
-        }
-        //OUTPUT CANNOT BE INSERTED INTO!!!
-
-        if(from == null || to == null) return;
-
-        if(from.getItemStack(realFromIndex) != null) {
-            playSlotClick(ref, from, realFromIndex);
-        }
-
-        from.moveItemStackFromSlotToSlot(realFromIndex, quantity, to, realToIndex);
+        return null;
     }
 
-    private void checkForRecipeCancel(InputComponent input, int slot, int quantity) {
-        ProcessContext context = input.getProcess();
+    private void onDrop(String sender, String receiver, short senderSlot, short receiverSlot, int quantity) {
+        componentMapping.get(sender).onDrop(sender, receiver, senderSlot, receiverSlot, quantity);
 
-        if(context == null) return;
+        ItemContainer senderContainer = componentMapping.get(sender).container;
+        ItemContainer receiverContainer = componentMapping.get(receiver).container;
 
-        ItemStack item = input.getItemStack((short) slot);
+        if(!componentMapping.get(receiver).canInsert) return;
 
-        //Check every input in the recipe to see if the item moving out is part of the recipe
-        for(int i = 0; i < context.targetInputIds.size(); i++) {
-            String targetID = context.targetInputIds.get(i);
-            //If the item is part of the recipe
-            if(item.getItemId().equals(targetID)) {
-                //Required quantity of this item for the recipe
-                int requiredQuantity = context.targetInputQuantities.get(i);
-                int currentQuantity = item.getQuantity();
-
-                //Cancel the recipe if there isnt eneough of the item left over
-                if(currentQuantity - quantity < requiredQuantity) {
-                    //WAIT! Check if another slot has the item too
-                    for(int j = 0; j < input.getContainer().getCapacity(); j++) {
-                        if(j == slot) continue; //We already checked this
-
-                        item = input.getItemStack((short) j);
-
-                        if(item == null) continue;
-
-                        //If another slot contains the item and has enough quantity, the recipe can go through.
-                        if(item.getItemId().equals(targetID)) {
-                            currentQuantity = item.getQuantity();
-                            if(currentQuantity >= requiredQuantity) {
-                                //The recipe can still be processed!
-                                return;
-                            }
-                        }
-                    }
-
-                    //The recipe is cancelled
-                    input.clearTargets();
-                }
-            }
-        }
+        playSlotClick(senderContainer, senderSlot);
+        senderContainer.moveItemStackFromSlotToSlot(senderSlot, quantity, receiverContainer, receiverSlot);
     }
+
+
 
     @Override
     public void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store, CommonData data) {
         super.handleDataEvent(ref, store, data);
 
-        UICommandBuilder builder = new UICommandBuilder();
-
         if(data.type.equals("Release")) {
-            onDrop(ref, data.dragFromSlot, data.toSlot, data.dragQuantity, data.dragFromSection, getInventoryID(data.grid));
+            onDrop(getNameFromID(data.dragFromSection), data.grid, data.dragFromSlot, data.toSlot, data.dragQuantity);
 
             rebuild();
             return;
         }
         if(data.type.equals("Drop")) {
-            onDrop(ref, data.fromSlot, data.toSlot, data.quantity, data.fromSection, getInventoryID(data.grid));
+            onDrop(getNameFromID(data.fromSection), data.grid, data.fromSlot, data.toSlot, data.quantity);
 
-            setSlots(ref, builder);
-            sendBuilder(builder);
-            return;
+            setItemGridSlots(data.grid, componentMapping.get(data.grid).container);
         }
     }
 
-    protected void translateBlockName(BlockType type, UICommandBuilder builder) {
+    protected void translateBlockName(BlockType type) {
         String contentName = "CONTENT";
 
         if(type != null) {
             contentName = Message.translation(type.getItem().getTranslationKey()).getAnsiMessage().toUpperCase();
         }
 
-        builder.set("#TitleText2.Text", contentName);
+        globalBuilder.set("#TitleText2.Text", contentName);
     }
 
-    protected void addEnergyUI(Ref<EntityStore> ref, UICommandBuilder builder) {
-        builder.append("#ContentContainerGroup", "Pages/Common/EnergyUI.ui");
+    protected void addEnergyUI(Ref<EntityStore> ref) {
+        globalBuilder.append("#ContentContainerGroup", "Pages/Common/EnergyUI.ui");
 
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
         Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), pos);
 
         EnergyComponent energy = block.getStore().getComponent(block, ArchStar.get().getEnergyComponentType());
 
-        refreshEnergy(energy, builder, true);
+        refreshEnergy(energy, true);
     }
 
-    protected void addFuelUI(Ref<EntityStore> ref, UICommandBuilder builder, UIEventBuilder event) {
-        builder.append("#ContentContainerGroup", "Pages/Common/FuelUI.ui");
-        event.addEventBinding(CustomUIEventBindingType.Dropped, "#FuelItemGrid", new EventData().append("Type", "Drop").append("Grid", "Fuel"), true);
-        event.addEventBinding(CustomUIEventBindingType.SlotClickReleaseWhileDragging, "#FuelItemGrid", new EventData().append("Type", "Release").append("Grid", "Fuel"), false);
+    protected void addUI(String name, IMachineUIComponent component) {
+        globalBuilder.append("#ContentContainerGroup", "Pages/Common/" + name + "UI.ui");
+        globalBuilder.set("#" + name + "ItemGrid.InventorySectionId", component.getSectionID());
 
-        Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), pos);
+        UIComponentContext context = new UIComponentContext(name, component);
+        componentMapping.put(name, context);
 
-        FuelComponent fuel = block.getStore().getComponent(block, ArchStar.get().getFuelComponentType());
+        refreshUI(name, context.container);
 
-        refreshFuelUI(fuel, builder);
-        refreshProgressBar(fuel, builder);
-
-        if(fuel.getCapacity() > 1) {
-            builder.set("#FuelItemGrid.SlotsPerRow", 2);
+        if(context.container != null && context.container.getCapacity() > 1) {
+            globalBuilder.set("#" + name + "ItemGrid.SlotsPerRow", 2);
         }
     }
 
-    public void refreshFuelUI(FuelComponent fuelComponent, UICommandBuilder builder) {
-        fuelSlots = new ItemGridSlot[fuelComponent.getCapacity()];
+    protected void enableItemGridEventBindings(UIEventBuilder event, String name) {
+        event.addEventBinding(CustomUIEventBindingType.Dropped, "#" + name + "ItemGrid", new EventData().append("Type", "Drop").append("Grid", name), true);
+        event.addEventBinding(CustomUIEventBindingType.SlotClickReleaseWhileDragging, "#" + name + "ItemGrid", new EventData().append("Type", "Release").append("Grid", name), false);
+    }
 
-        for(short i = 0; i < fuelComponent.getCapacity(); i++) {
-            fuelSlots[i] = new ItemGridSlot();
-            fuelSlots[i].setActivatable(true);
-            fuelSlots[i].setItemStack(fuelComponent.getItemStack(i));
-        }
-
-        if(builder != null) {
-            builder.set("#FuelItemGrid.Slots", fuelSlots);
-        } else {
-            builder = new UICommandBuilder();
-            builder.set("#FuelItemGrid.Slots", fuelSlots);
-            sendUpdate(builder, null, false);
+    public void refreshAllUI() {
+        for(UIComponentContext context : componentMapping.values()) {
+            refreshUI(context.name, context.container);
         }
     }
 
-    protected void addInputUI(Ref<EntityStore> ref, UICommandBuilder builder, UIEventBuilder event) {
-        builder.append("#ContentContainerGroup", "Pages/Common/InputUI.ui");
-        event.addEventBinding(CustomUIEventBindingType.Dropped, "#InputItemGrid", new EventData().append("Type", "Drop").append("Grid", "Input"), true);
-        event.addEventBinding(CustomUIEventBindingType.SlotClickReleaseWhileDragging, "#InputItemGrid", new EventData().append("Type", "Release").append("Grid", "Input"), false);
-
-        Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), pos);
-
-        InputComponent input = block.getStore().getComponent(block, ArchStar.get().getInputComponentType());
-
-        refreshInputUI(input, builder);
-        refreshProgressBar(input, builder);
-
-        if(input.getCapacity() > 1) {
-            builder.set("#InputItemGrid.SlotsPerRow", 2);
-        }
+    protected void refreshUI(String name, ItemContainer container) {
+        setItemGridSlots(name, container);
+        refreshProgressBar(name);
     }
 
-    public void refreshInputUI(InputComponent inputComponent, UICommandBuilder builder) {
-        inputSlots = new ItemGridSlot[inputComponent.getCapacity()];
+    protected void setItemGridSlots(String name, ItemContainer container) {
+        if(container == null) return;
 
-        for(short i = 0; i < inputComponent.getCapacity(); i++) {
-            inputSlots[i] = new ItemGridSlot();
-            inputSlots[i].setActivatable(true);
-            inputSlots[i].setItemStack(inputComponent.getItemStack(i));
+        ItemGridSlot[] slots = new ItemGridSlot[container.getCapacity()];
+
+        for(short i = 0; i < container.getCapacity(); i++) {
+            slots[i] = new ItemGridSlot();
+            slots[i].setActivatable(true);
+            slots[i].setItemStack(container.getItemStack(i));
         }
 
-        if(builder != null) {
-            builder.set("#InputItemGrid.Slots", inputSlots);
-        } else {
-            builder = new UICommandBuilder();
-            builder.set("#InputItemGrid.Slots", inputSlots);
-            sendUpdate(builder, null, false);
-        }
+        globalBuilder.set("#" + name + "ItemGrid.Slots", slots);
     }
 
-    public void refreshProgressBar(InputComponent inputComponent, UICommandBuilder builder) {
-        builder.set("#InputProgress.Value", inputComponent.getProgressAsPercentage());
-    }
-    public void refreshProgressBar(FuelComponent fuelComponent, UICommandBuilder builder) {
-        builder.set("#FuelProgress.Value", fuelComponent.getProgressAsPercentage());
+    public void refreshProgressBar(String name) {
+        if(componentMapping.get(name).progress < 0) return;
+
+        componentMapping.get(name).updateProgress();
+
+        globalBuilder.set("#" + name + "Progress.Value", componentMapping.get(name).progress);
     }
 
     public void sendBuilder(UICommandBuilder builder) {
         sendUpdate(builder, null, false);
     }
 
-    protected void addOutputUI(Ref<EntityStore> ref, UICommandBuilder builder, UIEventBuilder event) {
-        builder.append("#ContentContainerGroup", "Pages/Common/OutputUI.ui");
-        event.addEventBinding(CustomUIEventBindingType.Dropped, "#OutputItemGrid", new EventData().append("Type", "Drop").append("Grid", "Output"), true);
-        event.addEventBinding(CustomUIEventBindingType.SlotClickReleaseWhileDragging, "#OutputItemGrid", new EventData().append("Type", "Release").append("Grid", "Output"), false);
-
-        Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), pos);
-
-        OutputComponent output = block.getStore().getComponent(block, ArchStar.get().getOutputComponentType());
-
-        refreshOutputUI(output, builder);
-
-        if(output.getCapacity() > 1) {
-            builder.set("#OutputItemGrid.SlotsPerRow", 2);
-        }
-    }
-
-    public void refreshOutputUI(OutputComponent outputComponent, UICommandBuilder builder) {
-        outputSlots = new ItemGridSlot[outputComponent.getCapacity()];
-
-        for(short i = 0; i < outputComponent.getCapacity(); i++) {
-            outputSlots[i] = new ItemGridSlot();
-            outputSlots[i].setActivatable(true);
-            outputSlots[i].setItemStack(outputComponent.getItemStack(i));
-        }
-
-        if(builder != null) {
-            builder.set("#OutputItemGrid.Slots", outputSlots);
-        } else {
-            builder = new UICommandBuilder();
-            builder.set("#OutputItemGrid.Slots", outputSlots);
-            sendUpdate(builder, null, false);
-        }
-    }
-
-    private void setEnergyImage(UICommandBuilder builder, String path) {
+    private void setEnergyImage(String path) {
         if(path != null && !path.isEmpty()) {
-            builder.set("#EnergyImage.AssetPath", path);
+            globalBuilder.set("#EnergyImage.AssetPath", path);
         } else {
-            builder.setNull("#EnergyImage.AssetPath");
+            globalBuilder.setNull("#EnergyImage.AssetPath");
             ArchStar.LOGGER.at(Level.WARNING).log("Energy Image is NULL!");
         }
     }
 
-    public void refreshEnergy(EnergyComponent energyComponent, UICommandBuilder builder, boolean override) {
+    public void refreshEnergy(EnergyComponent energyComponent, boolean override) {
         int current = energyComponent.getCurrentEnergy();
         int max = energyComponent.getMaxEnergy();
 
-        builder.set("#EnergyAmount.Text", current + " / " + max);
+        globalBuilder.set("#EnergyAmount.Text", current + " / " + max);
 
         int threshold = Math.ceilDiv(max, 5);
 
         if(current == 0) {
-            setEnergyState(EnergyImageState.EMPTY, builder, override);
+            setEnergyState(EnergyImageState.EMPTY, override);
         } else if(current < threshold) {
-            setEnergyState(EnergyImageState.DEPLETED, builder, override);
+            setEnergyState(EnergyImageState.DEPLETED, override);
         } else if (current < threshold * 2) {
-            setEnergyState(EnergyImageState.LOW, builder, override);
+            setEnergyState(EnergyImageState.LOW, override);
         } else if (current < threshold * 3) {
-            setEnergyState(EnergyImageState.UNDER_HALF, builder, override);
+            setEnergyState(EnergyImageState.UNDER_HALF, override);
         } else if (current < threshold * 4) {
-            setEnergyState(EnergyImageState.ABOVE_HALF, builder, override);
+            setEnergyState(EnergyImageState.ABOVE_HALF, override);
         } else if (current < max) {
-            setEnergyState(EnergyImageState.HIGH, builder, override);
+            setEnergyState(EnergyImageState.HIGH, override);
         } else if (current == max) {
-            setEnergyState(EnergyImageState.FULL, builder, override);
+            setEnergyState(EnergyImageState.FULL, override);
         }
     }
 
-    private void setEnergyState(EnergyImageState state, UICommandBuilder builder, boolean override) {
+    private void setEnergyState(EnergyImageState state, boolean override) {
         if(!override && energyState == state) {
             return;
         }
@@ -455,13 +279,13 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         energyState = state;
 
         switch (energyState) {
-            case EMPTY -> setEnergyImage(builder, "UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Empty.png");
-            case DEPLETED -> setEnergyImage(builder, "UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Dying.png");
-            case LOW -> setEnergyImage(builder, "UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Low.png");
-            case UNDER_HALF -> setEnergyImage(builder, "UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Average.png");
-            case ABOVE_HALF -> setEnergyImage(builder, "UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Medium.png");
-            case HIGH -> setEnergyImage(builder, "UI/Custom/Pages/Textures/EnergyUI/EnergyUI_High.png");
-            case FULL -> setEnergyImage(builder, "UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Full.png");
+            case EMPTY -> setEnergyImage("UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Empty.png");
+            case DEPLETED -> setEnergyImage("UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Dying.png");
+            case LOW -> setEnergyImage("UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Low.png");
+            case UNDER_HALF -> setEnergyImage("UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Average.png");
+            case ABOVE_HALF -> setEnergyImage("UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Medium.png");
+            case HIGH -> setEnergyImage("UI/Custom/Pages/Textures/EnergyUI/EnergyUI_High.png");
+            case FULL -> setEnergyImage("UI/Custom/Pages/Textures/EnergyUI/EnergyUI_Full.png");
         }
     }
 
@@ -472,8 +296,8 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         isDismissed = true;
     }
 
-    private void playSlotClick(Ref<EntityStore> ref, ItemContainer container, short slot) {
-        World world = ref.getStore().getExternalData().getWorld();
+    private void playSlotClick(ItemContainer container, short slot) {
+        World world = Universe.get().getWorld(playerRef.getWorldUuid());
 
         ItemStack stack = container.getItemStack(slot);
         if(stack == null) return;
@@ -502,36 +326,36 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
                 }
             }
 
-            SoundUtil.playSoundEvent3dToPlayer(ref, SoundEvent.getAssetMap().getIndex(dropSound), SoundCategory.UI, pos.toVector3d(), ref.getStore());
+            SoundUtil.playSoundEvent3dToPlayer(playerRef.getReference(), SoundEvent.getAssetMap().getIndex(dropSound), SoundCategory.UI, pos.toVector3d(), playerRef.getReference().getStore());
         });
     }
 
     public static class CommonData {
-        private int toSlot;
+        public short toSlot;
 
         //Custom
-        private String type;
-        private String grid;
+        public String type;
+        public String grid;
 
-        private int fromSlot;
-        private int quantity;
-        private int fromSection;
+        public short fromSlot;
+        public int quantity;
+        public int fromSection;
 
-        private int dragFromSlot;
-        private int dragQuantity;
-        private int dragFromSection;
+        public short dragFromSlot;
+        public int dragQuantity;
+        public int dragFromSection;
 
         public static final BuilderCodec<CommonData> CODEC =
                 BuilderCodec.builder(CommonData.class, CommonData::new)
-                        .append(new KeyedCodec<String>("Type", Codec.STRING), (entry, s) -> entry.type = s, (entry) -> entry.type).add()
-                        .append(new KeyedCodec<String>("Grid", Codec.STRING), (entry, s) -> entry.grid = s, (entry) -> entry.grid).add()
-                        .append(new KeyedCodec<Integer>("SlotIndex", Codec.INTEGER), (entry, s) -> entry.toSlot = s, (entry) -> entry.toSlot).add()
-                        .append(new KeyedCodec<Integer>("SourceItemGridIndex", Codec.INTEGER), (entry, s) -> entry.fromSlot = s, (entry) -> entry.fromSlot).add()
-                        .append(new KeyedCodec<Integer>("ItemStackQuantity", Codec.INTEGER), (entry, s) -> entry.quantity = s, (entry) -> entry.quantity).add()
-                        .append(new KeyedCodec<Integer>("SourceInventorySectionId", Codec.INTEGER), (entry, s) -> entry.fromSection = s, (entry) -> entry.fromSection).add()
-                        .append(new KeyedCodec<Integer>("DragSourceItemGridIndex", Codec.INTEGER), (entry, s) -> entry.dragFromSlot = s, (entry) -> entry.dragFromSlot).add()
-                        .append(new KeyedCodec<Integer>("DragItemStackQuantity", Codec.INTEGER), (entry, s) -> entry.dragQuantity = s, (entry) -> entry.dragQuantity).add()
-                        .append(new KeyedCodec<Integer>("DragSourceInventorySectionId", Codec.INTEGER), (entry, s) -> entry.dragFromSection = s, (entry) -> entry.dragFromSection).add()
+                        .append(new KeyedCodec<>("Type", Codec.STRING), (entry, s) -> entry.type = s, (entry) -> entry.type).add()
+                        .append(new KeyedCodec<>("Grid", Codec.STRING), (entry, s) -> entry.grid = s, (entry) -> entry.grid).add()
+                        .append(new KeyedCodec<>("SlotIndex", Codec.SHORT), (entry, s) -> entry.toSlot = s, (entry) -> entry.toSlot).add()
+                        .append(new KeyedCodec<>("SourceItemGridIndex", Codec.SHORT), (entry, s) -> entry.fromSlot = s, (entry) -> entry.fromSlot).add()
+                        .append(new KeyedCodec<>("ItemStackQuantity", Codec.INTEGER), (entry, s) -> entry.quantity = s, (entry) -> entry.quantity).add()
+                        .append(new KeyedCodec<>("SourceInventorySectionId", Codec.INTEGER), (entry, s) -> entry.fromSection = s, (entry) -> entry.fromSection).add()
+                        .append(new KeyedCodec<>("DragSourceItemGridIndex", Codec.SHORT), (entry, s) -> entry.dragFromSlot = s, (entry) -> entry.dragFromSlot).add()
+                        .append(new KeyedCodec<>("DragItemStackQuantity", Codec.INTEGER), (entry, s) -> entry.dragQuantity = s, (entry) -> entry.dragQuantity).add()
+                        .append(new KeyedCodec<>("DragSourceInventorySectionId", Codec.INTEGER), (entry, s) -> entry.dragFromSection = s, (entry) -> entry.dragFromSection).add()
                         .build();
     }
 }

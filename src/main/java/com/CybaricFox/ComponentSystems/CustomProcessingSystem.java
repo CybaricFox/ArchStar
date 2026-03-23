@@ -59,6 +59,7 @@ public class CustomProcessingSystem extends EntityTickingSystem<ChunkStore> {
 
             //First, check that the block is not already processing
             if(inputComponent.isProcessing()) {
+
                 //Blocks that have an energy component will only process if they have energy
                 if(energyComponent != null) {
                     boolean result = energyComponent.consumeEnergy();

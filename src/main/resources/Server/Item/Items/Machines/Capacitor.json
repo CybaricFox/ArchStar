@@ -33,7 +33,7 @@
       "Use": {
         "Interactions": [
           {
-            "Type": "Open_Powered_Processor"
+            "Type": "Open_Charger"
           }
         ]
       }
@@ -41,16 +41,14 @@
     "BlockEntity":{
       "Components":{
         "EnergyBlock": {
-          "MaxEnergy": 8000000,
-          "InputRate": 344,
-          "OutputRate": 344,
+          "MaxEnergy": 800000,
+          "InputRate": 172,
+          "OutputRate": 172,
           "Type": "STORAGE"
         },
-        "InputBlock": {
+        "ChargerBlock": {
           "MaxSize": 1,
-          "Size": 1,
-          "ID": "Charger",
-          "ProgressMultiplier": 1.0
+          "Size": 1
         },
         "OutputBlock": {
           "MaxSize": 1,

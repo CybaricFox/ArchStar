@@ -1,6 +1,7 @@
 package com.CybaricFox.Components.Processing;
 
 import com.CybaricFox.Components.CommonContainerComponent;
+import com.CybaricFox.UI.Pages.Common.IMachineUIComponent;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -12,7 +13,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import javax.annotation.Nullable;
 
-public class FuelComponent extends CommonContainerComponent {
+public class FuelComponent extends CommonContainerComponent implements IMachineUIComponent {
     public static final BuilderCodec<FuelComponent> CODEC;
 
     //Should this block be allowed to process fuel?
@@ -101,5 +102,27 @@ public class FuelComponent extends CommonContainerComponent {
                 //Save fields
 
                 .build();
+    }
+
+    @Override
+    public float getProgress() {
+        return getProgressAsPercentage();
+    }
+
+    private static int sectionID = 0;
+    @Override
+    public int getSectionID() {
+        if(sectionID == 0) sectionID = setSectionID();
+        return sectionID;
+    }
+
+    @Override
+    public boolean canInsert() {
+        return true;
+    }
+
+    @Override
+    public void onDrop(String sender, String receiver, short senderSlot, short receiverSlot, int quantity) {
+
     }
 }

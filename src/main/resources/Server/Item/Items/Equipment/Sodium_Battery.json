@@ -52,11 +52,6 @@
       22.5
     ]
   },
-  "Tags": {
-    "Type": [
-      "Equipment"
-    ]
-  },
   "ItemEntity": {
     "ParticleSystemId": null
   },
@@ -64,5 +59,10 @@
   "DropOnDeath": false,
   "MaxStack": 1,
   "Quality": "Common",
-  "MaxDurability": 20000
+  "MaxDurability": 20000,
+  "Tags": {
+    "Type": [
+      "Battery"
+    ]
+  }
 }

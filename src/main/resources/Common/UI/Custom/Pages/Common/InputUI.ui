@@ -1,3 +1,4 @@
+$C = "../../Common.ui";
 @SlotSize = 80;
 @Padding = 5;
 
@@ -15,26 +16,18 @@ Group #InputPanel{
         RenderItemQualityBackground: true;
         AreItemsDraggable: true;
         SlotsPerRow: 1;
-        InventorySectionId: 3;
         Style: (
             SlotSize: @SlotSize,
             SlotIconSize: @SlotSize,
             SlotSpacing: @Padding,
-            SlotBackground: "SlotDefault2x.png"
+            SlotBackground: "SlotDefault2x.png",
+            BrokenSlotIconOverlay: "Alert.png",
+            BrokenSlotBackgroundOverlay: "BrokenItem.png"
         );
     }
 
-    ProgressBar #InputProgress {
-        Visible: true;
-        Anchor: (Width: 192, Height: 20, Top: 10);
-        EffectWidth: 192;
-        EffectHeight: 20;
-        Value: 0.0;
-        BarTexturePath: "ProgressBarFill2x.png";
-        EffectTexturePath: "ProgressBarEffect2x.png";
-        Background: (
-            TexturePath: "ProgressBar2x.png",
-            Border: 1
-        );
+    $C.@ProgressBar #InputProgress {
+      Anchor: (Width: 192, Height: 6, Top: 10);
+      Value: 0.0;
     }
 }
