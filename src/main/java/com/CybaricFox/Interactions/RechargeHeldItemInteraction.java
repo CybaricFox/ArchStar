@@ -5,7 +5,6 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
@@ -26,10 +25,9 @@ public class RechargeHeldItemInteraction extends SimpleInteraction {
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
         if(player == null) return;
 
-        Inventory inventory = player.getInventory();
-        CombinedItemContainer container = inventory.getCombinedEverything();
+        @SuppressWarnings("removal") CombinedItemContainer container = player.getInventory().getCombinedHotbarFirst();
 
-        ItemStack item = inventory.getActiveHotbarItem();
+        @SuppressWarnings("removal") ItemStack item = player.getInventory().getActiveHotbarItem();
 
         for(short i = 0; i < container.getCapacity(); i++) {
             ItemStack containedItem = container.getItemStack(i);
@@ -44,7 +42,8 @@ public class RechargeHeldItemInteraction extends SimpleInteraction {
                         container.setItemStackForSlot(i, newContained);
 
                         ItemStack newItem = item.withIncreasedDurability(amount);
-                        inventory.getHotbar().setItemStackForSlot(inventory.getActiveHotbarSlot(), newItem);
+                        //noinspection removal
+                        player.getInventory().getHotbar().setItemStackForSlot(player.getInventory().getActiveHotbarSlot(), newItem);
 
                         return;
                     }

@@ -9,7 +9,7 @@ import com.CybaricFox.Components.Conveyors.ConveyorImporter;
 import com.CybaricFox.Components.Conveyors.ConveyorInstance;
 import com.CybaricFox.Components.Conveyors.ConveyorRouter;
 import com.CybaricFox.Components.Conveyors.ConveyorType;
-import com.hypixel.hytale.builtin.crafting.state.ProcessingBenchState;
+import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
@@ -20,6 +20,7 @@ import com.hypixel.hytale.server.core.asset.type.blocktick.BlockTickStrategy;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.modules.entity.item.PreventItemMerging;
 import com.hypixel.hytale.server.core.modules.physics.component.Velocity;
@@ -27,7 +28,6 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.ChunkSection;
-import com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerState;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
@@ -239,8 +239,8 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
 
         //Get the specific component we need to extract
         OutputComponent outputComponent = importer.getOutputComponent(buffer, world);
-        ItemContainerState containerState = importer.getItemContainer(world);
-        ProcessingBenchState benchState = importer.getBenchState(world);
+        ItemContainerBlock containerState = importer.getContainerComponent(buffer, world);
+        ProcessingBenchBlock benchState = importer.getProcessingComponent(buffer, world);
 
         //Do not pull an item if the importers size is already maxed out.
         if(conveyorComponent.canAddItem()) {
@@ -357,8 +357,8 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
 
         //Get the specific component we need to extract
         InputComponent inputComponent = importer.getInputComponent(buffer, world);
-        ItemContainerState containerState = importer.getItemContainer(world);
-        ProcessingBenchState benchState = importer.getBenchState(world);
+        ItemContainerBlock containerState = importer.getContainerComponent(buffer, world);
+        ProcessingBenchBlock benchState = importer.getProcessingComponent(buffer, world);
 
         ArrayList<ConveyorInstance> failedToExport = new ArrayList<>();
 

@@ -5,12 +5,12 @@ plugins {
 var hytaleHome = ("D:/Hytale/HytaleGame")
 
 group = "com.cybaricfox"
-version = "beta0.3.0"
+version = "beta0.3.1"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation(files("$hytaleHome/install/release/package/game/latest/Server/HytaleServer.jar"))
+    implementation(files("$hytaleHome/install/pre-release/package/game/latest/Server/HytaleServer.jar"))
 }

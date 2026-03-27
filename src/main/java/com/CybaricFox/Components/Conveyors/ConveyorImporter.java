@@ -6,12 +6,12 @@ import com.CybaricFox.API.DirectionLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Processing.InputComponent;
 import com.CybaricFox.Components.Processing.OutputComponent;
-import com.hypixel.hytale.builtin.crafting.state.ProcessingBenchState;
+import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerState;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 public class ConveyorImporter {
@@ -33,24 +33,6 @@ public class ConveyorImporter {
         return machinePos;
     }
 
-    @SuppressWarnings("deprecation")
-    public ItemContainerState getItemContainer(World world) {
-        if (world.getState(machinePos.x, machinePos.y, machinePos.z, true) instanceof ItemContainerState state) {
-            return state;
-        }
-
-        return null;
-    }
-
-    @SuppressWarnings("deprecation")
-    public ProcessingBenchState getBenchState(World world) {
-        if (world.getState(machinePos.x, machinePos.y, machinePos.z, true) instanceof ProcessingBenchState state) {
-            return state;
-        }
-
-        return null;
-    }
-
     public OutputComponent getOutputComponent(CommandBuffer<ChunkStore> buffer, World world) {
         Ref<ChunkStore> ref = ArchLibrary.getBlockEntity(world, machinePos);
         if(ref == null) return null;
@@ -61,5 +43,17 @@ public class ConveyorImporter {
         Ref<ChunkStore> ref = ArchLibrary.getBlockEntity(world, machinePos);
         if(ref == null) return null;
         return buffer.getComponent(ref, ArchStar.get().getInputComponentType());
+    }
+
+    public ProcessingBenchBlock getProcessingComponent(CommandBuffer<ChunkStore> buffer, World world) {
+        Ref<ChunkStore> ref = ArchLibrary.getBlockEntity(world, machinePos);
+        if(ref == null) return null;
+        return buffer.getComponent(ref, ProcessingBenchBlock.getComponentType());
+    }
+
+    public ItemContainerBlock getContainerComponent(CommandBuffer<ChunkStore> buffer, World world) {
+        Ref<ChunkStore> ref = ArchLibrary.getBlockEntity(world, machinePos);
+        if(ref == null) return null;
+        return buffer.getComponent(ref, ItemContainerBlock.getComponentType());
     }
 }

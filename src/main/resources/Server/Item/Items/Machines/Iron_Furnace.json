@@ -84,6 +84,12 @@
         }
       ]
     },
+    "BlockEntity": {
+      "Components": {
+        "BenchBlock": {},
+        "ProcessingBenchBlock": {}
+      }
+    },
     "State": {
       "Id": "processingBench",
       "Definitions": {
