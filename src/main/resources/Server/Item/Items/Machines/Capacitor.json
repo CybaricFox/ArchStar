@@ -33,7 +33,7 @@
       "Use": {
         "Interactions": [
           {
-            "Type": "Open_Charger"
+            "Type": "Open_Machine"
           }
         ]
       }
@@ -53,7 +53,8 @@
         "OutputBlock": {
           "MaxSize": 1,
           "Size": 1
-        }
+        },
+        "MachineBehavior": {}
       }
     }
   },

@@ -89,14 +89,14 @@ public class EnergyRefSystem extends RefSystem<ChunkStore>{
         EnergyCableComponent cable = commandBuffer.getComponent(ref, ArchStar.get().getEnergyCableComponentType());
 
         if(energy != null) {
-            energy.setEnergyBehaviour(context.world.getBlockType(context.pos).getItem().getId());
-
             handleEnergyBlock(ref, commandBuffer, context.pos, context.chunk, context.world);
             changeCableState(ref, commandBuffer, context.pos, true);
         } else if(cable != null) {
             handleCableBlock(commandBuffer, context.pos, context.world);
             changeCableState(ref, commandBuffer, context.pos, true);
         }
+
+
     }
     
     private void changeCableState(Ref<ChunkStore> ref, CommandBuffer<ChunkStore> buffer, Vector3i pos, boolean isInitial) {

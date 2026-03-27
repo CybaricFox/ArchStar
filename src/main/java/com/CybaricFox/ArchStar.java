@@ -4,17 +4,20 @@ import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ComponentSystems.*;
 import com.CybaricFox.Components.Conveyors.ConveyorComponent;
 import com.CybaricFox.Components.Energy.ChargerComponent;
-import com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours.CommonCapacitor;
-import com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours.CommonConsumer;
-import com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours.CommonFueledProducer;
-import com.CybaricFox.Components.Energy.EnergyBehaviourRegistry;
+import com.CybaricFox.Components.Processing.MachineBehavior.Behaviors.CommonCapacitor;
+import com.CybaricFox.Components.Processing.MachineBehavior.Behaviors.CommonConsumer;
+import com.CybaricFox.Components.Processing.MachineBehavior.Behaviors.CommonFueledProducer;
+import com.CybaricFox.Components.Processing.MachineBehavior.MachineBehaviorRegistry;
 import com.CybaricFox.Components.Energy.EnergyCableComponent;
 import com.CybaricFox.Components.Energy.EnergyComponent;
 import com.CybaricFox.Components.Processing.FuelComponent;
 import com.CybaricFox.Components.Processing.InputComponent;
+import com.CybaricFox.Components.Processing.MachineBehaviorComponent;
 import com.CybaricFox.Components.Processing.OutputComponent;
 import com.CybaricFox.Interactions.*;
 import com.CybaricFox.Systems.CommonUIReader;
+import com.CybaricFox.UI.Pages.Common.IMachineUIComponent;
+import com.google.crypto.tink.proto.Common;
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
@@ -32,6 +35,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 public class ArchStar extends JavaPlugin {
@@ -46,6 +50,7 @@ public class ArchStar extends JavaPlugin {
     private ComponentType<ChunkStore, EnergyCableComponent> energyCableComponent;
     private ComponentType<ChunkStore, ConveyorComponent> conveyorComponent;
     private ComponentType<ChunkStore, ChargerComponent> chargerComponent;
+    private ComponentType<ChunkStore, MachineBehaviorComponent> machineComponent;
 
     private final EnergyRefSystem energyRefSystem = new EnergyRefSystem();
     private final ConveyorRefSystem conveyorRefSystem = new ConveyorRefSystem();
@@ -67,7 +72,7 @@ public class ArchStar extends JavaPlugin {
         ArchLibrary.activateDebug = false;
 
         //Custom registry setups
-        setupEnergyBehaviours();
+        setupMachineBehaviors();
 
         energyComponent = getChunkStoreRegistry().registerComponent(EnergyComponent.class, "EnergyBlock", EnergyComponent.CODEC);
         fuelComponent = getChunkStoreRegistry().registerComponent(FuelComponent.class, "FuelBlock", FuelComponent.CODEC);
@@ -76,6 +81,7 @@ public class ArchStar extends JavaPlugin {
         energyCableComponent = getChunkStoreRegistry().registerComponent(EnergyCableComponent.class, "CableBlock", EnergyCableComponent.CODEC);
         conveyorComponent = getChunkStoreRegistry().registerComponent(ConveyorComponent.class, "Conveyor", ConveyorComponent.CODEC);
         chargerComponent = getChunkStoreRegistry().registerComponent(ChargerComponent.class, "ChargerBlock", ChargerComponent.CODEC);
+        machineComponent = getChunkStoreRegistry().registerComponent(MachineBehaviorComponent.class, "MachineBehavior", MachineBehaviorComponent.CODEC);
 
         getChunkStoreRegistry().registerSystem(energyRefSystem);
         getChunkStoreRegistry().registerSystem(new EnergySystem());
@@ -92,9 +98,7 @@ public class ArchStar extends JavaPlugin {
         //Commands
 
         //Interactions
-        getCodecRegistry(Interaction.CODEC).register("Open_Power_Generator", OpenGeneratorInteraction.class, OpenGeneratorInteraction.CODEC);
-        getCodecRegistry(Interaction.CODEC).register("Open_Powered_Processor", OpenPoweredProcessorInteraction.class, OpenPoweredProcessorInteraction.CODEC);
-        getCodecRegistry(Interaction.CODEC).register("Open_Charger", OpenChargerInteraction.class, OpenChargerInteraction.CODEC);
+        getCodecRegistry(Interaction.CODEC).register("Open_Machine", OpenMachineInteraction.class, OpenMachineInteraction.CODEC);
         getCodecRegistry(Interaction.CODEC).register("Debug_ArchStar_Block", DebuggerInteraction.class, DebuggerInteraction.CODEC);
         getCodecRegistry(Interaction.CODEC).register("Recharge_Held_Item", RechargeHeldItemInteraction.class, RechargeHeldItemInteraction.CODEC);
 
@@ -104,11 +108,11 @@ public class ArchStar extends JavaPlugin {
         fixCustomUI();
     }
 
-    private void setupEnergyBehaviours() {
-        EnergyBehaviourRegistry.register("Solid_Fuel_Generator", CommonFueledProducer::new);
-        EnergyBehaviourRegistry.register("Electric_Grinder", CommonConsumer::new);
-        EnergyBehaviourRegistry.register("Electric_Furnace", CommonConsumer::new);
-        EnergyBehaviourRegistry.register("Capacitor", CommonCapacitor::new);
+    private void setupMachineBehaviors() {
+        MachineBehaviorRegistry.register("Solid_Fuel_Generator", CommonFueledProducer::new);
+        MachineBehaviorRegistry.register("Electric_Grinder", CommonConsumer::new);
+        MachineBehaviorRegistry.register("Electric_Furnace", CommonConsumer::new);
+        MachineBehaviorRegistry.register("Capacitor", CommonCapacitor::new);
     }
 
     //FIXES THE GOD DAMN ITEM GRID NOT PLAYING WELL WITH CUSTOM UIS!!!
@@ -147,6 +151,7 @@ public class ArchStar extends JavaPlugin {
     public ComponentType<ChunkStore, EnergyCableComponent> getEnergyCableComponentType() {return energyCableComponent;}
     public ComponentType<ChunkStore, ConveyorComponent> getConveyorComponentType() {return conveyorComponent;}
     public ComponentType<ChunkStore, ChargerComponent> getChargerComponentType() {return chargerComponent;}
+    public ComponentType<ChunkStore, MachineBehaviorComponent> getMachineComponent() {return machineComponent;}
 
     public static ArchStar get() {return instance;}
 

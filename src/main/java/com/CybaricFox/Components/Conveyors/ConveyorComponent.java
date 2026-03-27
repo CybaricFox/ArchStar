@@ -2,7 +2,6 @@ package com.CybaricFox.Components.Conveyors;
 
 import com.CybaricFox.API.Direction;
 import com.CybaricFox.API.DirectionLibrary;
-import com.CybaricFox.Components.Energy.EnergyBehaviour.EnergyBehaviour;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;

@@ -33,7 +33,7 @@
       "Use": {
         "Interactions": [
           {
-            "Type": "Open_Power_Generator"
+            "Type": "Open_Machine"
           }
         ]
       }
@@ -49,7 +49,8 @@
         "FuelBlock": {
           "MaxSize": 1,
           "Size": 1
-        }
+        },
+        "MachineBehavior": {}
       }
     },
     "State": {

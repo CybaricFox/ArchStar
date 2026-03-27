@@ -6,6 +6,7 @@ import com.CybaricFox.ArchStar;
 import com.CybaricFox.ComponentSystems.Helpers.EnergyNetwork;
 import com.CybaricFox.Components.Energy.EnergyBlockType;
 import com.CybaricFox.Components.Energy.EnergyComponent;
+import com.CybaricFox.Components.Processing.MachineBehaviorComponent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.system.tick.TickingSystem;
@@ -33,7 +34,9 @@ public class EnergySystem extends TickingSystem<ChunkStore>{
                 EssentialsContext essentialsContext = new EssentialsContext(blockRef, store);
                 if(!essentialsContext.isValid) continue;
 
-                blockSet.getValue().run(essentialsContext);
+                MachineBehaviorComponent machineBehaviorComponent = blockRef.getStore().getComponent(blockRef, ArchStar.get().getMachineComponent());
+                if(machineBehaviorComponent == null) continue;
+                machineBehaviorComponent.run(essentialsContext);
             }
             //Run producers next
             for(HashMap.Entry<Vector3i, EnergyComponent> blockSet : network.getAllOfType(EnergyBlockType.PRODUCER).entrySet()) {
@@ -44,7 +47,9 @@ public class EnergySystem extends TickingSystem<ChunkStore>{
                 EssentialsContext essentialsContext = new EssentialsContext(blockRef, store);
                 if(!essentialsContext.isValid) continue;
 
-                boolean result = blockSet.getValue().run(essentialsContext);
+                MachineBehaviorComponent machineBehaviorComponent = blockRef.getStore().getComponent(blockRef, ArchStar.get().getMachineComponent());
+                if(machineBehaviorComponent == null) continue;
+                boolean result = machineBehaviorComponent.run(essentialsContext);
 
                 //Only producers want to use this
                 if(result) {
@@ -62,7 +67,9 @@ public class EnergySystem extends TickingSystem<ChunkStore>{
                 EssentialsContext essentialsContext = new EssentialsContext(blockRef, store);
                 if(!essentialsContext.isValid) continue;
 
-                blockSet.getValue().run(essentialsContext);
+                MachineBehaviorComponent machineBehaviorComponent = blockRef.getStore().getComponent(blockRef, ArchStar.get().getMachineComponent());
+                if(machineBehaviorComponent == null) continue;
+                machineBehaviorComponent.run(essentialsContext);
             }
 
             //Once all blocks in the network have been checked, run any transaction requests made during this time.

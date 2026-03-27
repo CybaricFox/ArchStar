@@ -1,23 +1,37 @@
-package com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours;
+package com.CybaricFox.Components.Processing.MachineBehavior.Behaviors;
 
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.API.EssentialsContext;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.ComponentSystems.Helpers.EnergyNetwork;
-import com.CybaricFox.Components.Energy.EnergyBehaviour.EnergyBehaviour;
 import com.CybaricFox.Components.Energy.EnergyComponent;
 import com.CybaricFox.Components.Energy.EnergyTransaction;
 import com.CybaricFox.Components.Processing.FuelComponent;
+import com.CybaricFox.Components.Processing.MachineBehavior.MachineBehavior;
+import com.CybaricFox.UI.Pages.Common.IMachineUIComponent;
+import com.CybaricFox.UI.Pages.GeneratorPage;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 
-public class CommonFueledProducer extends EnergyBehaviour {
+public class CommonFueledProducer extends MachineBehavior {
+
+    public CommonFueledProducer() {
+        setPageRef(GeneratorPage.class);
+    }
+
     @Override
-    public boolean run(EssentialsContext context, EnergyComponent energyComponent) {
+    public boolean run(EssentialsContext context) {
         Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(context.world, context.pos);
         if(blockRef == null) return false;
+
+        EnergyComponent energyComponent = blockRef.getStore().getComponent(blockRef, ArchStar.get().getEnergyComponentType());
+        if(energyComponent == null) {
+            ArchStar.LOGGER.at(Level.SEVERE).log("Attempted to run CommonFuelProducer but EnergyComponent is null! Location: " + context.pos);
+            return false;
+        }
 
         FuelComponent fuelComponent = blockRef.getStore().getComponent(blockRef, ArchStar.get().getFuelComponentType());
         if(fuelComponent == null) {

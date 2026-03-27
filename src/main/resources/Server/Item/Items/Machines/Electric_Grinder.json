@@ -33,7 +33,7 @@
       "Use": {
         "Interactions": [
           {
-            "Type": "Open_Powered_Processor"
+            "Type": "Open_Machine"
           }
         ]
       }
@@ -55,7 +55,8 @@
         "OutputBlock": {
           "MaxSize": 4,
           "Size": 4
-        }
+        },
+        "MachineBehavior": {}
       }
     },
     "State": {

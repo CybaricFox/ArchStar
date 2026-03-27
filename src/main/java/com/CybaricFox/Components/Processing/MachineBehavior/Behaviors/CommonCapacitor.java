@@ -1,22 +1,29 @@
-package com.CybaricFox.Components.Energy.EnergyBehaviour.Behaviours;
+package com.CybaricFox.Components.Processing.MachineBehavior.Behaviors;
 
 import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.API.EssentialsContext;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Energy.ChargerComponent;
-import com.CybaricFox.Components.Energy.EnergyBehaviour.EnergyBehaviour;
 import com.CybaricFox.Components.Energy.EnergyComponent;
+import com.CybaricFox.Components.Processing.MachineBehavior.MachineBehavior;
 import com.CybaricFox.Components.Processing.OutputComponent;
+import com.CybaricFox.UI.Pages.ChargerPage;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
+public class CommonCapacitor extends MachineBehavior {
 
-public class CommonCapacitor extends EnergyBehaviour {
+    public CommonCapacitor() {
+        setPageRef(ChargerPage.class);
+    }
+
     @Override
-    public boolean run(EssentialsContext context, EnergyComponent energyComponent) {
+    public boolean run(EssentialsContext context) {
         Ref<ChunkStore> ref = ArchLibrary.getBlockEntity(context.world, context.pos);
 
+        EnergyComponent energyComponent = ref.getStore().getComponent(ref, ArchStar.get().getEnergyComponentType());
+        if(energyComponent == null) return false;
         //Charge items in input
         ChargerComponent chargerComponent = ref.getStore().getComponent(ref, ArchStar.get().getChargerComponentType());
         if(chargerComponent == null) return false;

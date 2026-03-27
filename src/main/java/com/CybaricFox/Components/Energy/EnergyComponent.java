@@ -2,7 +2,8 @@ package com.CybaricFox.Components.Energy;
 
 import com.CybaricFox.API.EssentialsContext;
 import com.CybaricFox.ArchStar;
-import com.CybaricFox.Components.Energy.EnergyBehaviour.EnergyBehaviour;
+import com.CybaricFox.Components.Processing.MachineBehavior.MachineBehavior;
+import com.CybaricFox.Components.Processing.MachineBehavior.MachineBehaviorRegistry;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -44,18 +45,6 @@ public class EnergyComponent implements Component<ChunkStore> {
         return maxEnergy - currentEnergy;
     }
 
-    public void setEnergyBehaviour(String blockId) {
-        energyBehaviour = EnergyBehaviourRegistry.create(blockId);
-    }
-
-    public boolean run(EssentialsContext context) {
-        if(energyBehaviour == null) {
-            throw new NullPointerException("Energy Block behaviour not set! Attempted to run the behaviour before setting it!");
-        }
-
-        return energyBehaviour.run(context, this);
-    }
-
     //Producers use this to determine the amount of energy to produce per tick
     //Consumers use this to determine the amount of energy to consume per tick
     public int getProductionRate() {return productionRate;}
@@ -71,9 +60,6 @@ public class EnergyComponent implements Component<ChunkStore> {
     private int inputThisTick = 0;
     private int networkID = -1;
     private EnergyBlockType type = EnergyBlockType.NOT_SET;
-
-    //Dictates how this block will process energy
-    private EnergyBehaviour energyBehaviour = null;
 
     //Create component with default values
     public EnergyComponent(){

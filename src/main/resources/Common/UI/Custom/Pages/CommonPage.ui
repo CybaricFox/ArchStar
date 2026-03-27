@@ -16,13 +16,13 @@ Group #PagePanel{
         Anchor: (Full: 1);
         FlexWeight: 0.5;
 
-        Group #PlayerPanel {
+        Group #DataPanel {
           LayoutMode: Top;
           Background: #1a1a2e(0.0);
           Anchor: (Left: 100, Top: 100, Bottom: 100);
           FlexWeight: 1.0;
 
-          $C.@DecoratedContainer #PlayerContainer {
+          $C.@DecoratedContainer #DataContainer {
                   ScrollbarStyle: $C.@DefaultScrollbarStyle;
                   LayoutMode: Top;
                   Background: #1a1a2e;
@@ -32,7 +32,7 @@ Group #PagePanel{
                       LayoutMode: Middle;
 
                       $C.@Title #TitleText3 {
-                        @Text = "PLAYER";
+                        @Text = "Information";
                         Style: (TextColor: #ffffff, RenderBold: true);
                       }
                     }

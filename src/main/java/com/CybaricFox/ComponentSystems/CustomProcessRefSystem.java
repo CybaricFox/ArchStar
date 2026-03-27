@@ -5,6 +5,7 @@ import com.CybaricFox.API.ArchLibrary;
 import com.CybaricFox.ArchStar;
 import com.CybaricFox.Components.Processing.FuelComponent;
 import com.CybaricFox.Components.Processing.InputComponent;
+import com.CybaricFox.Components.Processing.MachineBehaviorComponent;
 import com.CybaricFox.Components.Processing.OutputComponent;
 import com.CybaricFox.Components.CommonContainerComponent;
 import com.hypixel.hytale.component.*;
@@ -24,7 +25,12 @@ import java.util.ArrayList;
 public class CustomProcessRefSystem extends RefSystem<ChunkStore> {
     @Override
     public void onEntityAdded(@Nonnull Ref<ChunkStore> ref, @Nonnull AddReason addReason, @Nonnull Store<ChunkStore> store, @Nonnull CommandBuffer<ChunkStore> commandBuffer) {
+        MachineBehaviorComponent machineBehaviorComponent = commandBuffer.getComponent(ref, ArchStar.get().getMachineComponent());
+        if(machineBehaviorComponent == null) return;
 
+        EssentialsContext context = new EssentialsContext(ref, commandBuffer);
+
+        machineBehaviorComponent.setMachineBehavior(context.world.getBlockType(context.pos).getItem().getId());
     }
 
     @Override
@@ -69,6 +75,7 @@ public class CustomProcessRefSystem extends RefSystem<ChunkStore> {
         return Query.or(
                         ArchStar.get().getInputComponentType(),
                         ArchStar.get().getOutputComponentType(),
-                        ArchStar.get().getFuelComponentType());
+                        ArchStar.get().getFuelComponentType(),
+                        ArchStar.get().getMachineComponent());
     }
 }
