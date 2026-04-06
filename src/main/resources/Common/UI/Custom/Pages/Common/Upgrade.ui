@@ -1,0 +1,66 @@
+$C = "../../Common.ui";
+
+Group #Upgrade {
+    LayoutMode: Top;
+    Anchor: (Height: 256, Horizontal: 1);
+    Background: #666666;
+
+    Group {
+        LayoutMode: MiddleCenter;
+        FlexWeight: 0.25;
+        Background: #333333;
+
+        Label #UpgradeTitle {
+            Style: (TextColor: #ffffff, HorizontalAlignment: Center, RenderBold: true, FontSize: 32.0, VerticalAlignment: Center);
+            Text: "Placeholder";
+        }
+    }
+
+    Group #TopRow {
+        LayoutMode: Left;
+        FlexWeight: 1.375;
+
+        Group {
+            Anchor: (Width: 16);
+        }
+
+        AssetImage #UpgradeImage {
+            Anchor: (Height: 96, Width: 96);
+        }
+        Group {
+            Anchor: (Width: 48);
+        }
+
+        $C.@TextButton #UpgradeButton{
+            Anchor: (Height: 64, Width: 128);
+            Text: "Install";
+
+            TooltipText: "Placeholder";
+        }
+    }
+
+    Group #BottomRow {
+        LayoutMode: Left;
+        FlexWeight: 1.375;
+
+        Group #UpgradeReqs{
+            LayoutMode: LeftScrolling;
+            Padding: (Left: 16, Right: 16);
+
+            ItemGrid #UpgradeItemGrid {
+                RenderItemQualityBackground: true;
+                AreItemsDraggable: false;
+                SlotsPerRow: 99;
+                Style: (
+                    SlotSize: 64,
+                    SlotIconSize: 64,
+                    SlotSpacing: 5,
+                );
+            }
+        }
+    }
+
+
+
+
+}

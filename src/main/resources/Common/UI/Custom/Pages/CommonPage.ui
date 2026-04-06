@@ -24,7 +24,7 @@ Group #PagePanel{
 
           $C.@DecoratedContainer #DataContainer {
                   ScrollbarStyle: $C.@DefaultScrollbarStyle;
-                  LayoutMode: Top;
+                  LayoutMode: Full;
                   Background: #1a1a2e;
 
                   #Title {
@@ -32,9 +32,17 @@ Group #PagePanel{
                       LayoutMode: Middle;
 
                       $C.@Title #TitleText3 {
-                        @Text = "Information";
-                        Style: (TextColor: #ffffff, RenderBold: true);
+                        @Text = "INFORMATION";
+                        Style: (TextColor: #ffffff, RenderBold: true, HorizontalAlignment: Center);
                       }
+                    }
+                  }
+
+                  #Content {
+                    Group #DataGroup {
+                        Label #DataLabel {
+                            Style: (TextColor: #ffffff, RenderBold: false);
+                        }
                     }
                   }
           }
@@ -114,15 +122,15 @@ Group #PagePanel{
         Anchor: (Full: 1);
         FlexWeight: 0.5;
 
-        Group #TierPanel {
+        Group #UpgradePanel {
           LayoutMode: Top;
           Background: #1a1a2e(0.0);
           Anchor: (Right: 100, Top: 100, Bottom: 100);
           FlexWeight: 1.0;
 
-          $C.@DecoratedContainer #TierContainer {
+          $C.@DecoratedContainer #UpgradeContainer {
                   ScrollbarStyle: $C.@DefaultScrollbarStyle;
-                  LayoutMode: Top;
+                  LayoutMode: Full;
                   Background: #333333;
 
                   #Title {
@@ -131,8 +139,26 @@ Group #PagePanel{
 
                       $C.@Title #TitleText4 {
                         @Text = "UPGRADES";
-                        Style: (TextColor: #ffffff, RenderBold: true);
+                        Style: (TextColor: #ffffff, RenderBold: true, HorizontalAlignment: Center);
                       }
+                    }
+                  }
+
+                  #Content {
+                    Group #Upgrades{
+                        LayoutMode: TopScrolling;
+                        Anchor: (Full: 1);
+
+                        Group #Upgrades0 {}
+                        Group #Upgrades1 {}
+                        Group #Upgrades2 {}
+                        Group #Upgrades3 {}
+                        Group #Upgrades4 {}
+                        Group #Upgrades5 {}
+                        Group #Upgrades6 {}
+                        Group #Upgrades7 {}
+                        Group #Upgrades8 {}
+                        Group #Upgrades9 {}
                     }
                   }
           }
