@@ -8,11 +8,22 @@
       {
         "Quantity": 4,
         "ResourceTypeId": "Wood_Trunk"
+      },
+      {
+        "Quantity": 3,
+        "ResourceTypeId": "Rock"
+      },
+      {
+        "ItemId": "Bench_WorkBench"
+      },
+      {
+        "Quantity": 8,
+        "ItemId": "Ingredient_Bar_Steel"
       }
     ],
     "Output": [
       {
-        "ItemId": "Inventors_Bench"
+        "ItemId": "Industrial_Workbench"
       }
     ],
     "BenchRequirement": [
@@ -24,9 +35,9 @@
         "Id": "Workbench"
       }
     ],
-    "TimeSeconds": 2.0
+    "TimeSeconds": 8.0
   },
-  "Icon": "Icons/ItemsGenerated/Inventors_Bench_Icon.png",
+  "Icon": "Icons/ItemsGenerated/Industrial_Workbench_Icon.png",
   "Categories": [
     "Furniture.Benches",
     "ArchStar.Machines"
@@ -35,18 +46,18 @@
     "Material": "Solid",
     "DrawType": "Model",
     "Opacity": "Transparent",
-    "CustomModel": "Blocks/Benches/Inventors_Bench.blockymodel",
+    "CustomModel": "Blocks/Benches/Industrial_Workbench.blockymodel",
     "CustomModelTexture": [
       {
-        "Texture": "Blocks/Benches/Inventors_Bench.png",
+        "Texture": "Blocks/Benches/Industrial_Workbench.png",
         "Weight": 1
       }
     ],
-    "HitboxType": "Bench_Workbench",
+    "HitboxType": "Bench_Furnace",
     "VariantRotation": "NESW",
     "Bench": {
       "Type": "Crafting",
-      "Id": "Invention",
+      "Id": "Industrial",
       "Categories": [
         {
           "Id": "Industrial",
@@ -73,13 +84,8 @@
     },
     "State": {
       "Definitions": {
-        "CraftCompleted": {
-          "CustomModelAnimation": "Blocks/Benches/Inventors_Bench_Crafting.blockyanim",
-          "Looping": true
-        },
-        "CraftCompletedInstant": {
-          "CustomModelAnimation": "Blocks/Benches/Inventors_Bench_Crafting.blockyanim"
-        }
+        "CraftCompleted": {},
+        "CraftCompletedInstant": {}
       }
     },
     "Gathering": {

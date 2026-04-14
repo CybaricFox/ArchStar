@@ -13,12 +13,12 @@ public class BasicModulationUpgrade extends BaseUpgrade {
     }
 
     @Override
-    public void onPurchase(Ref<ChunkStore> blockRef, ItemStack item) {
-
+    public ItemStack onPurchase(Ref<ChunkStore> blockRef, ItemStack item) {
+        return null;
     }
 
     @Override
-    public void onUninstall(Ref<ChunkStore> blockRef, ItemStack item) {
-
+    public ItemStack onUninstall(Ref<ChunkStore> blockRef, ItemStack item) {
+        return null;
     }
 }

@@ -1,0 +1,107 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Upgrade_Station.name",
+    "Description": "ArchStar.Upgrade_Station.description"
+  },
+  "Recipe": {
+    "Input": [
+      {
+        "Quantity": 2,
+        "ItemId": "Ingredient_Leather_Medium"
+      },
+      {
+        "ItemId": "Bench_WorkBench"
+      },
+      {
+        "Quantity": 8,
+        "ItemId": "Ingredient_Bar_Steel"
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "Upgrade_Station"
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Workbench_Crafting"
+        ],
+        "Id": "Workbench"
+      }
+    ],
+    "TimeSeconds": 8.0
+  },
+  "Icon": "Icons/ItemsGenerated/Upgrade_Station_Icon.png",
+  "Categories": [
+    "Furniture.Benches",
+    "ArchStar.Machines"
+  ],
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Benches/Upgrade_Station.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Benches/Upgrade_Station.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Bench_Furnace",
+    "VariantRotation": "NESW",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "Open_Machine"
+          }
+        ]
+      }
+    },
+    "BlockEntity": {
+      "Components": {
+        "ItemContainerBlock": {
+          "Capacity": 1
+        },
+        "MachineBehavior": {}
+      }
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "BlockParticleSetId": "Metal",
+    "ParticleColor": "#8f8f8f",
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "BlockSoundSetId": "Metal"
+  },
+  "PlayerAnimationsId": "Block",
+  "IconProperties": {
+    "Scale": 0.42,
+    "Rotation": [
+      22.5,
+      45.0,
+      22.5
+    ],
+    "Translation": [
+      12.9,
+      -11.7
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Bench"
+    ]
+  },
+  "MaxStack": 1,
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

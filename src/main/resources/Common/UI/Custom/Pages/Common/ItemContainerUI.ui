@@ -1,0 +1,24 @@
+@SlotSize = 80;
+@Padding = 5;
+
+Group #ItemContainerPanel{
+    LayoutMode: MiddleCenter;
+    FlexWeight: 1.0;
+
+    ItemGrid #ItemContainerItemGrid{
+         FlexWeight: 1.0;
+         RenderItemQualityBackground: true;
+         AreItemsDraggable: true;
+         SlotsPerRow: 9;
+         InventorySectionId: 2;
+         Style: (
+             SlotSize: @SlotSize,
+             SlotIconSize: @SlotSize,
+             SlotSpacing: @Padding,
+             SlotBackground: "SlotDefault2x.png",
+             BrokenSlotIconOverlay: "Alert.png",
+             BrokenSlotBackgroundOverlay: "BrokenItem.png",
+             DefaultItemIcon: "Alert.png"
+         );
+    }
+}

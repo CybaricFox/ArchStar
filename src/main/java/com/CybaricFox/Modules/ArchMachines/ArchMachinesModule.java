@@ -7,14 +7,15 @@ import com.CybaricFox.Modules.ArchMachines.Interactions.RechargeHeldItemInteract
 import com.CybaricFox.Modules.ArchMachines.MachineBehavior.Behaviors.CommonCapacitor;
 import com.CybaricFox.Modules.ArchMachines.MachineBehavior.Behaviors.CommonConsumer;
 import com.CybaricFox.Modules.ArchMachines.MachineBehavior.Behaviors.CommonFueledProducer;
+import com.CybaricFox.Modules.ArchMachines.MachineBehavior.Behaviors.UpgradeStation;
 import com.CybaricFox.Modules.ArchMachines.MachineBehavior.MachineBehaviorRegistry;
 import com.CybaricFox.Modules.ArchMachines.Systems.CommonUIReader;
 import com.CybaricFox.Modules.ArchMachines.Systems.CustomProcessRefSystem;
 import com.CybaricFox.Modules.ArchMachines.Systems.CustomProcessingSystem;
-import com.CybaricFox.Modules.ArchMachines.UI.Pages.CommonPage;
 import com.CybaricFox.Modules.ArchMachines.Upgrade.BaseUpgrade;
 import com.CybaricFox.Modules.ArchMachines.Upgrade.UpgradeRegistry;
 import com.CybaricFox.Modules.ArchMachines.Upgrade.Upgrades.BasicModulationUpgrade;
+import com.CybaricFox.Modules.ArchMachines.Upgrade.Upgrades.ConversionUpgrade;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageEvent;
@@ -87,6 +88,7 @@ public class ArchMachinesModule {
         MachineBehaviorRegistry.register("Electric_Grinder", CommonConsumer::new);
         MachineBehaviorRegistry.register("Electric_Furnace", CommonConsumer::new);
         MachineBehaviorRegistry.register("Capacitor", CommonCapacitor::new);
+        MachineBehaviorRegistry.register("Upgrade_Station", UpgradeStation::new);
     }
 
     private void setupUpgrades() {
@@ -94,6 +96,26 @@ public class ArchMachinesModule {
         //Register the upgrades
         upgrade = UpgradeRegistry.registerUpgrade(new BasicModulationUpgrade(UpgradeType.BLOCK, "Basic Modulation", "Unlocks basic upgrades and allows machine information to be displayed in the information panel.", "Icons/ItemCategories/Circuit_Icon.png"));
         upgrade.addItem("Basic_Circuit", 1);
+
+        //Item Upgrades
+        upgrade = UpgradeRegistry.registerUpgrade(new ConversionUpgrade(
+                UpgradeType.ITEM,
+                "Cobalt Drill",
+                "Converts the steel drill into a cobalt drill. Increases its base stats to that of a cobalt pickaxe." +
+                        "\nDue to the affects of magic on power systems, more energy is consumed per operation to counteract the close presence of cobalt." +
+                        "\nPower Drain 25v/op -> 40v/op",
+                "Icons/ItemCategories/Circuit_Icon.png",
+                "Cobalt_Drill"));
+        upgrade.addItem("Ingredient_Bar_Cobalt", 6);
+        upgrade = UpgradeRegistry.registerUpgrade(new ConversionUpgrade(
+                UpgradeType.ITEM,
+                "Adamantite Drill",
+                "Converts the cobalt drill into an adamantite drill. Increases its base stats to that of an adamantite pickaxe." +
+                        "\nWhile the weight of adamantite may make this drill powerful, the energy needed to rev up the engine is far more expensive compared to its cobalt counterpart." +
+                        "\n Power Drain 40v/op -> 75v/op",
+                "Icons/ItemCategories/Circuit_Icon.png",
+                "Adamantite_Drill"));
+        upgrade.addItem("Ingredient_Bar_Adamantite", 6);
 
         //Register what items have what upgrades
         //Items can have both block and item upgrades, but each will only appear under certain conditions
@@ -103,6 +125,8 @@ public class ArchMachinesModule {
         UpgradeRegistry.registerItem("Electric_Furnace", new ArrayList<>(List.of("Basic_Modulation")));
         UpgradeRegistry.registerItem("Electric_Grinder", new ArrayList<>(List.of("Basic_Modulation")));
         UpgradeRegistry.registerItem("Capacitor", new ArrayList<>(List.of("Basic_Modulation")));
+        UpgradeRegistry.registerItem("Steel_Drill", new ArrayList<>(List.of("Cobalt_Drill")));
+        UpgradeRegistry.registerItem("Cobalt_Drill", new ArrayList<>(List.of("Adamantite_Drill")));
     }
 
     //FIXES THE GOD DAMN ITEM GRID NOT PLAYING WELL WITH CUSTOM UIS!!!

@@ -21,7 +21,8 @@ Group #FuelPanel{
             SlotSpacing: @Padding,
             SlotBackground: "SlotDefault2x.png",
             BrokenSlotIconOverlay: "Alert.png",
-            BrokenSlotBackgroundOverlay: "BrokenItem.png"
+            BrokenSlotBackgroundOverlay: "BrokenItem.png",
+            DefaultItemIcon: "Alert.png"
         );
     }
 

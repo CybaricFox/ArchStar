@@ -131,7 +131,7 @@ public abstract class BaseUpgrade {
 
     //Called when this upgrade is purchased. Use the type to identify whats being upgraded.
     //In most cases, one argument should be null depending on the upgrade type.
-    public abstract void onPurchase(Ref<ChunkStore> blockRef, ItemStack item);
+    public abstract ItemStack onPurchase(Ref<ChunkStore> blockRef, ItemStack item);
 
-    public abstract void onUninstall(Ref<ChunkStore> blockRef, ItemStack item);
+    public abstract ItemStack onUninstall(Ref<ChunkStore> blockRef, ItemStack item);
 }

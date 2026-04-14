@@ -55,6 +55,10 @@ Group #Upgrade {
                     SlotSize: 64,
                     SlotIconSize: 64,
                     SlotSpacing: 5,
+                    SlotBackground: "SlotDefault2x.png",
+                    BrokenSlotIconOverlay: "Alert.png",
+                    BrokenSlotBackgroundOverlay: "BrokenItem.png",
+                    DefaultItemIcon: "Alert.png"
                 );
             }
         }

@@ -1,44 +1,15 @@
 {
   "TranslationProperties": {
-    "Name": "ArchStar.Steel_Drill.name",
-    "Description": "ArchStar.Steel_Drill.description"
+    "Name": "ArchStar.Cobalt_Drill.name",
+    "Description": "ArchStar.Cobalt_Drill.description"
   },
   "Categories": [
     "Items.Tools",
     "ArchStar.Equipment"
   ],
-  "Recipe": {
-    "Input": [
-      {
-        "ItemId": "Basic_Circuit"
-      },
-      {
-        "ItemId": "Ingredient_Bar_Steel",
-        "Quantity": 5
-      },
-      {
-        "ItemId": "Sodium_Battery"
-      }
-    ],
-    "Output": [
-      {
-        "ItemId": "Steel_Drill"
-      }
-    ],
-    "BenchRequirement": [
-      {
-        "Type": "Crafting",
-        "Categories": [
-          "Industrial"
-        ],
-        "Id": "Industrial"
-      }
-    ],
-    "TimeSeconds": 20.0
-  },
   "Model": "Items/Equipment/Steel_Drill.blockymodel",
-  "Texture": "Items/Equipment/Steel_Drill.png",
-  "Icon": "Icons/ItemsGenerated/Steel_Drill_Icon.png",
+  "Texture": "Items/Equipment/Cobalt_Drill.png",
+  "Icon": "Icons/ItemsGenerated/Cobalt_Drill_Icon.png",
   "PlayerAnimationsId": "Drill",
   "Scale": 2,
   "IconProperties": {
@@ -56,7 +27,7 @@
   "ItemSoundSetId": "ISS_Weapons_Stone_Small",
   "DropOnDeath": false,
   "MaxStack": 1,
-  "Quality": "Uncommon",
+  "Quality": "Rare",
   "Tool": {
     "Specs": [
       {
@@ -74,7 +45,7 @@
       {
         "Power": 0.5,
         "GatherType": "Rocks",
-        "Quality": 3
+        "Quality": 4
       },
       {
         "Power": 0.5,
@@ -89,31 +60,32 @@
         "GatherType": "OreCopper"
       },
       {
-        "Power": 0.25,
+        "Power": 0.5,
         "GatherType": "OreIron"
       },
       {
-        "Power": 0.25,
+        "Power": 0.5,
         "GatherType": "OreSilver"
       },
       {
-        "Power": 0.25,
+        "Power": 0.5,
         "GatherType": "OreGold"
       },
       {
-        "Power": 0.125,
+        "Power": 0.25,
         "GatherType": "OreThorium"
       },
       {
-        "Power": 0.125,
+        "Power": 0.25,
         "GatherType": "OreCobalt"
       },
       {
-        "Power": 0.084,
-        "GatherType": "OreAdamantite"
+        "Power": 0.125,
+        "GatherType": "OreAdamantite",
+        "Quality": 4
       },
       {
-        "Power": 0.063,
+        "Power": 0.084,
         "GatherType": "OreMithril"
       }
     ],
@@ -126,7 +98,7 @@
           "Soil",
           "Wood"
         ],
-        "DurabilityLossOnHit": 25
+        "DurabilityLossOnHit": 40
       }
     ]
   },

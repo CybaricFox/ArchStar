@@ -137,14 +137,14 @@
         "Categories": [
           "Industrial"
         ],
-        "Id": "Invention"
+        "Id": "Industrial"
       }
     ],
     "TimeSeconds": 8.0
   },
   "Tags": {
     "Type": [
-      "EnergyBlock"
+      "Bench"
     ]
   },
   "MaxStack": 100

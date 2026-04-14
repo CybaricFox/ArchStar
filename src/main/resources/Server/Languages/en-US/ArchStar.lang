@@ -1,5 +1,7 @@
-Inventors_Bench.name = Inventor's Bench
-Inventors_Bench.description = An inventor's dream come true! The bench for technology and automation in ArchStar!
+Inventors_Bench.name = Industrial Workbench
+Inventors_Bench.description = A perfect workbench for factory owners and automation fanatics. Grants access to machines, conveyors, and electrical equipment.
+Upgrade_Station.name = Upgrade Station
+Upgrade_Station.description = A workbench that provides the tools needed to evolve your equipment to the next level.
 Industrial_Icon.name = Industrial Age
 
 Iron_Furnace.name = Iron Furnace
@@ -68,5 +70,9 @@ Equipment_Category = Equipment
 
 Steel_Drill.name = Steel Drill
 Steel_Drill.description = An electric drill. Equivalent to an iron pickaxe. Hope you brought ear muffs.\n\nPlace in an upgrade station to view stats.
+Cobalt_Drill.name = Cobalt Drill
+Cobalt_Drill.description = An electric drill. Equivalent to a cobalt pickaxe. The close presence of magical metal places greater strain on the power buffer, requiring more energy per operation.\n\nPlace in an upgrade station to view stats.
+Adamantite_Drill.name = Adamantite Drill
+Adamantite_Drill.description = An electric drill. Equivalent to an adamantite pickaxe. The heavy, magical drill bit requires a substantial amount of power to operate adequately.\n\nPlace in an upgrade station to view stats.
 Sodium_Battery.name = Sodium Battery
 Sodium_Battery.description = Charges items in your inventory. Holds 20kv.

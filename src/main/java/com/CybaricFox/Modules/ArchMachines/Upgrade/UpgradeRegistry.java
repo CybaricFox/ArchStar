@@ -2,6 +2,7 @@ package com.CybaricFox.Modules.ArchMachines.Upgrade;
 
 import com.CybaricFox.Modules.ArchLibrary.ArchLibrary;
 import com.CybaricFox.Modules.ArchMachines.MachineBehavior.MachineBehavior;
+import com.CybaricFox.Modules.ArchMachines.UpgradeType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +36,17 @@ public final class UpgradeRegistry {
     public static BaseUpgrade getUpgrade(String upgradeId) {
         if(UPGRADE_REGISTRY.containsKey(upgradeId)) {
             return UPGRADE_REGISTRY.get(upgradeId);
+        } else {
+            throw new ArrayStoreException(upgradeId + " is not registered to the upgrade registry!");
+        }
+    }
+    public static BaseUpgrade getUpgradeByType(String upgradeId, UpgradeType type) {
+        if(UPGRADE_REGISTRY.containsKey(upgradeId)) {
+            if(UPGRADE_REGISTRY.get(upgradeId).type == type) {
+                return UPGRADE_REGISTRY.get(upgradeId);
+            } else {
+                return null;
+            }
         } else {
             throw new ArrayStoreException(upgradeId + " is not registered to the upgrade registry!");
         }

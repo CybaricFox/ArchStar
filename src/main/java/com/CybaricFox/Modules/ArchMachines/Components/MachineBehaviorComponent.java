@@ -77,14 +77,8 @@ public class MachineBehaviorComponent implements Component<ChunkStore> {
             UpgradeRegistry.getUpgrade(upgradeId).onPurchase(blockRef, null);
         }
     }
-    public void purchaseUpgrade(String upgradeId, ItemStack item) {
-        if(boughtUpgrades.contains(upgradeId)) {
-            boughtUpgrades.remove(upgradeId);
-            UpgradeRegistry.getUpgrade(upgradeId).onUninstall(null, item);
-        } else {
-            boughtUpgrades.add(upgradeId);
-            UpgradeRegistry.getUpgrade(upgradeId).onPurchase(null, item);
-        }
+    public ItemStack purchaseUpgrade(String upgradeId, ItemStack item) {
+        return UpgradeRegistry.getUpgrade(upgradeId).onPurchase(null, item);
     }
 
     public static ComponentType<ChunkStore, MachineBehaviorComponent> getComponentType() {

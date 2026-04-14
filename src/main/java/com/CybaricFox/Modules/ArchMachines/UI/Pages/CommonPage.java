@@ -10,6 +10,7 @@ import com.CybaricFox.Modules.ArchMachines.UI.Pages.Common.IMachineUIComponent;
 import com.CybaricFox.Modules.ArchMachines.UI.Pages.Common.UIComponentContext;
 import com.CybaricFox.Modules.ArchMachines.Upgrade.BaseUpgrade;
 import com.CybaricFox.Modules.ArchMachines.Upgrade.UpgradeRegistry;
+import com.CybaricFox.Modules.ArchMachines.UpgradeType;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -27,10 +28,10 @@ import com.hypixel.hytale.server.core.asset.type.itemsound.config.ItemSoundSet;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
-import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
+import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.ui.ItemGridSlot;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -134,35 +135,44 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         if(upgrades == null) return;
         if(upgrades.size() > UPGRADE_SIZE) throw new ArrayIndexOutOfBoundsException(blockType.getItem().getId() + " has more than " + UPGRADE_SIZE + " upgrades in the registry! Number of upgrades may not surpass this limit!");
 
-        for(int i = 0; i < upgrades.size(); i++) {
+        int upgradeGroup = 0;
+        for (String string : upgrades) {
             //Get upgrade and its info
-            BaseUpgrade upgrade = UpgradeRegistry.getUpgrade(upgrades.get(i));
+            BaseUpgrade upgrade = UpgradeRegistry.getUpgradeByType(string, UpgradeType.BLOCK);
+            if(upgrade == null) continue;
             ArrayList<String> items = upgrade.getItems();
             ItemGridSlot[] slots = new ItemGridSlot[items.size()];
 
             //Append an upgrade ui element and set its title
-            globalBuilder.append("#Upgrades" + i, "Pages/Common/Upgrade.ui");
-            globalBuilder.set("#Upgrades" + i + " #UpgradeTitle.Text", upgrade.getName());
-            eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#Upgrades" + i + " #UpgradeButton", new EventData().append("Type", "Upgrade").append("Grid", upgrade.getId()).append("Signature", "ARCH-SIG"), false);
+            globalBuilder.append("#Upgrades" + upgradeGroup, "Pages/Common/Upgrade.ui");
+            globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeTitle.Text", upgrade.getName());
+            eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#Upgrades" + upgradeGroup + " #UpgradeButton", new EventData().append("Type", "Upgrade").append("Grid", upgrade.getId()).append("Signature", "ARCH-SIG"), false);
 
             //Setup the item requirements
-            for(short s = 0; s < items.size(); s++) {
+            for (short s = 0; s < items.size(); s++) {
                 ItemGridSlot slot = new ItemGridSlot();
                 ItemStack stack = new ItemStack(items.get(s), upgrade.getItemQuantity(items.get(s)));
-                slot.setItemStack(stack);
+                if (stack.isValid()) {
+                    slot.setItemStack(stack);
+                } else {
+                    ArchLibrary.LOGGER.at(Level.SEVERE).log(upgrade.getName() + " contains an invalid item in its item requirements! Invalid item: " + stack.getItemId());
+                    globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeButton.Disabled", true);
+                }
                 slots[s] = slot;
             }
-            globalBuilder.set("#Upgrades" + i + " #UpgradeItemGrid.Slots", slots);
-            globalBuilder.set("#Upgrades" + i + " #UpgradeItemGrid.SlotsPerRow", slots.length);
+            globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeItemGrid.Slots", slots);
+            globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeItemGrid.SlotsPerRow", slots.length);
 
             //Setup the final parts of the upgrade element
-            globalBuilder.set("#Upgrades" + i + " #UpgradeImage.AssetPath", upgrade.getIconPath());
+            globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeImage.AssetPath", upgrade.getIconPath());
 
-            if(machineBehaviorComponent.containsUpgrade(upgrade.getId())) {
-                globalBuilder.set("#Upgrades" + i + " #UpgradeButton.Text", "Uninstall");
-                globalBuilder.set("#Upgrades" + i + " #UpgradeButton.OutlineColor", "#660000");
+            if (machineBehaviorComponent.containsUpgrade(upgrade.getId())) {
+                globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeButton.Text", "Uninstall");
+                globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeButton.OutlineColor", "#660000");
             }
-            globalBuilder.set("#Upgrades" + i + " #UpgradeButton.TooltipText", upgrade.getDesc());
+            globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeButton.TooltipText", upgrade.getDesc());
+
+            upgradeGroup++;
         }
     }
 
@@ -226,7 +236,52 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         senderContainer.moveItemStackFromSlotToSlot(senderSlot, quantity, receiverContainer, receiverSlot);
     }
 
+    protected void setItemUpgrades(UIEventBuilder eventBuilder) {
+        ItemContainer container = componentMapping.get("ItemContainer").container;
+        ItemStack itemStack = container.getItemStack((short) 0);
+        if(itemStack != null) {
+            ArrayList<String> upgrades = UpgradeRegistry.getUpgrades(itemStack.getItem().getId());
+            if(upgrades == null) return;
+            if(upgrades.size() > UPGRADE_SIZE) throw new ArrayIndexOutOfBoundsException(itemStack.getItem().getId() + " has more than " + UPGRADE_SIZE + " upgrades in the registry! Number of upgrades may not surpass this limit!");
 
+            int upgradeGroup = 0;
+            for (String string : upgrades) {
+                //Get upgrade and its info
+                BaseUpgrade upgrade = UpgradeRegistry.getUpgradeByType(string, UpgradeType.ITEM);
+                if (upgrade == null) {
+                    continue;
+                }
+                ArrayList<String> items = upgrade.getItems();
+                ItemGridSlot[] slots = new ItemGridSlot[items.size()];
+
+                //Append an upgrade ui element and set its title
+                globalBuilder.append("#Upgrades" + upgradeGroup, "Pages/Common/Upgrade.ui");
+                globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeTitle.Text", upgrade.getName());
+                eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#Upgrades" + upgradeGroup + " #UpgradeButton", new EventData().append("Type", "Upgrade").append("Grid", upgrade.getId()).append("Signature", "ARCH-SIG"), false);
+
+                //Setup the item requirements
+                for (short s = 0; s < items.size(); s++) {
+                    ItemGridSlot slot = new ItemGridSlot();
+                    ItemStack stack = new ItemStack(items.get(s), upgrade.getItemQuantity(items.get(s)));
+                    if (stack.isValid()) {
+                        slot.setItemStack(stack);
+                    } else {
+                        ArchLibrary.LOGGER.at(Level.SEVERE).log(upgrade.getName() + " contains an invalid item in its item requirements! Invalid item: " + stack.getItemId());
+                        globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeButton.Disabled", true);
+                    }
+                    slots[s] = slot;
+                }
+                globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeItemGrid.Slots", slots);
+                globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeItemGrid.SlotsPerRow", slots.length);
+
+                //Setup the final parts of the upgrade element
+                globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeImage.AssetPath", upgrade.getIconPath());
+                globalBuilder.set("#Upgrades" + upgradeGroup + " #UpgradeButton.TooltipText", upgrade.getDesc());
+
+                upgradeGroup++;
+            }
+        }
+    }
 
     @Override
     public void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store, CommonData data) {
@@ -234,19 +289,30 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
         if(data.type.equals("Release")) {
             onDrop(getNameFromID(data.dragFromSection), data.grid, data.dragFromSlot, data.toSlot, data.dragQuantity);
-
+            isValid = false;
             rebuild();
             return;
         }
         if(data.type.equals("Drop")) {
             onDrop(getNameFromID(data.fromSection), data.grid, data.fromSlot, data.toSlot, data.quantity);
 
-            setItemGridSlots(data.grid, componentMapping.get(data.grid).container);
+            if(componentMapping.containsKey("ItemContainer") && componentMapping.get("ItemContainer").sectionID == 3) {
+                if(data.grid.equals("ItemContainer") || data.fromSection == 3) {
+                    isValid = false;
+                    rebuild();
+                } else {
+                    setItemGridSlots(data.grid, componentMapping.get(data.grid).container);
+                }
+            } else {
+                setItemGridSlots(data.grid, componentMapping.get(data.grid).container);
+            }
+            return;
         }
         if(data.type.equals("Upgrade")) {
             BaseUpgrade upgrade = UpgradeRegistry.getUpgrade(data.grid);
 
-            Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(ref.getStore().getExternalData().getWorld(), pos);
+            World world = ref.getStore().getExternalData().getWorld();
+            Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(world, pos);
             MachineBehaviorComponent machineBehaviorComponent = blockRef.getStore().getComponent(blockRef, MachineBehaviorComponent.getComponentType());
             Player playerComponent = ref.getStore().getComponent(ref, Player.getComponentType());
 
@@ -254,12 +320,26 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
                 //noinspection removal
                 upgrade.refundItems(playerComponent.getInventory().getCombinedStorageFirst(), blockRef.getStore().getExternalData().getWorld(), pos);
                 machineBehaviorComponent.purchaseUpgrade(upgrade.getId(), blockRef);
-                refreshUpgrades(blockRef.getStore().getExternalData().getWorld().getBlockType(pos), machineBehaviorComponent);
+                //refreshUpgrades(blockRef.getStore().getExternalData().getWorld().getBlockType(pos), machineBehaviorComponent);
+                isValid = false;
+                rebuild();
             } else {
                 @SuppressWarnings("removal") boolean result = upgrade.consumeItems(playerComponent.getInventory().getCombinedStorageFirst());
                 if(result) {
-                    machineBehaviorComponent.purchaseUpgrade(upgrade.getId(), blockRef);
-                    refreshUpgrades(blockRef.getStore().getExternalData().getWorld().getBlockType(pos), machineBehaviorComponent);
+                    if(upgrade.type == UpgradeType.BLOCK) {
+                        machineBehaviorComponent.purchaseUpgrade(upgrade.getId(), blockRef);
+                    } else {
+                        UIComponentContext context = componentMapping.get("ItemContainer");
+                        ItemStack resultItem = machineBehaviorComponent.purchaseUpgrade(upgrade.getId(), context.container.getItemStack((short) 0));
+                        if(resultItem == null) {
+                            upgrade.refundItems(context.container, world, pos);
+                        } else {
+                            context.container.setItemStackForSlot((short) 0, resultItem);
+                        }
+                    }
+                    //refreshUpgrades(blockRef.getStore().getExternalData().getWorld().getBlockType(pos), machineBehaviorComponent);
+                    isValid = false;
+                    rebuild();
                 }
             }
         }
@@ -300,6 +380,15 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
             globalBuilder.set("#" + name + "ItemGrid.SlotsPerRow", 2);
         }
     }
+    protected void addUI(ItemContainerBlock itemContainerBlock, int slotsPerRow, int sectionId) {
+        globalBuilder.append("#ContentContainerGroup", "Pages/Common/" + "ItemContainer" + "UI.ui");
+        globalBuilder.set("#" + "ItemContainer" + "ItemGrid.InventorySectionId", sectionId);
+        globalBuilder.set("#" + "ItemContainer" + "ItemGrid.SlotsPerRow", slotsPerRow);
+
+        componentMapping.put("ItemContainer", new UIComponentContext("ItemContainer", itemContainerBlock.getItemContainer(), true, sectionId));
+
+        refreshUI("ItemContainer", itemContainerBlock.getItemContainer());
+    }
 
     protected void enableItemGridEventBindings(UIEventBuilder event, String name) {
         event.addEventBinding(CustomUIEventBindingType.Dropped, "#" + name + "ItemGrid", new EventData().append("Type", "Drop").append("Grid", name).append("Signature", "ARCH-SIG"), true);
@@ -325,7 +414,12 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         for(short i = 0; i < container.getCapacity(); i++) {
             slots[i] = new ItemGridSlot();
             slots[i].setActivatable(true);
-            slots[i].setItemStack(container.getItemStack(i));
+            //This removes metadata from the item that is generated for the ui. Mods that add alot of metadata can overwhelm the ui system.
+            ItemStack item = container.getItemStack(i);
+            if(item != null) {
+                ItemStack invItem = new ItemStack(item.getItem().getId(), item.getQuantity(), item.getDurability(), item.getMaxDurability(), null);
+                slots[i].setItemStack(invItem);
+            }
         }
 
         globalBuilder.set("#" + name + "ItemGrid.Slots", slots);
