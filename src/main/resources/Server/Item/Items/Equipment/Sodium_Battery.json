@@ -34,7 +34,7 @@
         "Id": "Industrial"
       }
     ],
-    "TimeSeconds": 8.0
+    "TimeSeconds": 4.0
   },
   "Model": "Items/Equipment/Sodium_Battery.blockymodel",
   "Texture": "Items/Equipment/Sodium_Battery.png",

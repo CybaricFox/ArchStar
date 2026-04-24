@@ -34,7 +34,7 @@
         "Id": "Industrial"
       }
     ],
-    "TimeSeconds": 20.0
+    "TimeSeconds": 4.0
   },
   "Model": "Items/Equipment/Steel_Drill.blockymodel",
   "Texture": "Items/Equipment/Steel_Drill.png",

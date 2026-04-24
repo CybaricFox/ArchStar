@@ -56,11 +56,12 @@
           "MaxSize": 4,
           "Size": 4
         },
-        "MachineBehavior": {}
+        "MachineBehavior": {
+          "OpenSound": "SFX_Furnace_Bench_Open"
+        }
       }
     },
     "State": {
-      "Id": "processingBench",
       "Definitions": {
         "Processing": {
           "CustomModelTexture": [
@@ -130,7 +131,7 @@
         "Id": "Industrial"
       }
     ],
-    "TimeSeconds": 8.0
+    "TimeSeconds": 16.0
   },
   "Tags": {
     "Type": [

@@ -65,7 +65,7 @@
           "Name": "ArchStar.Industrial_Icon.name"
         }
       ],
-      "LocalOpenSoundEventId": "SFX_Workbench_Open",
+      "LocalOpenSoundEventId": "SFX_Quick_Drill",
       "LocalCloseSoundEventId": "SFX_Workbench_Close",
       "CompletedSoundEventId": "SFX_Workbench_Craft",
       "FailedSoundEventId": "SFX_Generic_Crafting_Failed",

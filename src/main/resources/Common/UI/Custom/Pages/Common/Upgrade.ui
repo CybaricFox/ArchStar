@@ -34,8 +34,16 @@ Group #Upgrade {
         $C.@TextButton #UpgradeButton{
             Anchor: (Height: 64, Width: 128);
             Text: "Install";
-
             TooltipText: "Placeholder";
+            Style: (
+                ...$C.@DefaultTextButtonStyle,
+                Sounds: (
+                    Activate: (
+                        SoundPath: "Pages/ArchStar/Sounds/Upgrade_Click.ogg",
+                        Volume: 6
+                    )
+                )
+            );
         }
     }
 

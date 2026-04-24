@@ -56,11 +56,12 @@
           "MaxSize": 4,
           "Size": 4
         },
-        "MachineBehavior": {}
+        "MachineBehavior": {
+          "OpenSound": null
+        }
       }
     },
     "State": {
-      "Id": "processingBench",
       "Definitions": {
         "Processing": {
           "CustomModelTexture": [
@@ -142,7 +143,7 @@
         "Id": "Industrial"
       }
     ],
-    "TimeSeconds": 8.0
+    "TimeSeconds": 4.0
   },
   "Tags": {
     "Type": [

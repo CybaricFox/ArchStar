@@ -50,8 +50,11 @@ public class OpenMachineInteraction extends SimpleBlockInteraction {
             return;
         }
 
-        int soundIndex = SoundEvent.getAssetMap().getIndex("SFX_Furnace_Bench_Open");
-        SoundUtil.playSoundEvent3dToPlayer(ref, soundIndex, SoundCategory.UI, pos.toVector3d(), store);
+        String sound = machineBehaviorComponent.getOpenSound();
+        if(sound != null) {
+            int soundIndex = SoundEvent.getAssetMap().getIndex(sound);
+            SoundUtil.playSoundEvent3dToPlayer(ref, soundIndex, SoundCategory.UI, pos.toVector3d(), store);
+        }
         playerComponent.getPageManager().openCustomPage(ref, store, machineBehaviorComponent.getPage(commandBuffer.getComponent(ref, PlayerRef.getComponentType()), CommonPage.CommonData.CODEC, pos));
     }
 

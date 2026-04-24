@@ -30,12 +30,14 @@ public class MachineBehaviorComponent implements Component<ChunkStore> {
 
     private MachineBehavior machineBehavior;
     private ArrayList<String> boughtUpgrades = new ArrayList<>();
+    private String openSound;
 
     public MachineBehaviorComponent() {
 
     }
-    public MachineBehaviorComponent(ArrayList<String> boughtUpgrades) {
+    public MachineBehaviorComponent(ArrayList<String> boughtUpgrades, String openSound) {
         this.boughtUpgrades = new ArrayList<>(boughtUpgrades);
+        this.openSound = openSound;
     }
 
     public boolean displayData() {
@@ -45,7 +47,7 @@ public class MachineBehaviorComponent implements Component<ChunkStore> {
     @Nullable
     @Override
     public Component<ChunkStore> clone() {
-        return new MachineBehaviorComponent(boughtUpgrades);
+        return new MachineBehaviorComponent(boughtUpgrades, openSound);
     }
 
     public void setMachineBehavior(String blockId) {
@@ -63,6 +65,8 @@ public class MachineBehaviorComponent implements Component<ChunkStore> {
 
         return machineBehavior.run(context);
     }
+
+    public String getOpenSound(){return openSound;}
 
     public boolean containsUpgrade(String id) {
         return boughtUpgrades.contains(id);
@@ -102,6 +106,8 @@ public class MachineBehaviorComponent implements Component<ChunkStore> {
 
     static {
         CODEC = (BuilderCodec.builder(MachineBehaviorComponent.class, MachineBehaviorComponent::new))
+                .append(new KeyedCodec<>("OpenSound", Codec.STRING), (component, s) -> component.openSound = s, (component) -> component.openSound).add()
+
                 .append(new KeyedCodec<>("BoughtUpgrades", new ArrayCodec<>(Codec.STRING, String[]::new)), (component, s) -> component.boughtUpgrades = new ArrayList<>(Arrays.asList(s)), (component) -> component.boughtUpgrades.toArray(String[]::new)).add()
                 .build();
     }

@@ -54,7 +54,7 @@
         "Id": "Industrial"
       }
     ],
-    "TimeSeconds": 4.0
+    "TimeSeconds": 2.0
   },
   "DropOnDeath": false,
   "MaxStack": 100

@@ -59,7 +59,6 @@
     "ParticleColor": "#efcf22",
     "BlockSoundSetId": "Metal",
     "State": {
-      "Id": "conveyor",
       "Definitions": {
         "Move": {
           "CustomModelAnimation": "Blocks/Conveyor/Conveyor_Move.blockyanim",

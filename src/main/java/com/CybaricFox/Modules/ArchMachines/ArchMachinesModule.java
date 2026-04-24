@@ -104,7 +104,7 @@ public class ArchMachinesModule {
                 "Converts the steel drill into a cobalt drill. Increases its base stats to that of a cobalt pickaxe." +
                         "\nDue to the affects of magic on power systems, more energy is consumed per operation to counteract the close presence of cobalt." +
                         "\nPower Drain 25v/op -> 40v/op",
-                "Icons/ItemCategories/Circuit_Icon.png",
+                "ArchStarResources/UpgradeIcons/Cobalt_Drill_Conversion_Icon.png",
                 "Cobalt_Drill"));
         upgrade.addItem("Ingredient_Bar_Cobalt", 6);
         upgrade = UpgradeRegistry.registerUpgrade(new ConversionUpgrade(
@@ -113,7 +113,7 @@ public class ArchMachinesModule {
                 "Converts the cobalt drill into an adamantite drill. Increases its base stats to that of an adamantite pickaxe." +
                         "\nWhile the weight of adamantite may make this drill powerful, the energy needed to rev up the engine is far more expensive compared to its cobalt counterpart." +
                         "\n Power Drain 40v/op -> 75v/op",
-                "Icons/ItemCategories/Circuit_Icon.png",
+                "ArchStarResources/UpgradeIcons/Adamantite_Drill_Conversion_Icon.png",
                 "Adamantite_Drill"));
         upgrade.addItem("Ingredient_Bar_Adamantite", 6);
 
@@ -137,10 +137,11 @@ public class ArchMachinesModule {
                 if(packet instanceof CustomPageEvent customPageEvent && customPageEvent.data != null) {
                     //Ensure this only affects ArchStar events!
                     if(customPageEvent.data.contains("ARCH-SIG")) {
+                        String alteredData = customPageEvent.data.replace("ARCH-SIG", "ARCH-PRO");
                         Ref<EntityStore> playerRef = player.getReference();
                         Player playerComponent = playerRef.getStore().getComponent(playerRef, Player.getComponentType());
 
-                        playerComponent.getPageManager().getCustomPage().handleDataEvent(playerRef, playerRef.getStore(), customPageEvent.data);
+                        playerComponent.getPageManager().getCustomPage().handleDataEvent(playerRef, playerRef.getStore(), alteredData);
                     }
                 }
             });

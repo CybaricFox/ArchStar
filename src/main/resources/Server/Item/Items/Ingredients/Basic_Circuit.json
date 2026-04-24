@@ -33,7 +33,7 @@
         "Id": "Industrial"
       }
     ],
-    "TimeSeconds": 0.0
+    "TimeSeconds": 2.0
   },
   "Model": "Items/Ingredients/Basic_Industrial_Circuit.blockymodel",
   "Texture": "Items/Ingredients/Basic_Industrial_Circuit.png",

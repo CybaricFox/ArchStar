@@ -65,7 +65,9 @@
         "ItemContainerBlock": {
           "Capacity": 1
         },
-        "MachineBehavior": {}
+        "MachineBehavior": {
+          "OpenSound": "SFX_Quick_Drill"
+        }
       }
     },
     "Gathering": {

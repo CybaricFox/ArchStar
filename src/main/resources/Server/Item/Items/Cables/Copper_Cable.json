@@ -39,7 +39,6 @@
       }
     },
     "State": {
-      "Id": "cable",
       "Definitions": {
         "North": {
           "CustomModel": "Blocks/Cables/Cable/Cable_North.blockymodel"
@@ -275,7 +274,7 @@
         "Id": "Industrial"
       }
     ],
-    "TimeSeconds": 2.0
+    "TimeSeconds": 8.0
   },
   "Tags": {
     "Type": [

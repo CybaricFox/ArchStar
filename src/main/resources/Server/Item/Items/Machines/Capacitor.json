@@ -54,7 +54,9 @@
           "MaxSize": 1,
           "Size": 1
         },
-        "MachineBehavior": {}
+        "MachineBehavior": {
+          "OpenSound": null
+        }
       }
     }
   },
@@ -102,7 +104,7 @@
         "Id": "Industrial"
       }
     ],
-    "TimeSeconds": 8.0
+    "TimeSeconds": 4.0
   },
   "Tags": {
     "Type": [

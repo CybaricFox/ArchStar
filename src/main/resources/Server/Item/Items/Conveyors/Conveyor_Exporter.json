@@ -30,7 +30,7 @@
         "Id": "Industrial"
       }
     ],
-    "TimeSeconds": 0.0
+    "TimeSeconds": 2.0
   },
   "Icon": "Icons/ItemsGenerated/Conveyor_Export_Icon.png",
   "Categories": [
@@ -57,7 +57,6 @@
     "ParticleColor": "#8f8f8f",
     "BlockSoundSetId": "Metal",
     "State": {
-      "Id": "conveyor",
       "Definitions": {
         "Move": {
           "CustomModelAnimation": "Blocks/Conveyor/Conveyor_Move.blockyanim",

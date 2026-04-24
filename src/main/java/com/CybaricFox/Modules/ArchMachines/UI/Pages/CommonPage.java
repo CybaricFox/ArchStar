@@ -287,6 +287,11 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
     public void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store, CommonData data) {
         super.handleDataEvent(ref, store, data);
 
+        //ARCH-PRO stand for processed. Do not run the event if the data has not been processed by the ui fixer. This prevents the event from running twice at once.
+        if(!data.signature.equals("ARCH-PRO")) {
+            return;
+        }
+
         if(data.type.equals("Release")) {
             onDrop(getNameFromID(data.dragFromSection), data.grid, data.dragFromSlot, data.toSlot, data.dragQuantity);
             isValid = false;
