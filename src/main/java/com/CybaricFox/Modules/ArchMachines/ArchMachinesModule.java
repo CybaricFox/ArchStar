@@ -52,7 +52,7 @@ public class ArchMachinesModule {
     }
 
     public void initialize(JavaPlugin plugin) {
-        ArchLibrary.LOGGER.at(Level.INFO).log("Initializing com.CybaricFox.Modules.ArchMachines");
+        ArchLibrary.LOGGER.at(Level.INFO).log("Initializing ArchMachines");
 
         instance = this;
 
@@ -74,7 +74,7 @@ public class ArchMachinesModule {
         setupUpgrades();
         fixCustomUI();
 
-        ArchLibrary.LOGGER.at(Level.INFO).log("com.CybaricFox.Modules.ArchMachines Initialized");
+        ArchLibrary.LOGGER.at(Level.INFO).log("ArchMachines Initialized");
     }
 
     public ComponentType<ChunkStore, FuelComponent> getFuelComponentType() {return fuelComponent;}
@@ -94,7 +94,11 @@ public class ArchMachinesModule {
     private void setupUpgrades() {
         BaseUpgrade upgrade;
         //Register the upgrades
-        upgrade = UpgradeRegistry.registerUpgrade(new BasicModulationUpgrade(UpgradeType.BLOCK, "Basic Modulation", "Unlocks basic upgrades and allows machine information to be displayed in the information panel.", "Icons/ItemCategories/Circuit_Icon.png"));
+        upgrade = UpgradeRegistry.registerUpgrade(new BasicModulationUpgrade(
+                UpgradeType.BLOCK,
+                "Basic Modulation",
+                "Unlocks basic upgrades and allows machine information to be displayed in the information panel.",
+                "Icons/ItemCategories/Circuit_Icon.png"));
         upgrade.addItem("Basic_Circuit", 1);
 
         //Item Upgrades

@@ -57,7 +57,7 @@
           "Size": 4
         },
         "MachineBehavior": {
-          "OpenSound": null
+          "OpenSound": "SFX_Open_Grinder"
         }
       }
     },

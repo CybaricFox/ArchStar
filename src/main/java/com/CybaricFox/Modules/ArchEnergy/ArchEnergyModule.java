@@ -31,7 +31,7 @@ public class ArchEnergyModule {
     }
 
     public void initialize(JavaPlugin plugin) {
-        ArchLibrary.LOGGER.at(Level.INFO).log("Initializing com.CybaricFox.Modules.ArchEnergy");
+        ArchLibrary.LOGGER.at(Level.INFO).log("Initializing ArchEnergy");
 
         instance = this;
 
@@ -41,7 +41,7 @@ public class ArchEnergyModule {
         plugin.getChunkStoreRegistry().registerSystem(energyRefSystem);
         plugin.getChunkStoreRegistry().registerSystem(new EnergySystem());
 
-        ArchLibrary.LOGGER.at(Level.INFO).log("com.CybaricFox.Modules.ArchEnergy Initialized");
+        ArchLibrary.LOGGER.at(Level.INFO).log("ArchEnergy Initialized");
     }
 
     public ComponentType<ChunkStore, EnergyComponent> getEnergyComponentType() {return energyComponent;}

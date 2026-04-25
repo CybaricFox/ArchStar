@@ -7,7 +7,7 @@
     "Items.Tools",
     "ArchStar.Equipment"
   ],
-  "Model": "Items/Equipment/Steel_Drill.blockymodel",
+  "Model": "Items/Equipment/Adamantite_Drill.blockymodel",
   "Texture": "Items/Equipment/Adamantite_Drill.png",
   "Icon": "Icons/ItemsGenerated/Adamantite_Drill_Icon.png",
   "PlayerAnimationsId": "Drill",

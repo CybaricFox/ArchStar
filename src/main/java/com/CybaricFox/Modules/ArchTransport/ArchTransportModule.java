@@ -28,7 +28,7 @@ public class ArchTransportModule {
     }
 
     public void initialize(JavaPlugin plugin) {
-        ArchLibrary.LOGGER.at(Level.INFO).log("Initializing com.CybaricFox.Modules.ArchTransport");
+        ArchLibrary.LOGGER.at(Level.INFO).log("Initializing ArchTransport");
 
         instance = this;
 
@@ -37,7 +37,7 @@ public class ArchTransportModule {
         plugin.getChunkStoreRegistry().registerSystem(conveyorRefSystem);
         plugin.getChunkStoreRegistry().registerSystem(new ConveyorSystem());
 
-        ArchLibrary.LOGGER.at(Level.INFO).log("com.CybaricFox.Modules.ArchTransport Initialized");
+        ArchLibrary.LOGGER.at(Level.INFO).log("ArchTransport Initialized");
     }
 
     public ComponentType<ChunkStore, ConveyorComponent> getConveyorComponentType() {return conveyorComponent;}

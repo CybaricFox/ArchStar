@@ -46,6 +46,12 @@ public abstract class BaseUpgrade {
         items.add(itemId);
         itemQuantities.add(quantity);
     }
+    public void removeItem(String itemId) {
+        items.remove(itemId);
+    }
+    public void removeAllItems() {
+        items.clear();
+    }
 
     //Can this upgrade be purchased?
     public boolean isAvailable(ArrayList<String> purchasedUpgrades, ArrayList<String> allUpgrades) {
