@@ -29,21 +29,7 @@ public class CommonUIReader extends EntityTickingSystem<EntityStore> {
         CustomUIPage customPage = player.getPageManager().getCustomPage();
 
         if(customPage instanceof CommonPage commonPage) {
-            if(!commonPage.isValid) return;
-            commonPage.beginBuildingCycle();
-
-            Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), commonPage.getPos());
-            EnergyComponent energyComponent = block.getStore().getComponent(block, EnergyComponent.getComponentType());
-            if(energyComponent != null) {
-                commonPage.refreshEnergy(energyComponent, false);
-            }
-
-            MachineBehaviorComponent behaviorComponent = block.getStore().getComponent(block, MachineBehaviorComponent.getComponentType());
-            if(behaviorComponent != null && behaviorComponent.displayData()) {
-                commonPage.refreshData(behaviorComponent);
-            }
-
-            commonPage.refreshAllUI();
+            commonPage.onTick(player, commandBuffer);
         }
     }
 

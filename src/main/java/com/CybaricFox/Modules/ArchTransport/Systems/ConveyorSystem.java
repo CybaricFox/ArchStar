@@ -1,5 +1,6 @@
 package com.CybaricFox.Modules.ArchTransport.Systems;
 
+import com.CybaricFox.Modules.ArchMachines.Components.FuelComponent;
 import com.CybaricFox.Modules.ArchMachines.Components.InputComponent;
 import com.CybaricFox.Modules.ArchMachines.Components.OutputComponent;
 import com.CybaricFox.Modules.ArchLibrary.*;
@@ -11,10 +12,12 @@ import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.protocol.ItemResourceType;
 import com.hypixel.hytale.server.core.asset.type.blocktick.BlockTickStrategy;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.modules.entity.item.PreventItemMerging;
@@ -336,6 +339,26 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
         return BlockTickStrategy.CONTINUE;
     }
 
+    private boolean calculateTransaction(ItemContainer container, ConveyorInstance instance, ItemStack item) {
+        for(short i = 0; i < container.getCapacity(); i++) {
+            if(container.canAddItemStackToSlot(i, item, false, false)) {
+                int maxStack = item.getItem().getMaxStack();
+                int slotQuantity = container.getItemStack(i) != null ? container.getItemStack(i).getQuantity() : 0;
+                int totalQuantity = slotQuantity + item.getQuantity();
+                int remaining = totalQuantity - maxStack;
+
+                container.addItemStackToSlot(i, item);
+                if(remaining != 0) {
+                    instance.item = instance.item.withQuantity(remaining);
+                } else {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private BlockTickStrategy handleExport(ConveyorComponent conveyorComponent, World world, Vector3i globalCoords, CommandBuffer<ChunkStore> buffer) {
         //Handle output to target
         ArrayList<ConveyorInstance> readyItems = conveyorComponent.decrementTimers();
@@ -351,6 +374,7 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
         }
 
         //Get the specific component we need to extract
+        FuelComponent fuelComponent = importer.getFuelComponent(buffer, world);
         InputComponent inputComponent = importer.getInputComponent(buffer, world);
         ItemContainerBlock containerState = importer.getContainerComponent(buffer, world);
         ProcessingBenchBlock benchState = importer.getProcessingComponent(buffer, world);
@@ -361,32 +385,40 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
             ItemStack item = instance.getItem();
             boolean exported = false;
 
-            if(inputComponent != null) {
-                for(short i = 0; i < inputComponent.getCapacity(); i++) {
-                    if(inputComponent.getContainer().canAddItemStackToSlot(i, item, false, false)) {
-                        inputComponent.getContainer().addItemStackToSlot(i, item);
-                        exported = true;
-                        break;
+            if(fuelComponent != null) {
+                if(item.getItem().getResourceTypes() != null) {
+                    for(ItemResourceType type : item.getItem().getResourceTypes()) {
+                        if(type.id.equals("Fuel")) {
+                            exported = calculateTransaction(fuelComponent.getContainer(), instance, item);
+                        }
                     }
                 }
+
+                if(exported) {
+                    instance.deleteItemEntity(world);
+                    continue;
+                }
+            }
+
+            if(inputComponent != null) {
+                exported = calculateTransaction(inputComponent.getContainer(), instance, item);
             }
             else if(containerState != null){
-                for(short i = 0; i < containerState.getItemContainer().getCapacity(); i++) {
-                    if(containerState.getItemContainer().canAddItemStackToSlot(i, item, false, false)) {
-                        containerState.getItemContainer().addItemStackToSlot(i, item);
-                        exported = true;
-                        break;
-                    }
-                }
+                exported = calculateTransaction(containerState.getItemContainer(), instance, item);
             }
             else if (benchState != null){
-                for(short i = 0; i < benchState.getItemContainer().getCapacity(); i++) {
-                    if(benchState.getItemContainer().canAddItemStackToSlot(i, item, false, true)) {
-                        benchState.getItemContainer().addItemStackToSlot(i, item);
-                        exported = true;
-                        break;
+                boolean isFuel = false;
+
+                if(item.getItem().getResourceTypes() != null) {
+                    for(ItemResourceType type : item.getItem().getResourceTypes()) {
+                        if(type.id.equals("Fuel")) {
+                            exported = calculateTransaction(benchState.getFuelContainer(), instance, item);
+                            isFuel = true;
+                        }
                     }
                 }
+
+                if(!isFuel) exported = calculateTransaction(benchState.getInputContainer(), instance, item);
             }
 
             if(!exported) {

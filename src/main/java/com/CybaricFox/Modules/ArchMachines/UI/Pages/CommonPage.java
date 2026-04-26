@@ -14,6 +14,7 @@ import com.CybaricFox.Modules.ArchMachines.UpgradeType;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.util.ChunkUtil;
@@ -287,7 +288,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
     public void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store, CommonData data) {
         super.handleDataEvent(ref, store, data);
 
-        //ARCH-PRO stand for processed. Do not run the event if the data has not been processed by the ui fixer. This prevents the event from running twice at once.
+        //ARCH-PRO stands for processed. Do not run the event if the data has not been processed by the ui fixer. This prevents the event from running twice at once.
         if(!data.signature.equals("ARCH-PRO")) {
             return;
         }
@@ -358,6 +359,24 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
         }
 
         globalBuilder.set("#TitleText2.Text", contentName);
+    }
+
+    public void onTick(Player player, CommandBuffer<EntityStore> commandBuffer) {
+        if(!isValid) return;
+        beginBuildingCycle();
+
+        Ref<ChunkStore> block = ArchLibrary.getBlockEntity(player.getWorld(), getPos());
+        EnergyComponent energyComponent = block.getStore().getComponent(block, EnergyComponent.getComponentType());
+        if(energyComponent != null) {
+            refreshEnergy(energyComponent, false);
+        }
+
+        MachineBehaviorComponent behaviorComponent = block.getStore().getComponent(block, MachineBehaviorComponent.getComponentType());
+        if(behaviorComponent != null && behaviorComponent.displayData()) {
+            refreshData(behaviorComponent);
+        }
+
+        refreshAllUI();
     }
 
     protected void addEnergyUI(Ref<EntityStore> ref) {

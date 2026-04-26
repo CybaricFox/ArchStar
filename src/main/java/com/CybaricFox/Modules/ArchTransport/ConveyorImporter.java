@@ -3,6 +3,7 @@ package com.CybaricFox.Modules.ArchTransport;
 import com.CybaricFox.Modules.ArchLibrary.ArchLibrary;
 import com.CybaricFox.Modules.ArchLibrary.Direction;
 import com.CybaricFox.Modules.ArchLibrary.DirectionLibrary;
+import com.CybaricFox.Modules.ArchMachines.Components.FuelComponent;
 import com.CybaricFox.Modules.ArchMachines.Components.InputComponent;
 import com.CybaricFox.Modules.ArchMachines.Components.OutputComponent;
 import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
@@ -54,5 +55,11 @@ public class ConveyorImporter {
         Ref<ChunkStore> ref = ArchLibrary.getBlockEntity(world, machinePos);
         if(ref == null) return null;
         return buffer.getComponent(ref, ItemContainerBlock.getComponentType());
+    }
+
+    public FuelComponent getFuelComponent(CommandBuffer<ChunkStore> buffer, World world) {
+        Ref<ChunkStore> ref = ArchLibrary.getBlockEntity(world, machinePos);
+        if(ref == null) return null;
+        return buffer.getComponent(ref, FuelComponent.getComponentType());
     }
 }
