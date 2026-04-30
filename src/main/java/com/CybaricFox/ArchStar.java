@@ -5,12 +5,9 @@ import com.CybaricFox.Modules.ArchLibrary.ArchCoreModule;
 import com.CybaricFox.Modules.ArchLibrary.ArchLibrary;
 import com.CybaricFox.Modules.ArchMachines.ArchMachinesModule;
 import com.CybaricFox.Modules.ArchTransport.ArchTransportModule;
-import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
-import com.hypixel.hytale.server.core.plugin.PluginBase;
-import com.hypixel.hytale.server.core.plugin.PluginManager;
 
 import javax.annotation.Nonnull;
 import java.util.logging.Level;
@@ -54,19 +51,6 @@ public class ArchStar extends JavaPlugin {
     }
 
     public static ArchStar get() {return instance;}
-
-    //Checks if Hytalor is installed
-    //Not currently required
-    private void checkForHytalor() {
-        PluginBase hytalor = PluginManager.get().getPlugin(PluginIdentifier.fromString("com.hypersonicsharkz:Hytalor"));
-
-        if(hytalor != null) {
-            LOGGER.at(Level.INFO).log("Hytalor Found. World Generation Enabled!");
-            return;
-        }
-
-        LOGGER.at(Level.SEVERE).log("Failed to find Hytalor! World Generation Disabled!");
-    }
 }
 
 

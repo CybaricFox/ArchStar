@@ -11,6 +11,7 @@ import com.CybaricFox.ArchStar;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefSystem;
+//import org.joml.Vector3i;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
@@ -75,6 +76,8 @@ public class EnergyRefSystem extends RefSystem<ChunkStore>{
         addToTick(ref, chunk, buffer, location);
 
         return network.getID();
+
+
     }
 
     @Override

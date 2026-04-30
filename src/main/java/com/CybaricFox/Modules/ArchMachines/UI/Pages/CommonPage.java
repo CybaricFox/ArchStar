@@ -18,6 +18,8 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.util.ChunkUtil;
+//import com.hypixel.hytale.math.vector.Vector3iUtil;
+//import org.joml.Vector3i;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
@@ -324,7 +326,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
 
             if(machineBehaviorComponent.containsUpgrade(upgrade.getId())) {
                 //noinspection removal
-                upgrade.refundItems(playerComponent.getInventory().getCombinedStorageFirst(), blockRef.getStore().getExternalData().getWorld(), pos);
+                upgrade.refundItems(ref, blockRef.getStore().getExternalData().getWorld(), pos);
                 machineBehaviorComponent.purchaseUpgrade(upgrade.getId(), blockRef);
                 //refreshUpgrades(blockRef.getStore().getExternalData().getWorld().getBlockType(pos), machineBehaviorComponent);
                 isValid = false;
@@ -338,7 +340,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
                         UIComponentContext context = componentMapping.get("ItemContainer");
                         ItemStack resultItem = machineBehaviorComponent.purchaseUpgrade(upgrade.getId(), context.container.getItemStack((short) 0));
                         if(resultItem == null) {
-                            upgrade.refundItems(context.container, world, pos);
+                            upgrade.refundItems(ref, world, pos);
                         } else {
                             context.container.setItemStackForSlot((short) 0, resultItem);
                         }
@@ -550,6 +552,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
                 }
             }
 
+            //SoundUtil.playSoundEvent3dToPlayer(playerRef.getReference(), SoundEvent.getAssetMap().getIndex(dropSound), SoundCategory.UI, Vector3iUtil.toVector3d(pos), playerRef.getReference().getStore());
             SoundUtil.playSoundEvent3dToPlayer(playerRef.getReference(), SoundEvent.getAssetMap().getIndex(dropSound), SoundCategory.UI, pos.toVector3d(), playerRef.getReference().getStore());
         });
     }

@@ -8,6 +8,8 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+//import com.hypixel.hytale.math.vector.Vector3iUtil;
+//import org.joml.Vector3i;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.protocol.SoundCategory;
@@ -36,17 +38,19 @@ public class OpenMachineInteraction extends SimpleBlockInteraction {
     public OpenMachineInteraction() {
     }
 
-    protected void interactWithBlock(@Nonnull World world, @Nonnull CommandBuffer<EntityStore> commandBuffer, @Nonnull InteractionType type, @Nonnull InteractionContext context, @Nullable ItemStack itemInHand, @Nonnull Vector3i pos, @Nonnull CooldownHandler cooldownHandler) {
-        Ref<EntityStore> ref = context.getEntity();
+    @Override
+    protected void interactWithBlock(@Nonnull World world, @Nonnull CommandBuffer<EntityStore> commandBuffer, @Nonnull InteractionType interactionType, @Nonnull InteractionContext interactionContext, @Nullable ItemStack itemStack, @Nonnull Vector3i pos, @Nonnull CooldownHandler cooldownHandler) {
+        Ref<EntityStore> ref = interactionContext.getEntity();
         Store<EntityStore> store = ref.getStore();
         Player playerComponent = commandBuffer.getComponent(ref, Player.getComponentType());
+        PlayerRef playerRef = commandBuffer.getComponent(ref, PlayerRef.getComponentType());
         if(playerComponent == null) return;
 
         Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(world, pos);
 
         MachineBehaviorComponent machineBehaviorComponent = blockRef.getStore().getComponent(blockRef, MachineBehaviorComponent.getComponentType());
         if(machineBehaviorComponent == null) {
-            ArchStar.LOGGER.at(Level.SEVERE).log(playerComponent.getDisplayName() + " tried to interact with a machine interface but the block is not a machine!");
+            ArchStar.LOGGER.at(Level.SEVERE).log(playerRef.getUsername() + " tried to interact with a machine interface but the block is not a machine!");
             return;
         }
 
@@ -58,8 +62,42 @@ public class OpenMachineInteraction extends SimpleBlockInteraction {
         playerComponent.getPageManager().openCustomPage(ref, store, machineBehaviorComponent.getPage(commandBuffer.getComponent(ref, PlayerRef.getComponentType()), CommonPage.CommonData.CODEC, pos));
     }
 
-    protected void simulateInteractWithBlock(@Nonnull InteractionType type, @Nonnull InteractionContext context, @Nullable ItemStack itemInHand, @Nonnull World world, @Nonnull Vector3i targetBlock) {
+    @Override
+    protected void simulateInteractWithBlock(@Nonnull InteractionType interactionType, @Nonnull InteractionContext interactionContext, @Nullable ItemStack itemStack, @Nonnull World world, @Nonnull Vector3i vector3i) {
+
     }
+
+    /*
+    @Override
+    protected void interactWithBlock(@Nonnull World world, @Nonnull CommandBuffer<EntityStore> commandBuffer, @Nonnull InteractionType interactionType, @Nonnull InteractionContext interactionContext, @Nullable ItemStack itemStack, @Nonnull Vector3i pos, @Nonnull CooldownHandler cooldownHandler) {
+        Ref<EntityStore> ref = interactionContext.getEntity();
+        Store<EntityStore> store = ref.getStore();
+        Player playerComponent = commandBuffer.getComponent(ref, Player.getComponentType());
+        PlayerRef playerRef = commandBuffer.getComponent(ref, PlayerRef.getComponentType());
+        if(playerComponent == null) return;
+
+        Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(world, pos);
+
+        MachineBehaviorComponent machineBehaviorComponent = blockRef.getStore().getComponent(blockRef, MachineBehaviorComponent.getComponentType());
+        if(machineBehaviorComponent == null) {
+            ArchStar.LOGGER.at(Level.SEVERE).log(playerRef.getUsername() + " tried to interact with a machine interface but the block is not a machine!");
+            return;
+        }
+
+        String sound = machineBehaviorComponent.getOpenSound();
+        if(sound != null) {
+            int soundIndex = SoundEvent.getAssetMap().getIndex(sound);
+            SoundUtil.playSoundEvent3dToPlayer(ref, soundIndex, SoundCategory.UI, Vector3iUtil.toVector3d(pos), store);
+        }
+        playerComponent.getPageManager().openCustomPage(ref, store, machineBehaviorComponent.getPage(commandBuffer.getComponent(ref, PlayerRef.getComponentType()), CommonPage.CommonData.CODEC, pos));
+    }
+
+    @Override
+    protected void simulateInteractWithBlock(@Nonnull InteractionType interactionType, @Nonnull InteractionContext interactionContext, @Nullable ItemStack itemStack, @Nonnull World world, @Nonnull org.joml.Vector3i vector3i) {
+
+    }
+
+     */
 
     static {
         CODEC = (BuilderCodec.builder(OpenMachineInteraction.class, OpenMachineInteraction::new, SimpleBlockInteraction.CODEC)).build();

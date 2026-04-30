@@ -5,6 +5,8 @@ import com.CybaricFox.Modules.ArchMachines.Components.FuelComponent;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+//import com.hypixel.hytale.math.vector.Vector3iUtil;
+//import org.joml.Vector3i;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
@@ -44,6 +46,7 @@ public class GeneratorPage extends CommonPage {
         super.onDismiss(ref, store);
 
         int soundIndex = SoundEvent.getAssetMap().getIndex("SFX_Furnace_Bench_Close");
+        //SoundUtil.playSoundEvent3dToPlayer(ref, soundIndex, SoundCategory.UI, Vector3iUtil.toVector3d(pos), store);
         SoundUtil.playSoundEvent3dToPlayer(ref, soundIndex, SoundCategory.UI, pos.toVector3d(), store);
     }
 }

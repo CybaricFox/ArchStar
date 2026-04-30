@@ -9,10 +9,11 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+//import org.joml.Vector3i;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
-import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.client.SimpleBlockInteraction;
@@ -24,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class DebuggerInteraction  extends SimpleBlockInteraction {
+public class DebuggerInteraction extends SimpleBlockInteraction {
     public static final BuilderCodec<DebuggerInteraction> CODEC;
 
     public DebuggerInteraction() {
@@ -33,7 +34,7 @@ public class DebuggerInteraction  extends SimpleBlockInteraction {
     protected void interactWithBlock(@Nonnull World world, @Nonnull CommandBuffer<EntityStore> commandBuffer, @Nonnull InteractionType type, @Nonnull InteractionContext context, @Nullable ItemStack itemInHand, @Nonnull Vector3i pos, @Nonnull CooldownHandler cooldownHandler) {
         Ref<EntityStore> ref = context.getEntity();
         Store<EntityStore> store = ref.getStore();
-        Player playerComponent = commandBuffer.getComponent(ref, Player.getComponentType());
+        PlayerRef playerComponent = commandBuffer.getComponent(ref, PlayerRef.getComponentType());
 
         Ref<ChunkStore> blockRef = ArchLibrary.getBlockEntity(world, pos);
         if(blockRef == null) return;
@@ -49,7 +50,7 @@ public class DebuggerInteraction  extends SimpleBlockInteraction {
         }
     }
 
-    private void energyInteraction(Player playerComponent, EnergyComponent energyComponent) {
+    private void energyInteraction(PlayerRef playerComponent, EnergyComponent energyComponent) {
         playerComponent.sendMessage(Message.raw("================"));
         playerComponent.sendMessage(Message.raw("Type: " + energyComponent.getType().toString()));
         playerComponent.sendMessage(Message.raw("Network ID: " + energyComponent.getNetworkID()));
@@ -58,7 +59,7 @@ public class DebuggerInteraction  extends SimpleBlockInteraction {
         playerComponent.sendMessage(Message.raw("Output This Tick: " + energyComponent.getOutputThisTick()));
     }
 
-    private void conveyorInteraction(Player playerComponent, ConveyorComponent conveyorComponent) {
+    private void conveyorInteraction(PlayerRef playerComponent, ConveyorComponent conveyorComponent) {
         ArrayList<ConveyorInstance> instances = conveyorComponent.getAllInstances();
         Vector3i targetBlock = conveyorComponent.getTargetBlock();
 

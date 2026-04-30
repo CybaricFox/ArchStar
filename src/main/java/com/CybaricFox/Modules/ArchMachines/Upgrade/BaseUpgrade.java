@@ -3,7 +3,12 @@ package com.CybaricFox.Modules.ArchMachines.Upgrade;
 import com.CybaricFox.Modules.ArchLibrary.ArchLibrary;
 import com.CybaricFox.Modules.ArchMachines.UpgradeType;
 import com.hypixel.hytale.component.Ref;
+//import com.hypixel.hytale.server.core.inventory.InventoryUtils;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+//import org.joml.Vector3i;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -109,7 +114,16 @@ public abstract class BaseUpgrade {
         }
     }
 
-    public void refundItems(ItemContainer container, World world, Vector3i pos) {
+    public void refundItems(Ref<EntityStore> ref, World world, Vector3i pos) {
+        //ItemContainer storage = InventoryUtils.getSectionById(ref, -2, ref.getStore());
+        //ItemContainer hotbar = InventoryUtils.getSectionById(ref, -1, ref.getStore());
+
+        //CombinedItemContainer container = new CombinedItemContainer(storage, hotbar);
+
+        Player player = ref.getStore().getComponent(ref, Player.getComponentType());
+
+        @SuppressWarnings("removal") CombinedItemContainer container = player.getInventory().getCombinedStorageFirst();
+
         for(int i = 0; i < items.size(); i++) {
             ItemStack itemStack = new ItemStack(items.get(i), itemQuantities.get(i));
 
