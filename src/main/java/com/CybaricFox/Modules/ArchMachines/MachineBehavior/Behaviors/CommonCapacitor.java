@@ -13,7 +13,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 public class CommonCapacitor extends MachineBehavior {
 
-    public CommonCapacitor() {
+    public CommonCapacitor(String id) {
+        super(id);
         setPageRef(ChargerPage.class);
     }
 
@@ -66,5 +67,10 @@ public class CommonCapacitor extends MachineBehavior {
         }
 
         return true;
+    }
+
+    @Override
+    public MachineBehavior createInstance() {
+        return new CommonCapacitor(getId());
     }
 }

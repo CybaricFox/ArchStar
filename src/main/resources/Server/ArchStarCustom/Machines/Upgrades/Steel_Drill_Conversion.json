@@ -1,0 +1,14 @@
+{
+  "baseUpgradeId": "Conversion",
+  "id": "Steel_Drill_Conversion",
+  "name": "Cobalt Drill",
+  "desc": "Converts the steel drill into a cobalt drill. Increases its base stats to that of a cobalt pickaxe.\nDue to the affects of magic on power systems, more energy is consumed per operation to counteract the close presence of cobalt.\nPower Drain 25v/op -> 40v/op",
+  "iconPath": "ArchStarResources/UpgradeIcons/Cobalt_Drill_Conversion_Icon.png",
+  "conversionId": "Cobalt_Drill",
+  "items": [
+    {
+      "id": "Ingredient_Bar_Cobalt",
+      "quantity": 6
+    }
+  ]
+}

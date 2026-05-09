@@ -1,0 +1,7 @@
+{
+    "itemId":"Solid_Fuel_Generator",
+    "behaviorId": "Common_Fueled_Producer",
+    "upgrades": [
+        "Basic_Modulation"
+    ]
+}

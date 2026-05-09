@@ -2,6 +2,7 @@ package com.CybaricFox.Modules.ArchMachines.Upgrade;
 
 import com.CybaricFox.Modules.ArchLibrary.ArchLibrary;
 import com.CybaricFox.Modules.ArchMachines.UpgradeType;
+import com.google.gson.JsonObject;
 import com.hypixel.hytale.component.Ref;
 //import com.hypixel.hytale.server.core.inventory.InventoryUtils;
 import com.hypixel.hytale.math.vector.Vector3i;
@@ -15,7 +16,6 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public abstract class BaseUpgrade {
@@ -32,11 +32,20 @@ public abstract class BaseUpgrade {
     private final ArrayList<Integer> itemQuantities = new ArrayList<>();
 
     public UpgradeType type = UpgradeType.NOT_SET;
+    //By default, upgrade instances used to let the registry know an upgrade exists is not a valid upgrade. This prevents placing empty upgrades in the instance registry on accident.
+    public boolean isValid = false;
 
-    public BaseUpgrade(UpgradeType type, String name, String desc, String iconPath) {
+    public BaseUpgrade(UpgradeType type, String name, String desc, String iconPath, String id) {
+        this.id = id;
         this.type = type;
         this.iconPath = iconPath;
         translate(name, desc);
+        isValid = true;
+    }
+    public BaseUpgrade(String id, UpgradeType type){
+        this.id = id;
+        this.type = type;
+        iconPath = null;
     }
 
     private void translate(String name, String desc) {
@@ -154,4 +163,6 @@ public abstract class BaseUpgrade {
     public abstract ItemStack onPurchase(Ref<ChunkStore> blockRef, ItemStack item);
 
     public abstract ItemStack onUninstall(Ref<ChunkStore> blockRef, ItemStack item);
+
+    public abstract BaseUpgrade parse(JsonObject data);
 }

@@ -1,0 +1,7 @@
+{
+    "itemId":"Capacitor",
+    "behaviorId": "Common_Capacitor",
+    "upgrades": [
+        "Basic_Modulation"
+    ]
+}

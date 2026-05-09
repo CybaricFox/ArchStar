@@ -1,0 +1,7 @@
+{
+    "itemId":"Steel_Drill",
+    "behaviorId": null,
+    "upgrades": [
+        "Steel_Drill_Conversion"
+    ]
+}

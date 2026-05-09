@@ -1,0 +1,7 @@
+{
+    "itemId":"Electric_Grinder",
+    "behaviorId": "Common_Consumer",
+    "upgrades": [
+        "Basic_Modulation"
+    ]
+}

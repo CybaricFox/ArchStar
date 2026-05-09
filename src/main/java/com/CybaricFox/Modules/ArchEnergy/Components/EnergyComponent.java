@@ -176,6 +176,7 @@ public class EnergyComponent implements Component<ChunkStore>, IDataPanel {
     public ArrayList<String> getData() {
         ArrayList<String> returnData = new ArrayList<>();
 
+        returnData.add("Network ID: " + getNetworkID());
         returnData.add("Input Rate: " + getInputRate() + "v");
         returnData.add("Output Rate: " + getOutputRate() + "v");
 

@@ -1,0 +1,14 @@
+{
+  "baseUpgradeId": "Conversion",
+  "id": "Cobalt_Drill_Conversion",
+  "name": "Adamantite Drill",
+  "desc": "Converts the cobalt drill into an adamantite drill. Increases its base stats to that of an adamantite pickaxe.\nWhile the weight of adamantite may make this drill powerful, the energy needed to rev up the engine is far more expensive compared to its cobalt counterpart.\n Power Drain 40v/op -> 75v/op",
+  "iconPath": "ArchStarResources/UpgradeIcons/Adamantite_Drill_Conversion_Icon.png",
+  "conversionId": "Adamantite_Drill",
+  "items": [
+    {
+      "id": "Ingredient_Bar_Adamantite",
+      "quantity": 6
+    }
+  ]
+}

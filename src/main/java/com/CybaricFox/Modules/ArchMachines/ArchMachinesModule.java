@@ -12,7 +12,6 @@ import com.CybaricFox.Modules.ArchMachines.MachineBehavior.MachineBehaviorRegist
 import com.CybaricFox.Modules.ArchMachines.Systems.CommonUIReader;
 import com.CybaricFox.Modules.ArchMachines.Systems.CustomProcessRefSystem;
 import com.CybaricFox.Modules.ArchMachines.Systems.CustomProcessingSystem;
-import com.CybaricFox.Modules.ArchMachines.Upgrade.BaseUpgrade;
 import com.CybaricFox.Modules.ArchMachines.Upgrade.UpgradeRegistry;
 import com.CybaricFox.Modules.ArchMachines.Upgrade.Upgrades.BasicModulationUpgrade;
 import com.CybaricFox.Modules.ArchMachines.Upgrade.Upgrades.ConversionUpgrade;
@@ -27,8 +26,6 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 
 public class ArchMachinesModule {
@@ -84,53 +81,59 @@ public class ArchMachinesModule {
     public ComponentType<ChunkStore, MachineBehaviorComponent> getMachineComponentType() {return machineComponent;}
 
     private void setupMachineBehaviors() {
-        MachineBehaviorRegistry.register("Solid_Fuel_Generator", CommonFueledProducer::new);
-        MachineBehaviorRegistry.register("Electric_Grinder", CommonConsumer::new);
-        MachineBehaviorRegistry.register("Electric_Furnace", CommonConsumer::new);
-        MachineBehaviorRegistry.register("Capacitor", CommonCapacitor::new);
-        MachineBehaviorRegistry.register("Upgrade_Station", UpgradeStation::new);
+        //Load all json assets from asset folder
+        //Addon mods should not call this!
+        MachineBehaviorRegistry.getJsonAssets();
+
+        //Register behaviors to the base registry
+        //Addon mods that add custom behaviors must register their classes in their jar
+        MachineBehaviorRegistry.registerBaseBehavior("Common_Fueled_Producer", new CommonFueledProducer("Common_Fueled_Producer"));
+        MachineBehaviorRegistry.registerBaseBehavior("Common_Consumer", new CommonConsumer("Common_Consumer"));
+        MachineBehaviorRegistry.registerBaseBehavior("Common_Capacitor", new CommonCapacitor("Common_Capacitor"));
+        MachineBehaviorRegistry.registerBaseBehavior("Upgrade_Station", new UpgradeStation("Upgrade_Station"));
     }
 
     private void setupUpgrades() {
-        BaseUpgrade upgrade;
-        //Register the upgrades
-        upgrade = UpgradeRegistry.registerUpgrade(new BasicModulationUpgrade(
-                UpgradeType.BLOCK,
-                "Basic Modulation",
-                "Unlocks basic upgrades and allows machine information to be displayed in the information panel.",
-                "Icons/ItemCategories/Circuit_Icon.png"));
-        upgrade.addItem("Basic_Circuit", 1);
+        //Load all json assets from asset folder
+        //Addon mods should not call this!
+        UpgradeRegistry.getJsonAssets();
 
-        //Item Upgrades
-        upgrade = UpgradeRegistry.registerUpgrade(new ConversionUpgrade(
-                UpgradeType.ITEM,
-                "Cobalt Drill",
-                "Converts the steel drill into a cobalt drill. Increases its base stats to that of a cobalt pickaxe." +
-                        "\nDue to the affects of magic on power systems, more energy is consumed per operation to counteract the close presence of cobalt." +
-                        "\nPower Drain 25v/op -> 40v/op",
-                "ArchStarResources/UpgradeIcons/Cobalt_Drill_Conversion_Icon.png",
-                "Cobalt_Drill"));
-        upgrade.addItem("Ingredient_Bar_Cobalt", 6);
-        upgrade = UpgradeRegistry.registerUpgrade(new ConversionUpgrade(
-                UpgradeType.ITEM,
-                "Adamantite Drill",
-                "Converts the cobalt drill into an adamantite drill. Increases its base stats to that of an adamantite pickaxe." +
-                        "\nWhile the weight of adamantite may make this drill powerful, the energy needed to rev up the engine is far more expensive compared to its cobalt counterpart." +
-                        "\n Power Drain 40v/op -> 75v/op",
-                "ArchStarResources/UpgradeIcons/Adamantite_Drill_Conversion_Icon.png",
-                "Adamantite_Drill"));
-        upgrade.addItem("Ingredient_Bar_Adamantite", 6);
+        //Register upgrades to the base upgrade registry
+        //Addon mods that add custom upgrade classes must register their classes in their jar.
+        UpgradeRegistry.registerBaseUpgrade(new BasicModulationUpgrade("Basic_Modulation", UpgradeType.BLOCK));
+        UpgradeRegistry.registerBaseUpgrade(new ConversionUpgrade("Conversion", UpgradeType.ITEM));
+
+        //Load all assets that correspond to these upgrades.
+        //Addon mods that add custom upgrade classes must load assets corresponding to their class in their jar.
+        UpgradeRegistry.loadAssets("Basic_Modulation");
+        UpgradeRegistry.loadAssets("Conversion");
+
+        /*
+            This section will cover how to add upgrades through java
+
+            BaseUpgrade myUpgradeInstance = UpgradeRegistry.registerUpgrade(new MyUpgradeClass(
+                UpgradeType,
+                Upgrade Name,
+                Upgrade Description,
+                "ArchStarResources/UpgradeIcons/MyIcon.png",
+                ID of the item that will be converted,
+                Unique ID for the upgrade
+            ));
+            upgrade.addItem("ItemID", int quantity); <- This adds item cost to an upgrade
+         */
 
         //Register what items have what upgrades
         //Items can have both block and item upgrades, but each will only appear under certain conditions
         //Blocks are upgraded in the machine ui
         //Items are upgraded in the upgrade station ui
+        /* Once again, this section covers how to do this in java, but json files are handled automatically.
         UpgradeRegistry.registerItem("Solid_Fuel_Generator", new ArrayList<>(List.of("Basic_Modulation")));
         UpgradeRegistry.registerItem("Electric_Furnace", new ArrayList<>(List.of("Basic_Modulation")));
         UpgradeRegistry.registerItem("Electric_Grinder", new ArrayList<>(List.of("Basic_Modulation")));
         UpgradeRegistry.registerItem("Capacitor", new ArrayList<>(List.of("Basic_Modulation")));
-        UpgradeRegistry.registerItem("Steel_Drill", new ArrayList<>(List.of("Cobalt_Drill")));
-        UpgradeRegistry.registerItem("Cobalt_Drill", new ArrayList<>(List.of("Adamantite_Drill")));
+        UpgradeRegistry.registerItem("Steel_Drill", new ArrayList<>(List.of("Steel_Drill_Conversion")));
+        UpgradeRegistry.registerItem("Cobalt_Drill", new ArrayList<>(List.of("Cobalt_Drill_Conversion")));
+         */
     }
 
     //FIXES THE GOD DAMN ITEM GRID NOT PLAYING WELL WITH CUSTOM UIS!!!

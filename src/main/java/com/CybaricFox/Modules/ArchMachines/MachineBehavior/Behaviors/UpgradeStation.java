@@ -7,12 +7,18 @@ import com.CybaricFox.Modules.ArchMachines.UI.Pages.UpgradeStationPage;
 
 public class UpgradeStation extends MachineBehavior {
 
-    public UpgradeStation() {
+    public UpgradeStation(String id) {
+        super(id);
         setPageRef(UpgradeStationPage.class);
     }
 
     @Override
     public boolean run(EssentialsContext context) {
         return true;
+    }
+
+    @Override
+    public MachineBehavior createInstance() {
+        return new UpgradeStation(getId());
     }
 }

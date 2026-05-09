@@ -1,0 +1,7 @@
+{
+    "itemId":"Electric_Furnace",
+    "behaviorId": "Common_Consumer",
+    "upgrades": [
+        "Basic_Modulation"
+    ]
+}

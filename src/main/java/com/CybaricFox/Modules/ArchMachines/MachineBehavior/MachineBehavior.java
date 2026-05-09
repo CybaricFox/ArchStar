@@ -8,10 +8,16 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 
 public abstract class MachineBehavior {
     private Class<? extends CommonPage> pageRef;
+    private final String id;
+
+    protected MachineBehavior(String id) {
+        this.id = id;
+    }
+
+    public String getId() {return id;}
 
     public void setPageRef(Class<? extends CommonPage> pageRef) {
         this.pageRef = pageRef;
@@ -26,4 +32,6 @@ public abstract class MachineBehavior {
     }
 
     public abstract boolean run(EssentialsContext context);
+
+    public abstract MachineBehavior createInstance();
 }

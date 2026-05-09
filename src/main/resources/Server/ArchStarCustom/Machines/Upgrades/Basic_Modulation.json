@@ -1,0 +1,13 @@
+{
+  "baseUpgradeId": "Basic_Modulation",
+  "id": "Basic_Modulation",
+  "name": "Basic Modulation",
+  "desc": "Unlocks basic upgrades and allows machine information to be displayed in the information panel.",
+  "iconPath": "Icons/ItemCategories/Circuit_Icon.png",
+  "items": [
+    {
+      "id": "Basic_Circuit",
+      "quantity": 1
+    }
+  ]
+}

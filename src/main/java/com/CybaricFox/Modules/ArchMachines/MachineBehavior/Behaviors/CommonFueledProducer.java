@@ -17,7 +17,8 @@ import java.util.logging.Level;
 
 public class CommonFueledProducer extends MachineBehavior {
 
-    public CommonFueledProducer() {
+    public CommonFueledProducer(String id) {
+        super(id);
         setPageRef(GeneratorPage.class);
     }
 
@@ -64,5 +65,10 @@ public class CommonFueledProducer extends MachineBehavior {
         }
 
         return result;
+    }
+
+    @Override
+    public MachineBehavior createInstance() {
+        return new CommonFueledProducer(getId());
     }
 }

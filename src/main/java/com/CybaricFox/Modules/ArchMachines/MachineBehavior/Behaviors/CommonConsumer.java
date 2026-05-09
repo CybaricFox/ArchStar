@@ -13,7 +13,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 public class CommonConsumer extends MachineBehavior {
 
-    public CommonConsumer() {
+    public CommonConsumer(String id) {
+        super(id);
         setPageRef(PoweredProcessingPage.class);
     }
 
@@ -33,5 +34,10 @@ public class CommonConsumer extends MachineBehavior {
         }
 
         return true;
+    }
+
+    @Override
+    public MachineBehavior createInstance() {
+        return new CommonConsumer(getId());
     }
 }
