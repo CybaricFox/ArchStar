@@ -1,3 +1,5 @@
+$C = "../../Common.ui";
+
 @SlotsPerRow = 9;
 @SlotSize = 80;
 @Padding = 5;

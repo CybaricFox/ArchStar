@@ -17,10 +17,12 @@ import com.CybaricFox.Modules.ArchMachines.Upgrade.Upgrades.BasicModulationUpgra
 import com.CybaricFox.Modules.ArchMachines.Upgrade.Upgrades.ConversionUpgrade;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.protocol.RootInteraction;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
 import com.hypixel.hytale.server.core.io.adapter.PlayerPacketFilter;
+import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
@@ -91,6 +93,8 @@ public class ArchMachinesModule {
         MachineBehaviorRegistry.registerBaseBehavior("Common_Consumer", new CommonConsumer("Common_Consumer"));
         MachineBehaviorRegistry.registerBaseBehavior("Common_Capacitor", new CommonCapacitor("Common_Capacitor"));
         MachineBehaviorRegistry.registerBaseBehavior("Upgrade_Station", new UpgradeStation("Upgrade_Station"));
+
+        MachineBehaviorRegistry.registerMachine("Electric_Furnace", "Common_Consumer");
     }
 
     private void setupUpgrades() {

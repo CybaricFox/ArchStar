@@ -1,0 +1,52 @@
+{
+  "Type": "Selector",
+  "$Comment": "Length of Combat",
+  "Effects": {
+    "ItemAnimationId": "Finisher"
+  },
+  "RunTime": 0.125,
+  "Selector": {
+    "Id": "Horizontal",
+    "Direction": "ToLeft",
+    "TestLineOfSight": true,
+    "ExtendTop": 0.4,
+    "ExtendBottom": 0.4,
+    "StartDistance": 0.1,
+    "EndDistance": 2.75,
+    "Length": 90,
+    "RollOffset": 90,
+    "YawStartOffset": -60
+  },
+  "HitEntity": {
+    "Interactions": [
+      {
+        "Type": "ModifyInventory",
+        "AdjustHeldItemDurability": -100
+      },
+      {
+        "Type": "Replace",
+        "DefaultOk": true,
+        "DefaultValue": {
+          "Interactions": [
+            {
+              "Parent": "Common_Melee_Damage",
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Physical": 16.5
+                }
+              },
+              "WorldSoundEventId": null,
+              "LocalSoundEventId": null
+            }
+          ]
+        },
+        "Var": "Chainsaw_Execute_Damage"
+      }
+    ]
+  },
+  "Next": {
+    "Type": "Simple",
+    "$Comment": "Pad the interaction length",
+    "RunTime": 0.25
+  }
+}

@@ -8,9 +8,8 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
-//import com.hypixel.hytale.math.vector.Vector3iUtil;
-//import org.joml.Vector3i;
-import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.math.vector.Vector3iUtil;
+import org.joml.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
@@ -200,7 +199,7 @@ public class ConveyorComponent implements Component<ChunkStore> {
                 //Save data
                 .append(new KeyedCodec<>("ItemList", new ArrayCodec<>(ConveyorInstance.CODEC, ConveyorInstance[]::new)), (component, s) -> component.items = new ArrayList<>(Arrays.asList(s)), (component) -> component.items.toArray(ConveyorInstance[]::new)).add()
                 .append(new KeyedCodec<>("ForwardDirection", Codec.STRING), (component, s) -> component.forwardDirection = Direction.valueOf(s.toUpperCase()), (component) -> component.forwardDirection.toString()).add()
-                .append(new KeyedCodec<>("TargetBlock", Vector3i.CODEC), (component, s) -> component.targetBlock = s, (component) -> component.targetBlock).add()
+                .append(new KeyedCodec<>("TargetBlock", Vector3iUtil.CODEC), (component, s) -> component.targetBlock = s, (component) -> component.targetBlock).add()
 
                 .build();
     }

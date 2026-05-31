@@ -1,7 +1,7 @@
 {
   "TranslationProperties": {
-    "Name": "ArchStar.Steel_Drill.name",
-    "Description": "ArchStar.Steel_Drill.description"
+    "Name": "ArchStar.Chainsaw.name",
+    "Description": "ArchStar.Chainsaw.description"
   },
   "Categories": [
     "Items.Tools",
@@ -22,7 +22,7 @@
     ],
     "Output": [
       {
-        "ItemId": "Steel_Drill"
+        "ItemId": "Chainsaw"
       }
     ],
     "BenchRequirement": [
@@ -36,10 +36,10 @@
     ],
     "TimeSeconds": 4.0
   },
-  "Model": "Items/Equipment/Steel_Drill.blockymodel",
-  "Texture": "Items/Equipment/Steel_Drill.png",
-  "Icon": "Icons/ItemsGenerated/Steel_Drill_Icon.png",
-  "PlayerAnimationsId": "Drill",
+  "Model": "Items/Equipment/Chainsaw.blockymodel",
+  "Texture": "Items/Equipment/Chainsaw_1.png",
+  "Icon": "Icons/ItemsGenerated/Chainsaw_Icon.png",
+  "PlayerAnimationsId": "Chainsaw",
   "Scale": 2,
   "IconProperties": {
     "Scale": 0.5,
@@ -64,56 +64,57 @@
         "GatherType": "SoftBlocks"
       },
       {
-        "Power": 0.5,
+        "Power": 0.05,
         "GatherType": "Soils"
       },
       {
+        "Power": 0.3,
+        "GatherType": "Woods",
+        "HitSoundLayer": "SFX_Hatchet_T2_Impact_Nice"
+      },
+      {
         "Power": 0.05,
-        "GatherType": "Woods"
+        "GatherType": "Rocks"
       },
       {
         "Power": 0.5,
-        "GatherType": "Rocks",
-        "Quality": 3
+        "GatherType": "Benches",
+        "HitSoundLayer": "SFX_Hatchet_T2_Impact_Nice"
       },
       {
-        "Power": 0.5,
-        "GatherType": "Benches"
-      },
-      {
-        "Power": 0.17,
+        "Power": 0.017,
         "GatherType": "VolcanicRocks"
       },
       {
-        "Power": 0.5,
+        "Power": 0.046,
         "GatherType": "OreCopper"
       },
       {
-        "Power": 0.25,
+        "Power": 0.042,
         "GatherType": "OreIron"
       },
       {
-        "Power": 0.25,
+        "Power": 0.042,
         "GatherType": "OreSilver"
       },
       {
-        "Power": 0.25,
+        "Power": 0.042,
         "GatherType": "OreGold"
       },
       {
-        "Power": 0.125,
+        "Power": 0.036,
         "GatherType": "OreThorium"
       },
       {
-        "Power": 0.125,
+        "Power": 0.036,
         "GatherType": "OreCobalt"
       },
       {
-        "Power": 0.084,
+        "Power": 0.032,
         "GatherType": "OreAdamantite"
       },
       {
-        "Power": 0.063,
+        "Power": 0.028,
         "GatherType": "OreMithril"
       }
     ],
@@ -126,7 +127,7 @@
           "Soil",
           "Wood"
         ],
-        "DurabilityLossOnHit": 25
+        "DurabilityLossOnHit": 12.5
       }
     ]
   },
@@ -136,65 +137,80 @@
   "Interactions": {
     "Primary": {
       "Interactions": [
-        "Pickaxe_Attack",
+        "Hatchet_Attack",
         {
           "Type": "Recharge_Held_Item"
+        }
+      ]
+    },
+    "Secondary": "Root_Chainsaw_Sweep",
+    "Ability1": "Root_Chainsaw_Execute",
+    "SwapFrom": {
+      "Interactions": [
+        {
+          "Type": "Signature",
+          "Action": "SET_MAX",
+          "Value": 0,
+          "Next": {
+            "Type": "ChangeActiveSlot"
+          }
+        }
+      ]
+    },
+    "SwapTo": {
+      "Interactions": [
+        {
+          "Type": "Signature",
+          "Action": "SET_MAX",
+          "Value": 20
         }
       ]
     }
   },
   "InteractionVars": {
-    "Block_Hit_Camera_Effects": {
-      "Interactions": [
-        {
-          "Type": "Simple",
-          "Effects": {
-            "CameraEffect": "Pickaxe_Mine_Impact"
-          }
-        }
-      ]
-    },
-    "Pickaxe_Mine_Effect": {
+    "Hatchet_Chop_Effect": {
       "Interactions": [
         {
           "Parent": "Drill_Mine_Effect",
           "Effects": {
-            "WorldSoundEventId": "SFX_Drill_T1_Mine",
-            "LocalSoundEventId": "SFX_Drill_T1_Mine"
+            "WorldSoundEventId": "SFX_Chainsaw_Chop",
+            "LocalSoundEventId": "SFX_Chainsaw_Chop"
           }
         }
       ]
     },
-    "Pickaxe_Mine_Damage": {
+    "Hatchet_Chop_Damage": {
       "Interactions": [
         {
-          "Parent": "Pickaxe_Mine_Damage",
+          "Parent": "Hatchet_Chop_Damage",
           "DamageCalculator": {
             "Type": "Absolute",
             "BaseDamage": {
-              "Physical": 1
+              "Physical": 16.5
             }
           },
           "DamageEffects": {
             "WorldSoundEventId": "SFX_Light_Melee_T1_Impact"
+          },
+          "Next": {
+            "Type": "ModifyInventory",
+            "AdjustHeldItemDurability": -100,
+            "Next": {
+              "Type": "Signature",
+              "Action": "ADD",
+              "Value": 1
+            }
           }
         }
       ]
     }
   },
-  "Animation": "Items/Equipment/Drill_Mine.blockyanim",
-  "Particles": [
-    {
-      "TargetNodeName": "Smoke",
-      "SystemId": "Drill_Smoke",
-      "Scale": 0.25
-    }
-  ],
-  "MaxDurability": 60000,
+  "Animation": "Items/Equipment/Chainsaw.blockyanim",
+  "MaxDurability": 20000,
   "Tags": {
     "Type": [
       "Powered_Item",
-      "Tool"
+      "Weapon"
     ]
   }
 }

@@ -18,9 +18,8 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.util.ChunkUtil;
-//import com.hypixel.hytale.math.vector.Vector3iUtil;
-//import org.joml.Vector3i;
-import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.math.vector.Vector3iUtil;
+import org.joml.Vector3i;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
@@ -552,8 +551,7 @@ public class CommonPage extends InteractiveCustomUIPage<CommonPage.CommonData> {
                 }
             }
 
-            //SoundUtil.playSoundEvent3dToPlayer(playerRef.getReference(), SoundEvent.getAssetMap().getIndex(dropSound), SoundCategory.UI, Vector3iUtil.toVector3d(pos), playerRef.getReference().getStore());
-            SoundUtil.playSoundEvent3dToPlayer(playerRef.getReference(), SoundEvent.getAssetMap().getIndex(dropSound), SoundCategory.UI, pos.toVector3d(), playerRef.getReference().getStore());
+            SoundUtil.playSoundEvent3dToPlayer(playerRef.getReference(), SoundEvent.getAssetMap().getIndex(dropSound), SoundCategory.UI, Vector3iUtil.toVector3d(pos), playerRef.getReference().getStore());
         });
     }
 

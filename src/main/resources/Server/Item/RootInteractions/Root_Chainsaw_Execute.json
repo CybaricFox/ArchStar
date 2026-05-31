@@ -1,0 +1,6 @@
+{
+  "RequireNewClick": true,
+  "Interactions": [
+    "Chainsaw_Execute"
+  ]
+}

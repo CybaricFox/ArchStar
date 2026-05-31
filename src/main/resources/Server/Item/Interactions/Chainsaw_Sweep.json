@@ -1,0 +1,114 @@
+{
+  "Type": "StatsCondition",
+  "Costs": {
+    "Stamina": 2
+  },
+  "Next": {
+    "Type": "EffectCondition",
+    "EntityEffectIds": [
+      "Stamina_Broken"
+    ],
+    "Match": "None",
+    "Next": {
+      "Type": "Serial",
+      "Interactions": [
+        {
+          "Type": "Replace",
+          "Var": "Sweep_Stamina_Cost",
+          "DefaultOk": true,
+          "DefaultValue": {
+            "Interactions": [
+              {
+                "Type": "ChangeStat",
+                "StatModifiers": {
+                  "Stamina": -2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Type": "Replace",
+          "Var": "Sweep",
+          "DefaultOk": true,
+          "DefaultValue": {
+            "Interactions": [
+              {
+                "Type": "Serial",
+                "Interactions": [
+                  {
+                    "Type": "ApplyEffect",
+                    "EffectId": "Stamina_Broken_Immune",
+                    "Effects": {
+                      "ItemAnimationId": "Sweep_Left"
+                    },
+                    "RunTime": 0.167,
+                    "Next": {
+                      "Type": "ChangeStat",
+                      "Behaviour": "Set",
+                      "StatModifiers": {
+                        "StaminaRegenDelay": -1.5
+                      },
+                      "Next": {
+                        "Type": "Replace",
+                        "Var": "Sweep_Selector",
+                        "DefaultOk": true,
+                        "DefaultValue": {
+                          "Interactions": [
+                            "Chainsaw_Sweep_Selector_Left"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "Type": "Serial",
+                "Interactions": [
+                  {
+                    "Type": "ApplyEffect",
+                    "EffectId": "Stamina_Broken_Immune",
+                    "Effects": {
+                      "ItemAnimationId": "Sweep_Right",
+                      "WorldSoundEventId": "SFX_Chainsaw_Chop",
+                      "LocalSoundEventId": "SFX_Chainsaw_Chop"
+                    },
+                    "RunTime": 0.167,
+                    "Next": {
+                      "Type": "ChangeStat",
+                      "Behaviour": "Set",
+                      "StatModifiers": {
+                        "StaminaRegenDelay": -1.5
+                      },
+                      "Next": {
+                        "Type": "Replace",
+                        "Var": "Sweep_Selector",
+                        "DefaultOk": true,
+                        "DefaultValue": {
+                          "Interactions": [
+                            "Chainsaw_Sweep_Selector_Right"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Failed": {
+      "Type": "Replace",
+      "Var": "Sweep_Stamina_Insufficient",
+      "DefaultOk": true,
+      "DefaultValue": {
+        "Interactions": [
+          "Common_Stamina_Insufficient"
+        ]
+      }
+    }
+  }
+}

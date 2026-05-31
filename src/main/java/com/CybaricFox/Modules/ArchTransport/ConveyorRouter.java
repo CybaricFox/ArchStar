@@ -3,8 +3,7 @@ package com.CybaricFox.Modules.ArchTransport;
 import com.CybaricFox.Modules.ArchLibrary.ArchLibrary;
 import com.CybaricFox.Modules.ArchLibrary.Direction;
 import com.hypixel.hytale.component.Ref;
-//import org.joml.Vector3i;
-import com.hypixel.hytale.math.vector.Vector3i;
+import org.joml.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 

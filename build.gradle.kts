@@ -9,7 +9,7 @@ val hytaleRelease = "$hytaleHome/release/package/game/latest/Server/HytaleServer
 val hytalePre = "$hytaleHome/pre-release/package/game/latest/Server/HytaleServer.jar"
 
 group = "com.cybaricfox"
-version = "beta0.4.0"
+version = "alpha0.4.1"
 
 repositories {
     mavenCentral()

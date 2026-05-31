@@ -150,8 +150,7 @@
           "DamageEffects": {
             "WorldSoundEventId": "SFX_Light_Melee_T1_Impact"
           }
-        },
-        "Recharge_Held_Item"
+        }
       ]
     }
   },
@@ -166,7 +165,8 @@
   "MaxDurability": 60000,
   "Tags": {
     "Type": [
-      "Powered_Item"
+      "Powered_Item",
+      "Tool"
     ]
   }
 }

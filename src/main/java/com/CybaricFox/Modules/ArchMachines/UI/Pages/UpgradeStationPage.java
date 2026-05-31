@@ -6,9 +6,8 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-//import com.hypixel.hytale.math.vector.Vector3iUtil;
-//import org.joml.Vector3i;
-import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.math.vector.Vector3iUtil;
+import org.joml.Vector3i;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -68,12 +67,11 @@ public class UpgradeStationPage extends CommonPage {
                 for(String tag : item.getItem().getData().getRawTags().get("Type")) {
                     if(tag.equals("Powered_Item") || tag.equals("Battery")) {
                         dataString = dataString.concat("Power: " + item.getDurability() + "v/" + item.getMaxDurability() + "v\n");
-                    } else {
-                        dataString = dataString.concat("Durability: " + ((int) item.getDurability()) + "/" + ((int) item.getMaxDurability()));
+                        break;
                     }
                 }
             } else {
-                dataString = dataString.concat("Durability: " + item.getDurability() + "/" + item.getMaxDurability());
+                dataString = dataString.concat("Durability: " + (int) item.getDurability() + "/" + (int) item.getMaxDurability());
             }
         }
 
@@ -85,7 +83,6 @@ public class UpgradeStationPage extends CommonPage {
         super.onDismiss(ref, store);
 
         int soundIndex = SoundEvent.getAssetMap().getIndex("SFX_Furnace_Bench_Close");
-        //SoundUtil.playSoundEvent3dToPlayer(ref, soundIndex, SoundCategory.UI, Vector3iUtil.toVector3d(pos), store);
-        SoundUtil.playSoundEvent3dToPlayer(ref, soundIndex, SoundCategory.UI, pos.toVector3d(), store);
+        SoundUtil.playSoundEvent3dToPlayer(ref, soundIndex, SoundCategory.UI, Vector3iUtil.toVector3d(pos), store);
     }
 }

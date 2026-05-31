@@ -9,11 +9,8 @@ import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
-//import com.hypixel.hytale.math.vector.Rotation3f;
-//import org.joml.Vector3i;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
-import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.math.vector.Rotation3f;
+import org.joml.Vector3i;
 import com.hypixel.hytale.protocol.ItemResourceType;
 import com.hypixel.hytale.server.core.asset.type.blocktick.BlockTickStrategy;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
@@ -30,7 +27,7 @@ import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.ChunkSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-//import org.joml.Vector3d;
+import org.joml.Vector3d;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -469,8 +466,7 @@ public class ConveyorSystem extends EntityTickingSystem<ChunkStore> {
             Store<EntityStore> store = world.getEntityStore().getStore();
             Vector3d centerPos = new Vector3d(pos.x + 0.5, pos.y + 0.3, pos.z + 0.5);
 
-            //Holder<EntityStore> holder = ItemComponent.generateItemDrop(store, instance.item, centerPos, new Rotation3f(), 0, 0, 0);
-            Holder<EntityStore> holder = ItemComponent.generateItemDrop(store, instance.item, centerPos, new Vector3f(), 0, 0, 0);
+            Holder<EntityStore> holder = ItemComponent.generateItemDrop(store, instance.item, centerPos, new Rotation3f(), 0, 0, 0);
             holder.ensureComponent(PreventItemMerging.getComponentType());
 
             holder.removeComponent(ItemComponent.getComponentType());

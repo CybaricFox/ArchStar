@@ -1,0 +1,81 @@
+{
+  "Type": "StatsCondition",
+  "Costs": {
+    "SignatureEnergy": 100
+  },
+  "ValueType": "Percent",
+  "Next": {
+    "Type": "Serial",
+    "Interactions": [
+      {
+        "Type": "ChangeStat",
+        "StatModifiers": {
+          "SignatureEnergy": -100
+        },
+        "ValueType": "Percent"
+      },
+      {
+        "Type": "Simple",
+        "$Comment": "Length of Effect",
+        "RunTime": 0.25,
+        "Effects": {
+          "ItemAnimationId": "Execute_Start",
+          "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+        }
+      },
+      {
+        "Type": "Charging",
+        "DisplayProgress": true,
+        "AllowIndefiniteHold": false,
+        "Effects": {
+          "ItemAnimationId": "Rev",
+          "Particles": [
+            {
+              "PositionOffset": {
+                "X": 0.6,
+                "Y": 0,
+                "Z": 0
+              },
+              "RotationOffset": {
+                "Pitch": 0,
+                "Roll": 90,
+                "Yaw": 0
+              },
+              "TargetNodeName": "Handle",
+              "SystemId": "Sword_Charging"
+            }
+          ]
+        },
+        "Next": {
+          "0": {
+            "Type": "ChangeStat",
+            "StatModifiers": {
+              "SignatureEnergy": 100
+            },
+            "ValueType": "Percent"
+          },
+          "1": {
+            "Type": "Replace",
+            "Var": "Execute_Selector",
+            "DefaultOk": true,
+            "DefaultValue": {
+              "Interactions": [
+                "Chainsaw_Execute_Selector"
+              ]
+            }
+          },
+          "5": {
+            "Type": "Replace",
+            "Var": "Execute_Selector",
+            "DefaultOk": true,
+            "DefaultValue": {
+              "Interactions": [
+                "Chainsaw_Execute_Selector"
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}

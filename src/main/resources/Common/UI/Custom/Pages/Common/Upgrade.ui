@@ -35,6 +35,7 @@ Group #Upgrade {
             Anchor: (Height: 64, Width: 128);
             Text: "Install";
             TooltipText: "Placeholder";
+            TextTooltipStyle: ($C.@DefaultTextTooltipStyle);
             Style: (
                 ...$C.@DefaultTextButtonStyle,
                 Sounds: (

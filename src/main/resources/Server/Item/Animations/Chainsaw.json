@@ -1,0 +1,84 @@
+{
+  "Parent": "Sword",
+  "UseFirstPersonOverrides": false,
+  "Animations": {
+    "Chop": {
+      "ThirdPerson": "Characters/Animations/Items/Main_Handed/Drill/Mine_Drill.blockyanim",
+      "ThirdPersonMoving": "Characters/Animations/Items/Main_Handed/Drill/Mine_Moving_Drill.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Main_Handed/Drill/Mine_FPS_Drill.blockyanim",
+      "Speed": 1,
+      "BlendingDuration": 0.05
+    },
+    "Sweep_Left": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Spear/Attacks/Swing_Left/Swing_Left.blockyanim",
+      "ThirdPersonMoving": "Characters/Animations/Items/Dual_Handed/Spear/Attacks/Swing_Left/Swing_Left_Moving.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Spear/Attacks/Swing_Left/Swing_Left_FPS.blockyanim",
+      "Speed": 0.75,
+      "BlendingDuration": 0.05,
+      "ClipsGeometry": true
+    },
+    "Sweep_Right": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Spear/Attacks/Swing_Right/Swing_Right.blockyanim",
+      "ThirdPersonMoving": "Characters/Animations/Items/Dual_Handed/Spear/Attacks/Swing_Right/Swing_Right_Moving.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Spear/Attacks/Swing_Right/Swing_Right_FPS.blockyanim",
+      "Speed": 0.75,
+      "BlendingDuration": 0.05,
+      "ClipsGeometry": true
+    },
+    "Execute_Start": {
+      "ThirdPerson": "Characters/Animations/Items/Main_Handed/Chainsaw/Chainsaw_Rev_Start.blockyanim",
+      "ThirdPersonMoving": "Characters/Animations/Items/Main_Handed/Chainsaw/Chainsaw_Rev_Start.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Main_Handed/Chainsaw/Chainsaw_FPS_Rev.blockyanim",
+      "Speed": 1,
+      "BlendingDuration": 0.05
+    },
+    "Rev": {
+      "ThirdPerson": "Characters/Animations/Items/Main_Handed/Chainsaw/Chainsaw_Rev.blockyanim",
+      "ThirdPersonMoving": "Characters/Animations/Items/Main_Handed/Chainsaw/Chainsaw_Rev.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Main_Handed/Chainsaw/Chainsaw_FPS_Rev.blockyanim",
+      "Speed": 1,
+      "BlendingDuration": 0.05
+    },
+    "Finisher": {
+      "ThirdPerson": "Characters/Animations/Items/Main_Handed/Chainsaw/Chainsaw_Execute.blockyanim",
+      "ThirdPersonMoving": "Characters/Animations/Items/Main_Handed/Chainsaw/Chainsaw_Execute.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Main_Handed/Chainsaw/Chainsaw_FPS_Execute.blockyanim",
+      "Speed": 1,
+      "BlendingDuration": 0.05,
+      "ClipsGeometry": true
+    }
+  },
+  "Camera": {
+    "Pitch": {
+      "AngleRange": {
+        "Max": 60,
+        "Min": -30
+      },
+      "TargetNodes": [
+        "Head",
+        "RShoulder"
+      ]
+    },
+    "Yaw": {
+      "AngleRange": {
+        "Max": 45,
+        "Min": -45
+      },
+      "TargetNodes": [
+        "Head"
+      ]
+    }
+  },
+  "WiggleWeights": {
+    "Pitch": 2.5,
+    "PitchDeceleration": 0.1,
+    "Roll": 0.1,
+    "RollDeceleration": 0.1,
+    "X": 2.5,
+    "XDeceleration": 0.1,
+    "Y": 0.1,
+    "YDeceleration": 0.1,
+    "Z": 0.1,
+    "ZDeceleration": 0.1
+  }
+}

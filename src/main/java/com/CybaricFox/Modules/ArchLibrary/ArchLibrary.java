@@ -4,10 +4,7 @@ import com.CybaricFox.ArchStar;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
-//import com.hypixel.hytale.math.vector.Rotation3f;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
-import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.protocol.Packet;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageEvent;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
@@ -22,9 +19,9 @@ import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.FillerBlockUtil;
-//import org.joml.Vector3d;
-//import org.joml.Vector3f;
-//import org.joml.Vector3i;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -94,8 +91,7 @@ public class ArchLibrary {
             for(ItemStack item : items) {
                 //The more items that are dropped, the larger they are spread out. Single item never spreads.
                 Vector3f velocity = new Vector3f(getItemDropVelocity(items.size()), -1, getItemDropVelocity(items.size()));
-                //Holder<EntityStore> holder = ItemComponent.generateItemDrop(store, item, centerPos, new Rotation3f(), velocity.x, velocity.y, velocity.z);
-                Holder<EntityStore> holder = ItemComponent.generateItemDrop(store, item, centerPos, new Vector3f(), velocity.x, velocity.y, velocity.z);
+                Holder<EntityStore> holder = ItemComponent.generateItemDrop(store, item, centerPos, new Rotation3f(), velocity.x, velocity.y, velocity.z);
                 store.addEntity(holder, AddReason.SPAWN);
             }
         });

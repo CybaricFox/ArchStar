@@ -1,0 +1,25 @@
+{
+  "RequireNewClick": false,
+  "Rules": {
+    "Interrupting": [
+      "Primary"
+    ]
+  },
+  "Interactions": [
+    {
+      "Type": "Replace",
+      "Var": "Sweep_Start",
+      "DefaultOk": true,
+      "DefaultValue": {
+        "Interactions": [
+          "Chainsaw_Sweep"
+        ]
+      }
+    }
+  ],
+  "Tags": {
+    "Attack": [
+      "Melee"
+    ]
+  }
+}

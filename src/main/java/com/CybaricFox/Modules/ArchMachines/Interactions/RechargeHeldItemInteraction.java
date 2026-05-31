@@ -5,6 +5,8 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.InventoryUtils;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
@@ -42,8 +44,9 @@ public class RechargeHeldItemInteraction extends SimpleInteraction {
                         container.setItemStackForSlot(i, newContained);
 
                         ItemStack newItem = item.withIncreasedDurability(amount);
-                        //noinspection removal
-                        player.getInventory().getHotbar().setItemStackForSlot(player.getInventory().getActiveHotbarSlot(), newItem);
+
+                        InventoryComponent inventory = ref.getStore().getComponent(ref, InventoryComponent.getComponentTypeById(-1));
+                        inventory.getInventory().setItemStackForSlot(InventoryUtils.getActiveSlot(ref, -1, ref.getStore()), newItem);
 
                         return;
                     }
