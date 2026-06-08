@@ -1,0 +1,202 @@
+{
+  "Parent": "Item",
+  "UseFirstPersonOverrides": false,
+  "Animations": {
+    "Idle": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Speed": 0.5
+    },
+    "Walk": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Speed": 1.0,
+      "Looping": true
+    },
+    "WalkBackward": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Speed": 1.0,
+      "Looping": true
+    },
+    "Run": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Speed": 0.9,
+      "Looping": true
+    },
+    "RunBackward": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Speed": 0.9,
+      "Looping": true
+    },
+    "Sprint": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Speed": 1.1,
+      "Looping": true
+    },
+    "Crouch": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "BlendingDuration": 0.1,
+      "Speed": 0.5,
+      "Looping": true
+    },
+    "CrouchWalk": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "BlendingDuration": 0.1,
+      "Speed": 0.8,
+      "Looping": true
+    },
+    "CrouchWalkBackward": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "BlendingDuration": 0.1,
+      "Speed": 0.8,
+      "Looping": true
+    },
+    "FlyIdle": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Speed": 0.5,
+      "Looping": true
+    },
+    "Fly": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true
+    },
+    "FlyBackward": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true
+    },
+    "FlyFast": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true
+    },
+    "SwimIdle": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 1
+    },
+    "Swim": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 0.6
+    },
+    "SwimBackward": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 1
+    },
+    "SwimFast": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 0.6
+    },
+    "SwimJump": {
+      "BlendingDuration": 0.1,
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 0.8
+    },
+    "SwimFloat": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 1
+    },
+    "SwimSink": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 1
+    },
+    "SwimDive": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 0.6
+    },
+    "SwimDiveBackward": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 1
+    },
+    "SwimDiveFast": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 0.6
+    },
+    "FluidIdle": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 0.3
+    },
+    "FluidWalk": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 0.6
+    },
+    "FluidWalkBackward": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 0.6
+    },
+    "FluidRun": {
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Idle_FPS.blockyanim",
+      "Looping": true,
+      "Speed": 0.6
+    }
+  },
+  "Camera": {
+    "Pitch": {
+      "AngleRange": {
+        "Max": 60,
+        "Min": -30
+      },
+      "TargetNodes": [
+        "Head",
+        "RShoulder",
+        "LShoulder"
+      ]
+    },
+    "Yaw": {
+      "AngleRange": {
+        "Max": 45,
+        "Min": -45
+      },
+      "TargetNodes": [
+        "Head"
+      ]
+    }
+  },
+  "WiggleWeights": {
+    "Pitch": 3,
+    "PitchDeceleration": 0.1,
+    "Roll": 0.1,
+    "RollDeceleration": 0.1,
+    "X": 3,
+    "XDeceleration": 0.1,
+    "Y": 0.1,
+    "YDeceleration": 0.1,
+    "Z": 0.1,
+    "ZDeceleration": 0.1
+  }
+}

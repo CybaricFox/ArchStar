@@ -7,7 +7,7 @@
     "Items.Tools",
     "ArchStar.Equipment"
   ],
-  "Model": "Items/Equipment/Cobalt_Drill.blockymodel",
+  "Model": "Items/Equipment/Heavy_Drill.blockymodel",
   "Texture": "Items/Equipment/Cobalt_Drill.png",
   "Icon": "Icons/ItemsGenerated/Cobalt_Drill_Icon.png",
   "PlayerAnimationsId": "Drill",

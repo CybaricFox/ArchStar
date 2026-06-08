@@ -1,11 +1,11 @@
 {
-  "Parent": "Pickaxe",
+  "Parent": "Heavy_Equipment",
   "UseFirstPersonOverrides": false,
   "Animations": {
     "Mine": {
-      "ThirdPerson": "Characters/Animations/Items/Main_Handed/Drill/Mine_Drill.blockyanim",
-      "ThirdPersonMoving": "Characters/Animations/Items/Main_Handed/Drill/Mine_Moving_Drill.blockyanim",
-      "FirstPerson": "Characters/Animations/Items/Main_Handed/Drill/Mine_FPS_Drill.blockyanim",
+      "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Constant_Mine.blockyanim",
+      "ThirdPersonMoving": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Constant_Mine.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Base/Heavy_Equipment/Constant_Mine_FPS.blockyanim",
       "Speed": 1,
       "BlendingDuration": 0.05
     }
@@ -18,7 +18,8 @@
       },
       "TargetNodes": [
         "Head",
-        "RShoulder"
+        "RShoulder",
+        "LShoulder"
       ]
     },
     "Yaw": {

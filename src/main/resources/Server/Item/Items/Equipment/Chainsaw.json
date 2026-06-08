@@ -36,8 +36,8 @@
     ],
     "TimeSeconds": 4.0
   },
-  "Model": "Items/Equipment/Chainsaw.blockymodel",
-  "Texture": "Items/Equipment/Chainsaw_1.png",
+  "Model": "Items/Equipment/Heavy_Chainsaw.blockymodel",
+  "Texture": "Items/Equipment/Steel_Chainsaw.png",
   "Icon": "Icons/ItemsGenerated/Chainsaw_Icon.png",
   "PlayerAnimationsId": "Chainsaw",
   "Scale": 2,
