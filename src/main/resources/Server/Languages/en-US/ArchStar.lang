@@ -77,4 +77,4 @@ Adamantite_Drill.description = An electric drill. Equivalent to an adamantite pi
 Sodium_Battery.name = Sodium Battery
 Sodium_Battery.description = Charges items in your inventory. Holds 20kv.
 Chainsaw.name = Chainsaw
-Chainsaw.description = Mow down trees and undead alike with this tool of destruction!
+Chainsaw.description = Mow down trees and undead alike with this tool of destruction!\n\nDamage Data\n- Basic: 16.5\n- Secondary: 16.5-33\n- Signature: 16.5 + 15% max hp + execute below 150 max hp excluding players

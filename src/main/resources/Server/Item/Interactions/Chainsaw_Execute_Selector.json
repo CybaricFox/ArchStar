@@ -29,14 +29,17 @@
         "DefaultValue": {
           "Interactions": [
             {
-              "Parent": "Common_Melee_Damage",
+              "Parent": "ArchStar_Common_Advanced_Damage",
               "DamageCalculator": {
                 "BaseDamage": {
                   "Physical": 16.5
-                }
-              },
-              "WorldSoundEventId": null,
-              "LocalSoundEventId": null
+                },
+                "MaxHealthDamage": {
+                  "Physical": 15
+                },
+                "ExecutionThreshold": 150,
+                "ExecutionType": "CURRENT"
+              }
             }
           ]
         },

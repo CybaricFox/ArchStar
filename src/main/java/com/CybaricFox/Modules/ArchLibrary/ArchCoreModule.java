@@ -1,5 +1,6 @@
 package com.CybaricFox.Modules.ArchLibrary;
 
+import com.CybaricFox.Modules.ArchLibrary.Interactions.AdvancedDamageInteraction;
 import com.CybaricFox.Modules.ArchLibrary.Interactions.SignatureInteraction;
 import com.CybaricFox.Modules.ArchMachines.Interactions.RechargeHeldItemInteraction;
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
@@ -31,6 +32,7 @@ public class ArchCoreModule {
 
         plugin.getCodecRegistry(Interaction.CODEC).register("Debug_ArchStar_Block", DebuggerInteraction.class, DebuggerInteraction.CODEC);
         plugin.getCodecRegistry(Interaction.CODEC).register("Signature", SignatureInteraction.class, SignatureInteraction.CODEC);
+        plugin.getCodecRegistry(Interaction.CODEC).register("ArchStar_Advanced_Damage", AdvancedDamageInteraction.class, AdvancedDamageInteraction.CODEC);
 
         ArchLibrary.LOGGER.at(Level.INFO).log("ArchCore Initialized");
     }

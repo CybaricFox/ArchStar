@@ -42,15 +42,15 @@
   "PlayerAnimationsId": "Chainsaw",
   "Scale": 2,
   "IconProperties": {
-    "Scale": 0.5,
-    "Translation": [
-      0,
-      0
-    ],
+    "Scale": 0.75,
     "Rotation": [
-      90,
-      -45,
-      0
+      105,
+      0,
+      45
+    ],
+    "Translation": [
+      5,
+      5
     ]
   },
   "ItemSoundSetId": "ISS_Weapons_Stone_Small",
