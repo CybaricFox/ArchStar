@@ -28,14 +28,14 @@
     "Execute_Start": {
       "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Chainsaw/Rev_Start.blockyanim",
       "ThirdPersonMoving": "Characters/Animations/Items/Dual_Handed/Chainsaw/Rev_Start.blockyanim",
-      "FirstPerson": "Characters/Animations/Items/Main_Handed/Chainsaw/Chainsaw_FPS_Rev.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Chainsaw/Chainsaw_FPS_Rev.blockyanim",
       "Speed": 1,
       "BlendingDuration": 0.05
     },
     "Rev": {
       "ThirdPerson": "Characters/Animations/Items/Dual_Handed/Chainsaw/Rev.blockyanim",
       "ThirdPersonMoving": "Characters/Animations/Items/Dual_Handed/Chainsaw/Rev.blockyanim",
-      "FirstPerson": "Characters/Animations/Items/Main_Handed/Chainsaw/Chainsaw_FPS_Rev.blockyanim",
+      "FirstPerson": "Characters/Animations/Items/Dual_Handed/Chainsaw/Chainsaw_FPS_Rev.blockyanim",
       "Speed": 1,
       "BlendingDuration": 0.05
     },

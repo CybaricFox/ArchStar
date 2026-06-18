@@ -14,7 +14,6 @@ import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import it.unimi.dsi.fastutil.ints.Int2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
 import javax.annotation.Nullable;
 import java.util.logging.Level;
@@ -52,10 +51,12 @@ public class ArchStarDamageCalculator extends DamageCalculator {
         if(storedDamage != null && !storedDamage.isEmpty()) {
             Object2FloatMap<DamageCause> toReturn = new Object2FloatOpenHashMap<>(storedDamage);
 
+            /*
             for (Object2FloatMap.Entry<DamageCause> entry : storedDamage.object2FloatEntrySet()) {
                 ArchLibrary.LOGGER.at(Level.INFO).log("STORED DAMAGE");
                 ArchLibrary.LOGGER.at(Level.INFO).log(entry.getKey().getId() + " Damage: " + entry.getFloatValue());
             }
+             */
 
             storedDamage.clear();
             return toReturn;
@@ -75,10 +76,7 @@ public class ArchStarDamageCalculator extends DamageCalculator {
         if(maxHealth <= 0) return;
 
         if (this.maxHealthPercentageRaw != null && !this.maxHealthPercentageRaw.isEmpty()) {
-            ObjectIterator var5 = this.maxHealthPercentage.int2FloatEntrySet().iterator();
-
-            while(var5.hasNext()) {
-                Int2FloatMap.Entry entry = (Int2FloatMap.Entry)var5.next();
+            for (Int2FloatMap.Entry entry : this.maxHealthPercentage.int2FloatEntrySet()) {
                 DamageCause damageCause = DamageCause.getAssetMap().getAsset(entry.getIntKey());
                 float value = entry.getFloatValue() / 100;
                 float damage = this.scaleDamage(duration, maxHealth * value);

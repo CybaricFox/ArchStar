@@ -20,7 +20,7 @@
         "RunTime": 0.25,
         "Effects": {
           "ItemAnimationId": "Execute_Start",
-          "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+          "WorldSoundEventId": "SFX_Chainsaw_Rev"
         }
       },
       {
@@ -28,23 +28,7 @@
         "DisplayProgress": true,
         "AllowIndefiniteHold": false,
         "Effects": {
-          "ItemAnimationId": "Rev",
-          "Particles": [
-            {
-              "PositionOffset": {
-                "X": 0.6,
-                "Y": 0,
-                "Z": 0
-              },
-              "RotationOffset": {
-                "Pitch": 0,
-                "Roll": 90,
-                "Yaw": 0
-              },
-              "TargetNodeName": "Handle",
-              "SystemId": "Sword_Charging"
-            }
-          ]
+          "ItemAnimationId": "Rev"
         },
         "Next": {
           "0": {
@@ -62,6 +46,9 @@
               "Interactions": [
                 "Chainsaw_Execute_Selector"
               ]
+            },
+            "Effects": {
+              "WorldSoundEventId": "SFX_Chainsaw_Execute"
             }
           },
           "5": {
@@ -72,6 +59,9 @@
               "Interactions": [
                 "Chainsaw_Execute_Selector"
               ]
+            },
+            "Effects": {
+              "WorldSoundEventId": "SFX_Chainsaw_Execute"
             }
           }
         }
