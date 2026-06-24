@@ -7,6 +7,8 @@ public class OreHolder {
     public final int x;
     public final int z;
     public final World world;
+    public int passes = 0;
+    public boolean markedForRemoval = false;
 
     public OreHolder(WorldChunk chunk) {
         x = chunk.getX();

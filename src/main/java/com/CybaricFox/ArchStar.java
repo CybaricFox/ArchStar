@@ -44,10 +44,6 @@ public class ArchStar extends JavaPlugin {
     @Override
     protected void start() {
         super.start();
-
-        ArchCoreModule.get().start();
-
-        //checkForHytalor();
     }
 
     public static ArchStar get() {return instance;}

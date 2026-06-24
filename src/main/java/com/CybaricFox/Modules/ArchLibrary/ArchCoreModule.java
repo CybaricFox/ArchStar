@@ -41,20 +41,4 @@ public class ArchCoreModule {
 
         ArchLibrary.LOGGER.at(Level.INFO).log("ArchCore Initialized");
     }
-
-    public void start() {
-        chooseOreGen();
-    }
-
-    //Checks if a compatible ore gen mod is installed.
-    private void chooseOreGen() {
-        PluginBase oreGenLibrary = PluginManager.get().getPlugin(PluginIdentifier.fromString("DTAPGAMING:OreGenLibrary"));
-
-        if(oreGenLibrary != null) {
-            ArchLibrary.LOGGER.at(Level.INFO).log("OreGenLibrary Found. Ores will generate!");
-            return;
-        }
-
-        ArchLibrary.LOGGER.at(Level.SEVERE).log("Failed to find a compatible ore gen mod! Ores will not generate!");
-    }
 }

@@ -1,16 +1,10 @@
 package com.CybaricFox.Modules.ArchMachines.Upgrade;
 
-import com.CybaricFox.ArchStar;
 import com.CybaricFox.Modules.ArchLibrary.ArchLibrary;
 import com.CybaricFox.Modules.ArchLibrary.AssetReader;
 import com.CybaricFox.Modules.ArchMachines.UpgradeType;
-import com.azuredoom.hytalecustomassetloader.AssetDiscoveryOptions;
-import com.azuredoom.hytalecustomassetloader.AssetLoadResult;
-import com.azuredoom.hytalecustomassetloader.AssetLoader;
-import com.azuredoom.hytalecustomassetloader.spi.AssetLogger;
 import com.google.gson.*;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -99,9 +93,8 @@ public final class UpgradeRegistry {
 
     public static void getJsonAssets() {
         //Load upgrade assets
-        AssetLoadResult<JsonObject> upgradeResult = getAssetLoaderResult("Machines/Upgrades", new AssetReader("id"));
-
-        for(JsonObject definition : upgradeResult.mergedAssets().values()) {
+        AssetReader reader = new AssetReader("id", "Machines/Upgrades");
+        for(JsonObject definition : reader.getLoadResult().mergedAssets().values()) {
             String baseId = definition.get("baseUpgradeId").getAsString();
 
             if(rawAssetDataMap.containsKey(baseId)) {
@@ -112,8 +105,8 @@ public final class UpgradeRegistry {
             }
         }
 
-        AssetLoadResult<JsonObject> itemResult = getAssetLoaderResult("Machines/Items", new AssetReader("itemId"));
-        for(JsonObject definition : itemResult.mergedAssets().values()) {
+        reader.newRead("itemId", "Machines/Items" );
+        for(JsonObject definition : reader.getLoadResult().mergedAssets().values()) {
             String itemId = definition.get("itemId").getAsString();
             ArrayList<String> upgrades = new ArrayList<>();
 
@@ -126,34 +119,6 @@ public final class UpgradeRegistry {
 
             REGISTRY.put(itemId, upgrades);
         }
-    }
-
-    private static AssetLoadResult<JsonObject> getAssetLoaderResult(String resourceFolder, AssetReader reader) {
-        AssetLoader<JsonObject> loader = new AssetLoader<>(
-                ArchStar.get().getClass().getClassLoader(),
-                new AssetDiscoveryOptions(
-                        "Server/ArchStarCustom/" + resourceFolder,
-                        ".json",
-                        Paths.get("mods").toAbsolutePath().normalize(),
-                        true,
-                        false
-                ),
-                reader,
-                reader,
-                new AssetLogger() {
-                    @Override
-                    public void info(String s) {
-                        ArchLibrary.LOGGER.at(Level.INFO).log(s);
-                    }
-
-                    @Override
-                    public void warn(String s) {
-                        ArchLibrary.LOGGER.at(Level.WARNING).log(s);
-                    }
-                }
-        );
-
-        return loader.loadAll();
     }
 
     //Loads assets in the raw asset map that correspond to the given base upgrade id.

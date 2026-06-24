@@ -1,12 +1,20 @@
 package com.CybaricFox.Modules.ArchLibrary.OreGeneration;
 
 import com.CybaricFox.Modules.ArchLibrary.ArchLibrary;
+import com.CybaricFox.Modules.ArchLibrary.AssetReader;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.modules.block.BlockModule;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.events.ChunkPreLoadProcessEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
+import com.hypixel.hytale.server.core.universe.world.worldgen.IWorldGen;
+import com.hypixel.hytale.server.worldgen.chunk.ChunkGenerator;
+import com.hypixel.hytale.server.worldgen.chunk.ZoneBiomeResult;
+import com.sun.source.tree.BinaryTree;
 import org.joml.Vector3i;
 
 import java.util.ArrayList;
@@ -19,7 +27,75 @@ public class OreGenerator{
 
     public ArrayList<OreHolder> oreGenQueue = new ArrayList<>();
 
-    private OreConfig tempOre = new OreConfig("Ore_Tin_Stone", 0, 26, 1, 6, 40, 80, new String[]{"Rock_Stone"});
+    private final OreConfig[] ores;
+
+    public OreGenerator() {
+        ArchLibrary.LOGGER.at(Level.INFO).log("ArchLibrary is loading the ore generation system.");
+        AssetReader reader = new AssetReader("OreId", "Ores");
+        ores = new OreConfig[reader.getLoadResult().mergedAssets().size()];
+
+        int count = 0;
+        for(JsonObject definition : reader.getLoadResult().mergedAssets().values()) {
+
+            String[] hostBlocks;
+            JsonArray rawBlocks = definition.get("HostBlocks").getAsJsonArray();
+            hostBlocks = new String[rawBlocks.size()];
+            for(int i = 0; i < rawBlocks.size(); i++) {
+                hostBlocks[i] = rawBlocks.get(i).getAsString();
+            }
+
+            ArrayList<String> biomes = null;
+            boolean biomesIsWhite = true;
+            if(definition.has("Biomes") && !definition.get("Biomes").isJsonNull()) {
+                if(definition.has("BiomeIsWhite")) {
+                    biomesIsWhite = definition.get("BiomeIsWhite").getAsBoolean();
+                }
+
+                JsonArray rawBiomes = definition.get("Biomes").getAsJsonArray();
+                if(!rawBiomes.isEmpty()) {
+                    biomes = new ArrayList<>();
+                    for(JsonElement biome : rawBiomes) {
+                        biomes.add(biome.getAsString());
+                    }
+                }
+            }
+
+            int[] zones = null;
+            boolean zonesIsWhite = true;
+            if(definition.has("Zones") && !definition.get("Zones").isJsonNull()) {
+                if(definition.has("ZoneIsWhite")) {
+                    zonesIsWhite = definition.get("ZoneIsWhite").getAsBoolean();
+                }
+
+                JsonArray rawZones = definition.get("Zones").getAsJsonArray();
+                if(!rawZones.isEmpty()) {
+                    zones = new int[rawZones.size()];
+                    for(int i = 0; i < rawZones.size(); i++) {
+                        zones[i] = rawZones.get(i).getAsInt();
+                    }
+                }
+            }
+
+            OreConfig ore = new OreConfig(
+                    definition.get("OreId").getAsString(),
+                    definition.get("MinVeins").getAsInt(),
+                    definition.get("MaxVeins").getAsInt(),
+                    definition.get("MinVeinSize").getAsInt(),
+                    definition.get("MaxVeinSize").getAsInt(),
+                    definition.get("MinY").getAsInt(),
+                    definition.get("MaxY").getAsInt(),
+                    hostBlocks,
+                    biomesIsWhite,
+                    zonesIsWhite,
+                    biomes,
+                    zones
+            );
+
+            ores[count] = ore;
+            count++;
+        }
+        ArchLibrary.LOGGER.at(Level.INFO).log("Ore generation system loaded successfully.");
+    }
 
     public void processChunk(ChunkPreLoadProcessEvent event) {
         if(!event.isNewlyGenerated()) return;
@@ -36,22 +112,24 @@ public class OreGenerator{
         //SecureRandom is not needed here, Random is faster.
         Random rng = new Random();
 
-        rng.setSeed(createSeed(chunk.getWorld().getWorldConfig().getSeed(), x, z, tempOre.getOre()));
+        for(OreConfig ore : ores) {
+            rng.setSeed(createSeed(chunk.getWorld().getWorldConfig().getSeed(), x, z, ore.getOre()));
 
-        int pockets = rng.nextInt(tempOre.getMinPockets(), tempOre.getMaxPockets() + 1);
+            int pockets = rng.nextInt(ore.getMinPockets(), ore.getMaxPockets() + 1);
 
-        for(int i = 0; i < pockets; i++) {
-            generateVein(rng, tempOre.getMinVeinSize(), tempOre.getMaxVeinSize(), tempOre.getMinY(), tempOre.getMaxY(), tempOre.getOre(), tempOre.getHostBlocks(), chunk);
+            for(int i = 0; i < pockets; i++) {
+                generateVein(rng, chunk, ore);
+            }
         }
     }
 
-    private void generateVein(Random rng, int minVeinSize, int maxVeinSize, int minY, int maxY, String id, String[] hostBlocks, WorldChunk chunk) {
+    private void generateVein(Random rng, WorldChunk chunk, OreConfig ore) {
         boolean isValidFirstLocation = false;
 
         //Get source location
-        int x = rng.nextInt(0, 33);
-        int z = rng.nextInt(0, 33);
-        int y = rng.nextInt(minY, maxY + 1);
+        int x = rng.nextInt(0, 32);
+        int z = rng.nextInt(0, 32);
+        int y = rng.nextInt(ore.getMinY(), ore.getMaxY() + 1);
 
         //Always try to make it so the original location picked for a vein is always valid.
         int originSafety = 0; //Prevents infinite looping
@@ -62,7 +140,7 @@ public class OreGenerator{
             if(type != null) {
                 String existingId = type.getId();
 
-                for(String block : hostBlocks) {
+                for(String block : ore.getHostBlocks()) {
                     if(block.equals(existingId)) {
                         isValidFirstLocation = true;
                         break;
@@ -72,20 +150,27 @@ public class OreGenerator{
 
             //If invalid first location, reroll the starting location.
             if(!isValidFirstLocation) {
-                x = rng.nextInt(0, 33);
-                z = rng.nextInt(0, 33);
-                y = rng.nextInt(minY, maxY + 1);
+                x = rng.nextInt(0, 32);
+                z = rng.nextInt(0, 32);
+                y = rng.nextInt(ore.getMinY(), ore.getMaxY() + 1);
             }
 
             //If safety threshold reached, force the vein to generate where it currently is, even if it's not a good location.
             if(originSafety > 10 && !isValidFirstLocation) {
-                ArchLibrary.LOGGER.at(Level.WARNING).log("Failed to find a valid host block for " + id + " within safety parameters! Vein will be force generated. This can be safely ignored.");
+                //ArchLibrary.LOGGER.at(Level.WARNING).log("Failed to find a valid host block for " + ore.getOre() + " within safety parameters! Vein will be force generated. This can be safely ignored.");
                 isValidFirstLocation = true;
             }
         }
 
+        //If the starting location is an invalid biome or zone, this vein will not generate.
+        ZoneBiomeResult result = getZoneBiomeResult(chunk, x, z);
+        boolean isBiomeValid = isBiomeValid(ore, result);
+        boolean isZoneValid = isZoneValid(ore, result);
+
+        if(!isBiomeValid || !isZoneValid) return;
+
         //Get vein size
-        int veinSize = rng.nextInt(minVeinSize, maxVeinSize + 1);
+        int veinSize = rng.nextInt(ore.getMinVeinSize(), ore.getMaxVeinSize() + 1);
         Vector3i[] previousLocations = new Vector3i[veinSize];
 
         for(int i = 0; i < veinSize; i++) {
@@ -97,10 +182,10 @@ public class OreGenerator{
             if(type != null) {
                 String existingId = type.getId();
 
-                for(String block : hostBlocks) {
+                for(String block : ore.getHostBlocks()) {
                     if(block.equals(existingId)) {
                         //Generate the ore
-                        chunk.setBlock(x, y, z, id);
+                        chunk.setBlock(x, y, z, ore.getOre());
                         //Add the location to previous Locations visited
                         previousLocations[i] = new Vector3i(x, y, z);
                         break;
@@ -126,7 +211,7 @@ public class OreGenerator{
 
                 //Ensure values are within chunk
                 x = Math.clamp(x, 0, 32);
-                y = Math.clamp(y, minY, maxY);
+                y = Math.clamp(y, ore.getMinY(), ore.getMaxY());
                 z = Math.clamp(z, 0, 32);
 
                 //Values cannot all be 0 at the same time
@@ -149,20 +234,73 @@ public class OreGenerator{
                 if(safety > 100) {
                     Ref<ChunkStore> ref = chunk.getBlockComponentEntity(x, y, z);
                     if(ref == null) {
-                        ArchLibrary.LOGGER.at(Level.SEVERE).log("Attempted to generate a " + id + " ore vein at origin location: ERROR, but safety was triggered! Ore veins larger than 26 have a risk of failing. If your ore vein is less than 26, there may be a major issue. Please report this to the github page.");
+                        ArchLibrary.LOGGER.at(Level.SEVERE).log("Attempted to generate a " + ore.getOre() + " ore vein at origin location: ERROR, but safety was triggered! Ore veins larger than 26 have a risk of failing. If your ore vein is less than 26, there may be a major issue. Please report this to the github page.");
                         return;
                     }
 
                     BlockModule.BlockStateInfo info = ref.getStore().getComponent(ref, BlockModule.BlockStateInfo.getComponentType());
                     if(info == null) {
-                        ArchLibrary.LOGGER.at(Level.SEVERE).log("Attempted to generate a " + id + " ore vein at origin location: ERROR, but safety was triggered! Ore veins larger than 26 have a risk of failing. If your ore vein is less than 26, there may be a major issue. Please report this to the github page.");
+                        ArchLibrary.LOGGER.at(Level.SEVERE).log("Attempted to generate a " + ore.getOre() + " ore vein at origin location: ERROR, but safety was triggered! Ore veins larger than 26 have a risk of failing. If your ore vein is less than 26, there may be a major issue. Please report this to the github page.");
                         return;
                     }
 
-                    ArchLibrary.LOGGER.at(Level.SEVERE).log("Attempted to generate a " + id + " ore vein at origin location: " + x + ", " + y + ", " + z + ", but safety was triggered! Ore veins larger than 26 have a risk of failing. If your ore vein is less than 26, there may be a major issue. Please report this to the github page.");
+                    ArchLibrary.LOGGER.at(Level.SEVERE).log("Attempted to generate a " + ore.getOre() + " ore vein at origin location: " + x + ", " + y + ", " + z + ", but safety was triggered! Ore veins larger than 26 have a risk of failing. If your ore vein is less than 26, there may be a major issue. Please report this to the github page.");
                 }
             }
         }
+    }
+
+    private ZoneBiomeResult getZoneBiomeResult(WorldChunk chunk, int x, int z) {
+
+       // if (gen instanceof ChunkGenerator) {
+       //     ChunkGenerator generator = (ChunkGenerator)gen;
+       //     Arrays.stream(generator.getZonePatternProvider().getZones()).flatMap((zone) -> Arrays.stream(zone.biomePatternGenerator().getBiomes())).forEach((biome) -> result.suggest(biome.getName()));
+       // }
+
+        int seed = (int) chunk.getWorld().getWorldConfig().getSeed();
+
+        IWorldGen gen = chunk.getWorld().getChunkStore().getGenerator();
+
+        if(gen instanceof ChunkGenerator generator) {
+            return generator.getZoneBiomeResultAt(seed, (chunk.getX() * 32) + x, (chunk.getZ() * 32) + z);
+        } else {
+            return null;
+        }
+    }
+
+    private boolean isBiomeValid(OreConfig ore, ZoneBiomeResult result) {
+        if(ore.getBiomes() == null) return true;
+        if(ore.getBiomes().isEmpty()) return true;
+        if(result == null) return false;
+
+        String biomeName = result.getBiome().getName();
+
+        if(ore.getBiomes().contains(biomeName)) {
+            return ore.biomeIsWhite;
+        } else {
+            return !ore.biomeIsWhite;
+        }
+    }
+
+    private boolean isZoneValid(OreConfig ore, ZoneBiomeResult result) {
+        if(ore.getZones() == null) return true;
+        if(result == null) return false;
+
+        String zone = result.getZoneResult().getZone().name();
+
+        int end = zone.indexOf("_");
+        if(end == -1) return false;
+
+        String sub = zone.substring(4, end);
+        int value = Integer.parseInt(sub);
+
+        for(int entry : ore.getZones()) {
+            if(entry == value) {
+                return ore.zoneIsWhite;
+            }
+        }
+
+        return !ore.zoneIsWhite;
     }
 
     private long createSeed(long seed, int x, int z, String oreId) {

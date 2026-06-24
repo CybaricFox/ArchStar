@@ -19,8 +19,7 @@
         "$Comment": "Length of Effect",
         "RunTime": 0.25,
         "Effects": {
-          "ItemAnimationId": "Execute_Start",
-          "WorldSoundEventId": "SFX_Chainsaw_Rev"
+          "ItemAnimationId": "Execute_Start"
         }
       },
       {
@@ -28,7 +27,10 @@
         "DisplayProgress": true,
         "AllowIndefiniteHold": false,
         "Effects": {
-          "ItemAnimationId": "Rev"
+          "ItemAnimationId": "Rev",
+          "WorldSoundEventId": "SFX_Chainsaw_Rev",
+          "ClearSoundEventOnFinish": true,
+          "ClearAnimationOnFinish": true
         },
         "Next": {
           "0": {

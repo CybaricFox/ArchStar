@@ -1,16 +1,10 @@
 package com.CybaricFox.Modules.ArchMachines.MachineBehavior;
 
-import com.CybaricFox.ArchStar;
 import com.CybaricFox.Modules.ArchLibrary.ArchLibrary;
 import com.CybaricFox.Modules.ArchLibrary.AssetReader;
-import com.azuredoom.hytalecustomassetloader.AssetDiscoveryOptions;
-import com.azuredoom.hytalecustomassetloader.AssetLoadResult;
-import com.azuredoom.hytalecustomassetloader.AssetLoader;
-import com.azuredoom.hytalecustomassetloader.spi.AssetLogger;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -50,8 +44,8 @@ public final class MachineBehaviorRegistry {
     }
 
     public static void getJsonAssets() {
-        AssetLoadResult<JsonObject> itemResult = getAssetLoaderResult("Machines/Items", new AssetReader("itemId"));
-        for(JsonObject definition : itemResult.mergedAssets().values()) {
+        AssetReader reader = new AssetReader("itemId", "Machines/Items");
+        for(JsonObject definition : reader.getLoadResult().mergedAssets().values()) {
             String itemId = definition.get("itemId").getAsString();
             JsonElement behaviorElement = definition.get("behaviorId");
             if(behaviorElement.isJsonNull()) continue;
@@ -59,33 +53,5 @@ public final class MachineBehaviorRegistry {
 
             registerMachine(itemId, behavior);
         }
-    }
-
-    private static AssetLoadResult<JsonObject> getAssetLoaderResult(String resourceFolder, AssetReader reader) {
-        AssetLoader<JsonObject> loader = new AssetLoader<>(
-                ArchStar.get().getClass().getClassLoader(),
-                new AssetDiscoveryOptions(
-                        "Server/ArchStarCustom/" + resourceFolder,
-                        ".json",
-                        Paths.get("mods").toAbsolutePath().normalize(),
-                        true,
-                        false
-                ),
-                reader,
-                reader,
-                new AssetLogger() {
-                    @Override
-                    public void info(String s) {
-                        ArchLibrary.LOGGER.at(Level.INFO).log(s);
-                    }
-
-                    @Override
-                    public void warn(String s) {
-                        ArchLibrary.LOGGER.at(Level.WARNING).log(s);
-                    }
-                }
-        );
-
-        return loader.loadAll();
     }
 }

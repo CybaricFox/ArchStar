@@ -1,0 +1,12 @@
+{
+  "OreId": "Ore_Tin_Stone",
+  "MinVeins": 0,
+  "MaxVeins": 26,
+  "MinVeinSize": 1,
+  "MaxVeinSize": 6,
+  "MinY": 40,
+  "MaxY": 80,
+  "HostBlocks": [
+    "Rock_Stone"
+  ]
+}
