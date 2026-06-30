@@ -277,8 +277,8 @@
     "TimeSeconds": 8.0
   },
   "Tags": {
-    "Type": [
-      "Cable"
+    "ArchStar": [
+      "Wrenchable"
     ]
   },
   "MaxStack": 100

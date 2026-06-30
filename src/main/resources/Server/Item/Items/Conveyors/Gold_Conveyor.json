@@ -89,5 +89,10 @@
     ]
   },
   "MaxStack": 100,
-  "ItemSoundSetId": "ISS_Blocks_Stone"
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "Tags": {
+    "ArchStar": [
+      "Wrenchable"
+    ]
+  }
 }

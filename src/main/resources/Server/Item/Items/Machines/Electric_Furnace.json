@@ -136,6 +136,9 @@
   "Tags": {
     "Type": [
       "Bench"
+    ],
+    "ArchStar": [
+      "Wrenchable_Durability"
     ]
   },
   "MaxStack": 100

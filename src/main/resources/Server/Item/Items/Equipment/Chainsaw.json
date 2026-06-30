@@ -34,7 +34,7 @@
         "Id": "Industrial"
       }
     ],
-    "TimeSeconds": 4.0
+    "TimeSeconds": 2.0
   },
   "Model": "Items/Equipment/Heavy_Chainsaw.blockymodel",
   "Texture": "Items/Equipment/Steel_Chainsaw.png",
@@ -209,8 +209,11 @@
   "MaxDurability": 20000,
   "Tags": {
     "Type": [
-      "Powered_Item",
-      "Weapon"
+      "Weapon",
+      "Tool"
+    ],
+    "ArchStar": [
+      "Powered_Item"
     ]
   }
 }

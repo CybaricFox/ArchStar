@@ -1,0 +1,81 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Wrench.name",
+    "Description": "ArchStar.Wrench.description"
+  },
+  "Categories": [
+    "Items.Tools",
+    "ArchStar.Equipment"
+  ],
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Tin",
+        "Quantity": 2
+      },
+      {
+        "ItemId": "Ingredient_Bar_Copper",
+        "Quantity": 6
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "Wrench"
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Industrial"
+        ],
+        "Id": "Industrial"
+      }
+    ],
+    "TimeSeconds": 2.0
+  },
+  "Model": "Items/Equipment/Wrench.blockymodel",
+  "Texture": "Items/Equipment/Wrench.png",
+  "Icon": "Icons/ItemsGenerated/Wrench_Icon.png",
+  "PlayerAnimationsId": "Pickaxe",
+  "Scale": 2.0,
+  "IconProperties": {
+    "Scale": 1.25,
+    "Rotation": [
+      315,
+      90,
+      0
+    ],
+    "Translation": [
+      10,
+      -10
+    ]
+  },
+  "ItemSoundSetId": "ISS_Weapons_Stone_Small",
+  "DropOnDeath": false,
+  "MaxStack": 1,
+  "Quality": "Common",
+  "Utility": {
+    "Compatible": true
+  },
+  "Interactions": {
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "Wrench",
+          "Effects": {
+            "ItemAnimationId": "Mine",
+            "WorldSoundEventId": "SFX_Quick_Drill",
+            "LocalSoundEventId": "SFX_Quick_Drill"
+          }
+        }
+      ]
+    }
+  },
+  "MaxDurability": 120,
+  "Tags": {
+    "Type": [
+      "Tool"
+    ]
+  }
+}

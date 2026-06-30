@@ -62,7 +62,7 @@
   "MaxDurability": 20000,
   "Scale": 0.5,
   "Tags": {
-    "Type": [
+    "ArchStar": [
       "Battery"
     ]
   }

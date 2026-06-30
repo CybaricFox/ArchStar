@@ -1,0 +1,86 @@
+{
+  "TranslationProperties": {
+    "Name": "ArchStar.Multimeter.name",
+    "Description": "ArchStar.Multimeter.description"
+  },
+  "Categories": [
+    "Items.Tools",
+    "ArchStar.Equipment"
+  ],
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Copper_Cable",
+        "Quantity": 4
+      },
+      {
+        "ItemId": "Basic_Circuit"
+      },
+      {
+        "ItemId": "Sodium_Battery"
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "Multimeter"
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Industrial"
+        ],
+        "Id": "Industrial"
+      }
+    ],
+    "TimeSeconds": 2.0
+  },
+  "Model": "Items/Equipment/Multimeter.blockymodel",
+  "Texture": "Items/Equipment/Multimeter.png",
+  "Icon": "Icons/ItemsGenerated/Multimeter_Icon.png",
+  "PlayerAnimationsId": "Item",
+  "Scale": 2.0,
+  "IconProperties": {
+    "Scale": 1.5,
+    "Rotation": [
+      0,
+      180,
+      0
+    ],
+    "Translation": [
+      0.5,
+      -8
+    ]
+  },
+  "DropOnDeath": false,
+  "MaxStack": 1,
+  "Utility": {
+    "Compatible": true
+  },
+  "Interactions": {
+    "SwapTo": {
+      "Interactions": [
+        {
+          "Type": "Toggle_Multimeter"
+        }
+      ]
+    },
+    "SwapFrom": {
+      "Interactions": [
+        {
+          "Type": "Toggle_Multimeter",
+          "Next": {
+            "Type": "ChangeActiveSlot"
+          }
+        }
+
+      ]
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Tool"
+    ]
+  }
+}

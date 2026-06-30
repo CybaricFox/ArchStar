@@ -1,0 +1,36 @@
+// Hytale UI Definition: MultimeterHUD
+// Controller: MultimeterHUDController.java
+
+$C = "../Common.ui";
+
+Group #MultimeterHUDRoot {
+  Anchor: (Width: 400, Height: 300, Right: 500);
+  LayoutMode: Top;
+  Padding: (Full: 16);
+    $C.@DecoratedContainer {
+        LayoutMode: Full;
+        Background: #1a1a2e;
+
+        #Title {
+            Label #TitleContainer{
+                Text: "Hover A Block To View Energy Data";
+                Anchor: (Height: 32);
+                Style: (
+                  FontSize: 18,
+                  TextColor: #ffffff,
+                  RenderBold: true,
+                  HorizontalAlignment: Center
+                );
+              }
+        }
+
+        #Content {
+            Group #DataGroup {
+                Label #DataLabel {
+                    Style: (TextColor: #ffffff, RenderBold: false);
+                }
+            }
+        }
+    }
+  // Add your UI components here
+}

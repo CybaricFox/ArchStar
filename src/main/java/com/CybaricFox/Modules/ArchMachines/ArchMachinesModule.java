@@ -4,6 +4,8 @@ import com.CybaricFox.Modules.ArchLibrary.ArchLibrary;
 import com.CybaricFox.Modules.ArchMachines.Components.*;
 import com.CybaricFox.Modules.ArchMachines.Interactions.OpenMachineInteraction;
 import com.CybaricFox.Modules.ArchMachines.Interactions.RechargeHeldItemInteraction;
+import com.CybaricFox.Modules.ArchMachines.Interactions.ToggleMultimeterInteraction;
+import com.CybaricFox.Modules.ArchMachines.Interactions.WrenchInteraction;
 import com.CybaricFox.Modules.ArchMachines.MachineBehavior.Behaviors.CommonCapacitor;
 import com.CybaricFox.Modules.ArchMachines.MachineBehavior.Behaviors.CommonConsumer;
 import com.CybaricFox.Modules.ArchMachines.MachineBehavior.Behaviors.CommonFueledProducer;
@@ -12,11 +14,13 @@ import com.CybaricFox.Modules.ArchMachines.MachineBehavior.MachineBehaviorRegist
 import com.CybaricFox.Modules.ArchMachines.Systems.CommonUIReader;
 import com.CybaricFox.Modules.ArchMachines.Systems.CustomProcessRefSystem;
 import com.CybaricFox.Modules.ArchMachines.Systems.CustomProcessingSystem;
+import com.CybaricFox.Modules.ArchMachines.Systems.MultimeterSystem;
 import com.CybaricFox.Modules.ArchMachines.Upgrade.UpgradeRegistry;
 import com.CybaricFox.Modules.ArchMachines.Upgrade.Upgrades.BasicModulationUpgrade;
 import com.CybaricFox.Modules.ArchMachines.Upgrade.Upgrades.ConversionUpgrade;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.protocol.BreakBlockInteraction;
 import com.hypixel.hytale.protocol.RootInteraction;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -65,9 +69,12 @@ public class ArchMachinesModule {
         plugin.getChunkStoreRegistry().registerSystem(new CustomProcessRefSystem());
 
         plugin.getEntityStoreRegistry().registerSystem(new CommonUIReader());
+        plugin.getEntityStoreRegistry().registerSystem(new MultimeterSystem());
 
         plugin.getCodecRegistry(Interaction.CODEC).register("Open_Machine", OpenMachineInteraction.class, OpenMachineInteraction.CODEC);
         plugin.getCodecRegistry(Interaction.CODEC).register("Recharge_Held_Item", RechargeHeldItemInteraction.class, RechargeHeldItemInteraction.CODEC);
+        plugin.getCodecRegistry(Interaction.CODEC).register("Wrench", WrenchInteraction.class, WrenchInteraction.CODEC);
+        plugin.getCodecRegistry(Interaction.CODEC).register("Toggle_Multimeter", ToggleMultimeterInteraction.class, ToggleMultimeterInteraction.CODEC);
 
         setupMachineBehaviors();
         setupUpgrades();

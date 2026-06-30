@@ -27,15 +27,17 @@ public class RechargeHeldItemInteraction extends SimpleInteraction {
         Player player = ref.getStore().getComponent(ref, Player.getComponentType());
         if(player == null) return;
 
-        @SuppressWarnings("removal") CombinedItemContainer container = player.getInventory().getCombinedHotbarFirst();
-
-        @SuppressWarnings("removal") ItemStack item = player.getInventory().getActiveHotbarItem();
+        CombinedItemContainer container = InventoryComponent.getCombined(ref.getStore(), ref, InventoryComponent.EVERYTHING);
+        InventoryComponent hotbar = ref.getStore().getComponent(ref, InventoryComponent.getComponentTypeById(-1));
+        byte activeSlot = InventoryUtils.getActiveSlot(ref, -1, ref.getStore());
+        ItemStack item = hotbar.getInventory().getItemStack(activeSlot);
 
         for(short i = 0; i < container.getCapacity(); i++) {
             ItemStack containedItem = container.getItemStack(i);
             if(containedItem != null) {
-                if(containedItem.getItem().getData().getRawTags().isEmpty()) continue;
-                for(String tag : containedItem.getItem().getData().getRawTags().get("Type")) {
+                if(!containedItem.getItem().getData().getRawTags().containsKey("ArchStar")) continue;
+
+                for(String tag : containedItem.getItem().getData().getRawTags().get("ArchStar")) {
                     if(tag.equals("Battery") && containedItem.getDurability() > 0) {
                         double request = item.getMaxDurability() - item.getDurability();
                         double amount = Math.min(containedItem.getDurability(), request);

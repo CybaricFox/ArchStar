@@ -165,8 +165,10 @@
   "MaxDurability": 60000,
   "Tags": {
     "Type": [
-      "Powered_Item",
       "Tool"
+    ],
+    "ArchStar": [
+      "Powered_Item"
     ]
   }
 }

@@ -78,3 +78,7 @@ Sodium_Battery.name = Sodium Battery
 Sodium_Battery.description = Charges items in your inventory. Holds 20kv.
 Chainsaw.name = Chainsaw
 Chainsaw.description = Mow down trees and undead alike with this tool of destruction!\n\nDamage Data\n- Basic: 16.5\n- Secondary: 16.5-33\n- Signature: 16.5 + 15% max hp + execute below 150 max hp excluding players
+Wrench.name = Wrench
+Wrench.description = Right click machines, cables, and conveyor belts to break them instantly! Machines will cost durability in order to protect their intricate mechanisms.
+Multimeter.name = Multimeter
+Multimeter.description = Hover over machines and cables to display information about the connected energy network.

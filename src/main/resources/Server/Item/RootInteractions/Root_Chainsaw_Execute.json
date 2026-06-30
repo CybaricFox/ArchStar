@@ -2,5 +2,10 @@
   "RequireNewClick": true,
   "Interactions": [
     "Chainsaw_Execute"
-  ]
+  ],
+  "Tags": {
+    "Attack": [
+      "Melee"
+    ]
+  }
 }
